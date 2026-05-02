@@ -4,7 +4,7 @@ This file lists individuals with merge rights on this repository, per the [Found
 
 ## Specification Editors
 
-- Till Fengler (@tillfengler) - Founding Editor
+- OAP Founding Editor (@openagentprotocol)
 
 ## Working Group Chairs
 
