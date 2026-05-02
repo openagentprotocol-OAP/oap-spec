@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-subscription.schema.json",
+  "title": "OAP Subscription",
+  "type": "object",
+  "required": ["subscription_id", "principal_did", "agent_did", "tool_did", "tier", "price_hash", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "subscription_id": { "type": "string" },
+    "principal_did": { "type": "string" },
+    "agent_did": { "type": "string" },
+    "tool_did": { "type": "string" },
+    "scope_id": { "type": "string" },
+    "tier": { "type": "string" },
+    "price_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "amount": { "type": "string" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "interval": { "enum": ["day", "week", "month", "year"] },
+    "status": { "enum": ["pending_consent", "active", "past_due", "canceled", "expired"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "current_period_start": { "type": "string", "format": "date-time" },
+    "current_period_end": { "type": "string", "format": "date-time" },
+    "canceled_at": { "type": "string", "format": "date-time" },
+    "consent_receipt": { "type": "string" },
+    "subscription_token": { "type": "string" }
+  }
+}

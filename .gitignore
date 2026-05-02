@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build artefacts
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test
+coverage/
+.nyc_output/
+
+# OS
+Thumbs.db

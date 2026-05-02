@@ -1,0 +1,34 @@
+{
+  "ccc_version": "1.0",
+  "scope_id": "scope_kanzlei_mueller",
+  "active_ndas": [
+    {
+      "id": "nda:mandate_2026_acme",
+      "counterparties": ["did:web:acme-corp.example"],
+      "type": "mutual",
+      "covered_categories": ["litigation_strategy", "financial_exposure", "witness_statements", "internal_communications"],
+      "valid_from": "2026-01-10",
+      "valid_until": "2029-01-10",
+      "jurisdiction": "DE",
+      "document_hash": "sha256:a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+    }
+  ],
+  "non_competes": [],
+  "non_solicits": [],
+  "embargo_list": [
+    "did:web:opposing-counsel.example",
+    "did:web:opposing-party.example"
+  ],
+  "chinese_walls": [
+    {
+      "between": ["scope_kanzlei_mueller", "scope_kanzlei_schmidt"],
+      "reason": "opposing_parties_in_litigation"
+    }
+  ],
+  "professional_codes": ["bar:de"],
+  "fiduciary_duties": ["client_confidentiality:de:brao_43a", "duty_of_care:de:bgb_280"],
+  "regulatory_classification": "attorney_client_privileged",
+  "insider_lists": [],
+  "sanctions_screening": ["ofac", "eu", "un"],
+  "export_control_classification": null
+}

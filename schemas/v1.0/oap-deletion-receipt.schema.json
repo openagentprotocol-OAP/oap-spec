@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-deletion-receipt.schema.json",
+  "title": "OAP Deletion Receipt",
+  "type": "object",
+  "required": ["receipt_id", "tool_did", "principal_did", "request_received_at", "completed_at", "method", "scope", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "receipt_id": { "type": "string", "pattern": "^urn:oap:deletion:.+$" },
+    "tool_did": { "type": "string" },
+    "principal_did": { "type": "string" },
+    "scope_id": { "type": "string" },
+    "request_received_at": { "type": "string", "format": "date-time" },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "method": { "enum": ["cryptographic_erasure", "physical_overwrite", "logical_purge", "tombstone"] },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "data_classes": { "type": "array", "items": { "type": "string" } },
+        "provenance_tags": { "type": "array", "items": { "type": "string" } },
+        "subprocessors_propagated_to": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "reason": { "enum": ["legal_hold", "regulatory_retention", "ongoing_dispute"] },
+          "retention_until": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "kid", "value"],
+      "properties": {
+        "alg": { "type": "string" },
+        "kid": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}

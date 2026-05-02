@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-decision-record.schema.json",
+  "title": "OAP Policy Decision Record",
+  "type": "object",
+  "required": ["decision_id", "evaluated_at", "layers_evaluated", "applied_rules", "outcome", "explanation"],
+  "additionalProperties": false,
+  "properties": {
+    "decision_id": { "type": "string" },
+    "evaluated_at": { "type": "string", "format": "date-time" },
+    "layers_evaluated": {
+      "type": "array",
+      "items": { "enum": ["L1", "L2", "L3", "L4"] }
+    },
+    "applied_rules": { "type": "array", "items": { "type": "string" } },
+    "outcome": { "enum": ["allow", "allow_with_conditions", "require_consent", "require_anonymization", "block"] },
+    "conditions": { "type": "array", "items": { "type": "string" } },
+    "explanation": { "type": "string" },
+    "explanation_for_principal": { "type": "string" },
+    "verifier_agent": {
+      "type": "object",
+      "properties": {
+        "agent_did": { "type": "string" },
+        "outcome": { "type": "string" },
+        "rationale": { "type": "string" }
+      }
+    },
+    "ccc_evaluation": {
+      "type": "object",
+      "properties": {
+        "embargo_clear": { "type": "boolean" },
+        "nda_coverage": { "type": "boolean" },
+        "non_compete_clear": { "type": "boolean" },
+        "chinese_wall_clear": { "type": "boolean" },
+        "professional_code_compliant": { "type": "boolean" },
+        "sanctions_clear": { "type": "boolean" },
+        "export_classification_compatible": { "type": "boolean" }
+      }
+    }
+  }
+}

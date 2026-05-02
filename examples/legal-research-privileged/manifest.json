@@ -1,0 +1,171 @@
+{
+  "oap_version": "1.0",
+  "tool": {
+    "id": "legal-research-pro",
+    "did": "did:web:legal-research.example",
+    "name": "Legal Research Pro",
+    "version": "3.1.0",
+    "publisher": {
+      "did": "did:web:legal-research.example",
+      "legal_name": "Legal Research Pro AG",
+      "registry": { "type": "Handelsregister", "id": "CHE-123.456.789", "country": "CH" },
+      "verified": true
+    },
+    "categories": ["legal", "research", "compliance"],
+    "description_for_humans": "Case law research and legal analysis for attorneys and compliance professionals.",
+    "description_for_agents": "Searches and analyzes case law, statutes, and regulatory guidance across EU and DACH jurisdictions. Outputs are structured legal citations with relevance scores. Operates under attorney client privilege when activated. Never use for lay legal advice."
+  },
+  "endpoints": {
+    "invoke": "https://api.legal-research.example/oap/invoke",
+    "stream": "https://api.legal-research.example/oap/stream",
+    "audit": "https://api.legal-research.example/oap/audit",
+    "data_export": "https://api.legal-research.example/oap/data/export",
+    "data_delete": "https://api.legal-research.example/oap/data/delete",
+    "incident": "https://api.legal-research.example/oap/incident",
+    "discover": "https://api.legal-research.example/oap/discover",
+    "billing": "https://api.legal-research.example/oap/billing",
+    "subscribe": "https://api.legal-research.example/oap/subscribe"
+  },
+  "auth": [
+    { "method": "oauth2_1" },
+    { "method": "oap_trust_token" },
+    { "method": "mtls" }
+  ],
+  "actions": [
+    {
+      "id": "search_case_law",
+      "version": "3.1.0",
+      "summary": "Search case law across EU and DACH jurisdictions.",
+      "description_for_agents": "Full text and semantic search across case law databases. Returns structured citations with relevance scores. Supports jurisdiction filtering, date ranges, and court level filtering.",
+      "input_schema": {
+        "type": "object",
+        "required": ["query"],
+        "properties": {
+          "query": { "type": "string" },
+          "jurisdictions": { "type": "array", "items": { "type": "string" } },
+          "date_from": { "type": "string", "format": "date" },
+          "date_to": { "type": "string", "format": "date" },
+          "court_levels": { "type": "array", "items": { "enum": ["supreme", "appellate", "trial", "administrative"] } },
+          "max_results": { "type": "integer", "minimum": 1, "maximum": 50 }
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "citation": { "type": "string" },
+                "court": { "type": "string" },
+                "date": { "type": "string", "format": "date" },
+                "jurisdiction": { "type": "string" },
+                "relevance_score": { "type": "number" },
+                "summary": { "type": "string" },
+                "key_holdings": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "total_matches": { "type": "integer" }
+        }
+      },
+      "side_effects": "read",
+      "idempotent": true,
+      "idempotency_window_seconds": 300,
+      "cost": { "type": "per_call", "amount": "0.10", "currency": "EUR" },
+      "latency_p95_ms": 2000,
+      "rate_limit": { "rpm": 30, "concurrent": 5 },
+      "requires_consent": false,
+      "risk_class": "limited",
+      "data_classes_in": ["legal_query"],
+      "data_classes_out": ["case_law", "legal_citation"],
+      "examples": [
+        {
+          "input": { "query": "DSGVO Recht auf Vergessenwerden", "jurisdictions": ["DE"], "max_results": 5 },
+          "output": {
+            "results": [
+              {
+                "citation": "EuGH C-131/12 (Google Spain)",
+                "court": "Europaeischer Gerichtshof",
+                "date": "2014-05-13",
+                "jurisdiction": "EU",
+                "relevance_score": 0.97,
+                "summary": "Individuals have the right to request search engines to remove links containing personal data under certain conditions.",
+                "key_holdings": ["Right to be forgotten applies to search engine operators", "Balancing test between data subject rights and public interest"]
+              }
+            ],
+            "total_matches": 142
+          }
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "free_tier": { "calls_per_day": 5 },
+    "models": [
+      { "type": "per_call", "amount": "0.10", "currency": "EUR" },
+      {
+        "type": "subscription",
+        "tiers": [
+          { "id": "attorney", "amount": "49.00", "currency": "EUR", "interval": "month" },
+          { "id": "firm", "amount": "299.00", "currency": "EUR", "interval": "month" }
+        ]
+      }
+    ]
+  },
+  "sla": {
+    "uptime_target": 0.9995,
+    "latency_p95_ms": 2000,
+    "latency_p99_ms": 5000,
+    "max_call_duration_ms": 30000,
+    "supports_streaming": true,
+    "supports_async": false,
+    "regions": ["eu-central", "eu-west"],
+    "max_concurrency_per_principal": 5,
+    "incident_disclosure_within_hours": 24,
+    "scheduled_maintenance_notice_hours": 336
+  },
+  "trust": {
+    "publisher_verified": true,
+    "code_audited": [
+      { "by": "did:web:kpmg.example", "date": "2026-03-01", "scope": "full", "report": "https://legal-research.example/audit/2026-q1.pdf" }
+    ],
+    "data_residency": ["CH"],
+    "gdpr_compliant": true,
+    "soc2_type_ii": true,
+    "iso_27001": true,
+    "open_source": null,
+    "trust_score": null,
+    "user_reviews": null,
+    "incidents_last_90d": 0
+  },
+  "data_policy": {
+    "stores_principal_data": true,
+    "retention_days": 90,
+    "shares_with_third_parties": false,
+    "third_parties": [],
+    "training_on_principal_data": "never",
+    "deletion_endpoint": "/oap/data/delete",
+    "export_endpoint": "/oap/data/export",
+    "lawful_bases": ["contract"],
+    "special_categories_handled": [],
+    "international_transfers": [],
+    "subprocessors_url": "https://legal-research.example/legal/subprocessors"
+  },
+  "risk_class": "high",
+  "jurisdictions": ["DE", "AT", "CH"],
+  "insurance": {
+    "carrier_did": "did:web:zurich-insurance.example",
+    "policy_id": "POL-2026-LEGAL-789",
+    "coverage_eur": "10000000",
+    "covered_perils": ["data_loss", "incorrect_legal_guidance", "privilege_breach"],
+    "valid_until": "2027-12-31",
+    "credential": "vc:OAPInsuranceCoverage:..."
+  },
+  "governance": {
+    "dispute_resolution_url": "https://legal-research.example/legal/disputes",
+    "contact_email": "compliance@legal-research.example",
+    "revocation_status_url": "https://legal-research.example/oap/revocation"
+  }
+}

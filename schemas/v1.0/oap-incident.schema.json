@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-incident.schema.json",
+  "title": "OAP Incident Report",
+  "type": "object",
+  "required": ["incident_id", "tool_did", "detected_at", "disclosed_at", "severity", "scope", "root_cause", "mitigation", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "incident_id": { "type": "string" },
+    "tool_did": { "type": "string" },
+    "detected_at": { "type": "string", "format": "date-time" },
+    "disclosed_at": { "type": "string", "format": "date-time" },
+    "resolved_at": { "type": "string", "format": "date-time" },
+    "severity": { "enum": ["low", "medium", "high", "critical"] },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "actions_affected": { "type": "array", "items": { "type": "string" } },
+        "regions_affected": { "type": "array", "items": { "type": "string" } },
+        "principals_affected_estimate": { "type": "integer", "minimum": 0 },
+        "data_classes_affected": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "root_cause": { "type": "string" },
+    "mitigation": { "type": "string" },
+    "remediation": { "type": "string" },
+    "notification": {
+      "type": "object",
+      "properties": {
+        "principals_notified_at": { "type": "string", "format": "date-time" },
+        "supervisory_authority_notified_at": { "type": "string", "format": "date-time" },
+        "method": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "status": { "enum": ["open", "mitigated", "resolved", "post_mortem_published"] }
+  }
+}

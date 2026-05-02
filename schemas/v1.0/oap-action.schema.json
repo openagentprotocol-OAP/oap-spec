@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-action.schema.json",
+  "title": "OAP Action",
+  "description": "Normative schema for a single Action exposed by an OAP Tool.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "summary",
+    "description_for_agents",
+    "input_schema",
+    "output_schema",
+    "side_effects",
+    "idempotent",
+    "rate_limit",
+    "data_classes_in",
+    "data_classes_out",
+    "examples"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,62}$" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-+].+)?$" },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "description_for_agents": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "input_schema": { "type": "object" },
+    "output_schema": { "type": "object" },
+    "side_effects": { "enum": ["none", "read", "write", "external", "irreversible"] },
+    "idempotent": { "type": "boolean" },
+    "idempotency_window_seconds": { "type": "integer", "minimum": 0 },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "type": { "enum": ["free", "per_call", "subscription_included", "usage_metered", "outcome"] },
+        "amount": { "type": "string" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      }
+    },
+    "latency_p95_ms": { "type": "integer", "minimum": 0 },
+    "rate_limit": {
+      "type": "object",
+      "required": ["rpm", "concurrent"],
+      "properties": {
+        "rpm": { "type": "integer", "minimum": 1 },
+        "concurrent": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "requires_consent": { "type": "boolean" },
+    "risk_class": { "enum": ["minimal", "limited", "high"] },
+    "data_classes_in": { "type": "array", "items": { "type": "string" } },
+    "data_classes_out": { "type": "array", "items": { "type": "string" } },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["input", "output"],
+        "properties": {
+          "input": {},
+          "output": {},
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "deprecated": { "type": "boolean" },
+    "sunset": { "type": "string", "format": "date-time" }
+  },
+  "if": { "properties": { "idempotent": { "const": true } } },
+  "then": { "required": ["idempotency_window_seconds"] }
+}

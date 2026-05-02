@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-request-envelope.schema.json",
+  "title": "OAP Request Envelope",
+  "type": "object",
+  "required": ["oap_version", "request_id", "timestamp", "principal_did", "agent_did", "action", "input", "context", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "oap_version": { "const": "1.0" },
+    "request_id": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "principal_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "agent_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "scope_id": { "type": "string" },
+    "action": { "type": "string" },
+    "input": {},
+    "context": {
+      "type": "object",
+      "required": ["locale", "currency", "jurisdiction_user", "jurisdiction_agent"],
+      "properties": {
+        "locale": { "type": "string", "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "jurisdiction_user": { "type": "string", "pattern": "^[A-Z]{2}$" },
+        "jurisdiction_agent": { "type": "string", "pattern": "^[A-Z]{2}$" }
+      }
+    },
+    "consent_receipt": { "type": "string" },
+    "subscription_token": { "type": "string" },
+    "idempotency_key": { "type": "string" },
+    "policy_assertions": {
+      "type": "object",
+      "properties": {
+        "confidentiality_class": { "enum": ["public", "internal", "confidential", "privileged"] },
+        "provenance_tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "kid", "value"],
+      "properties": {
+        "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+        "kid": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}

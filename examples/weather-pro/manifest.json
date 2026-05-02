@@ -1,0 +1,164 @@
+{
+  "oap_version": "1.0",
+  "tool": {
+    "id": "weather-pro",
+    "did": "did:web:weatherpro.example",
+    "name": "Weather Pro",
+    "version": "2.4.1",
+    "publisher": {
+      "did": "did:web:weatherpro.example",
+      "legal_name": "Weather Pro GmbH",
+      "registry": { "type": "Handelsregister", "id": "HRB 123456 B", "country": "DE" },
+      "verified": true
+    },
+    "categories": ["data", "weather", "geospatial"],
+    "icon": "https://weatherpro.example/assets/icon-512.png",
+    "description_for_humans": "Global weather forecasts and historical climate data.",
+    "description_for_agents": "Provides numerical weather prediction outputs for any geographic point. Use for short term forecasts up to 14 days, marine and aviation specific outputs, and historical observations back to 1979."
+  },
+  "endpoints": {
+    "invoke": "https://api.weatherpro.example/oap/invoke",
+    "stream": "https://api.weatherpro.example/oap/stream",
+    "subscribe": "https://api.weatherpro.example/oap/subscribe",
+    "billing": "https://api.weatherpro.example/oap/billing",
+    "audit": "https://api.weatherpro.example/oap/audit",
+    "data_export": "https://api.weatherpro.example/oap/data/export",
+    "data_delete": "https://api.weatherpro.example/oap/data/delete",
+    "consent": "https://api.weatherpro.example/oap/consent",
+    "incident": "https://api.weatherpro.example/oap/incident",
+    "discover": "https://api.weatherpro.example/oap/discover"
+  },
+  "auth": [
+    { "method": "anonymous" },
+    { "method": "api_key" },
+    { "method": "oauth2_1" },
+    { "method": "oap_trust_token" }
+  ],
+  "actions": [
+    {
+      "id": "get_forecast",
+      "version": "2.4.1",
+      "summary": "Numerical weather forecast for a geographic point.",
+      "description_for_agents": "Returns a structured forecast for the given location and number of days. Suitable for automated planning, alerts, and routing decisions.",
+      "input_schema": {
+        "type": "object",
+        "required": ["location", "days"],
+        "properties": {
+          "location": { "type": "string" },
+          "days": { "type": "integer", "minimum": 1, "maximum": 14 }
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["forecast"],
+        "properties": {
+          "forecast": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": { "type": "string", "format": "date" },
+                "temperature_c_min": { "type": "number" },
+                "temperature_c_max": { "type": "number" },
+                "precipitation_mm": { "type": "number" },
+                "summary": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "side_effects": "none",
+      "idempotent": true,
+      "idempotency_window_seconds": 60,
+      "cost": { "type": "per_call", "amount": "0.001", "currency": "EUR" },
+      "latency_p95_ms": 200,
+      "rate_limit": { "rpm": 60, "concurrent": 10 },
+      "requires_consent": false,
+      "risk_class": "minimal",
+      "data_classes_in": ["geolocation_coarse"],
+      "data_classes_out": ["weather_observation"],
+      "examples": [
+        {
+          "input": { "location": "Berlin, DE", "days": 3 },
+          "output": {
+            "forecast": [
+              { "date": "2026-05-03", "temperature_c_min": 9, "temperature_c_max": 17, "precipitation_mm": 0.2, "summary": "Partly cloudy" }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "free_tier": { "calls_per_day": 100 },
+    "models": [
+      { "type": "per_call", "amount": "0.001", "currency": "EUR" },
+      {
+        "type": "subscription",
+        "tiers": [
+          { "id": "pro", "amount": "9.99", "currency": "EUR", "interval": "month" },
+          { "id": "enterprise", "amount": "99.00", "currency": "EUR", "interval": "month" }
+        ]
+      }
+    ]
+  },
+  "sla": {
+    "uptime_target": 0.999,
+    "latency_p95_ms": 300,
+    "latency_p99_ms": 800,
+    "max_call_duration_ms": 30000,
+    "supports_streaming": true,
+    "supports_async": false,
+    "regions": ["eu-west", "eu-central", "us-east"],
+    "max_concurrency_per_principal": 10,
+    "incident_disclosure_within_hours": 72,
+    "scheduled_maintenance_notice_hours": 168
+  },
+  "trust": {
+    "publisher_verified": true,
+    "code_audited": [
+      { "by": "did:web:auditor.example", "date": "2026-01-15", "scope": "full", "report": "https://auditor.example/reports/weatherpro-2026-01.pdf" }
+    ],
+    "data_residency": ["EU"],
+    "gdpr_compliant": true,
+    "soc2_type_ii": true,
+    "iso_27001": true,
+    "open_source": "https://github.com/weatherpro/weather-pro",
+    "trust_score": null,
+    "user_reviews": null,
+    "incidents_last_90d": 0
+  },
+  "data_policy": {
+    "stores_principal_data": false,
+    "retention_days": 0,
+    "shares_with_third_parties": false,
+    "third_parties": [],
+    "training_on_principal_data": "never",
+    "deletion_endpoint": "/oap/data/delete",
+    "export_endpoint": "/oap/data/export",
+    "lawful_bases": ["contract"],
+    "special_categories_handled": [],
+    "international_transfers": [],
+    "subprocessors_url": "https://weatherpro.example/legal/subprocessors"
+  },
+  "collaboration": {
+    "supports_concurrent_agents": true,
+    "locking_strategy": "optimistic",
+    "broadcast_changes": false
+  },
+  "risk_class": "minimal",
+  "jurisdictions": ["DE", "AT", "CH", "FR", "NL", "ES", "IT", "PL", "US"],
+  "insurance": {
+    "carrier_did": "did:web:carrier.example",
+    "policy_id": "POL-2026-1234",
+    "coverage_eur": "5000000",
+    "covered_perils": ["data_loss", "unavailability", "miscalculation"],
+    "valid_until": "2027-12-31",
+    "credential": "vc:OAPInsuranceCoverage:..."
+  },
+  "governance": {
+    "dispute_resolution_url": "https://weatherpro.example/legal/disputes",
+    "contact_email": "compliance@weatherpro.example",
+    "revocation_status_url": "https://weatherpro.example/oap/revocation"
+  }
+}

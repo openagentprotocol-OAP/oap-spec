@@ -1,0 +1,31 @@
+{
+  "receipt_id": "urn:oap:receipt:01J9V8B7HM3K8E2A0M9R8F0LZP",
+  "type": "invocation",
+  "timestamp": "2026-05-03T10:00:00.215Z",
+  "principal_did": "did:plc:abc123",
+  "agent_did": "did:assistnet:agent_xyz",
+  "tool_did": "did:web:weatherpro.example",
+  "action_id": "get_forecast",
+  "action_version": "2.4.1",
+  "input_hash": "sha256:6c1f2b3e7d8a4c9b0e2f1d4a5b6c7d8e9f0a1b2c3d4e5f60718293a4b5c6d7e8",
+  "output_hash": "sha256:1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+  "model_version": "ecmwf-aifs-1.2",
+  "cost": { "amount": "0.001", "currency": "EUR" },
+  "policy_decisions": [
+    {
+      "id": "pol_3a7b1c2d",
+      "outcome": "allow",
+      "rules": ["l4.principal.weather_data_allowed", "ccc.embargo.clear"]
+    }
+  ],
+  "provenance_tags_in": [],
+  "provenance_tags_out": ["source:weatherpro"],
+  "previous_receipt_hash": "sha256:f8e7d6c5b4a3928170615243352617081d2e3f405162738495a6b7c8d9e0f1a2",
+  "anchors": [
+    { "log_id": "rekor-eu-west", "log_index": 4892013, "inclusion_proof": "base64url..." }
+  ],
+  "signatures": [
+    { "by": "did:assistnet:agent_xyz#key-1", "alg": "EdDSA", "value": "base64url..." },
+    { "by": "did:web:weatherpro.example#key-1", "alg": "EdDSA", "value": "base64url..." }
+  ]
+}

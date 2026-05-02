@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-attestation.schema.json",
+  "title": "OAP Outcome Attestation",
+  "description": "Cryptographically verifiable evidence that a claimed effect occurred as a result of an Action.",
+  "type": "object",
+  "required": ["attestation_id", "type", "issued_at", "issuer_did", "evidence", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "attestation_id": { "type": "string" },
+    "type": {
+      "enum": [
+        "email_dkim",
+        "payment_processor_receipt",
+        "blockchain_transaction",
+        "shipping_label",
+        "calendar_event_ics",
+        "smart_contract_event",
+        "external_audit",
+        "third_party_signature"
+      ]
+    },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "issuer_did": { "type": "string" },
+    "evidence": {
+      "type": "object",
+      "description": "Type specific structured evidence (e.g., DKIM headers, txid, receipt URL)."
+    },
+    "verification_url": { "type": "string", "format": "uri" },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "kid", "value"],
+      "properties": {
+        "alg": { "type": "string" },
+        "kid": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}

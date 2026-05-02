@@ -1,0 +1,15 @@
+{
+  "name": "oap-validator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Strict OAP schema validator using ajv",
+  "main": "validate.js",
+  "scripts": {
+    "validate": "node ajv-validate.js",
+    "validate:simple": "node validate.js"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}

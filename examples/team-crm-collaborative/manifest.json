@@ -1,0 +1,188 @@
+{
+  "oap_version": "1.0",
+  "tool": {
+    "id": "team-crm",
+    "did": "did:web:team-crm.example",
+    "name": "Team CRM",
+    "version": "4.2.0",
+    "publisher": {
+      "did": "did:web:team-crm.example",
+      "legal_name": "Team CRM Inc.",
+      "registry": { "type": "State of Delaware", "id": "DE-7891234", "country": "US" },
+      "verified": true
+    },
+    "categories": ["crm", "sales", "collaboration"],
+    "icon": "https://team-crm.example/assets/icon-512.png",
+    "description_for_humans": "Collaborative CRM for sales teams with AI agent support.",
+    "description_for_agents": "Multi user CRM with contacts, deals, and pipeline management. Supports concurrent agent access with optimistic locking. Use for reading and updating sales records, logging interactions, and advancing pipeline stages."
+  },
+  "endpoints": {
+    "invoke": "https://api.team-crm.example/oap/invoke",
+    "stream": "https://api.team-crm.example/oap/stream",
+    "subscribe": "https://api.team-crm.example/oap/subscribe",
+    "billing": "https://api.team-crm.example/oap/billing",
+    "audit": "https://api.team-crm.example/oap/audit",
+    "data_export": "https://api.team-crm.example/oap/data/export",
+    "data_delete": "https://api.team-crm.example/oap/data/delete",
+    "consent": "https://api.team-crm.example/oap/consent",
+    "incident": "https://api.team-crm.example/oap/incident",
+    "discover": "https://api.team-crm.example/oap/discover"
+  },
+  "auth": [
+    { "method": "oauth2_1" },
+    { "method": "oap_trust_token" }
+  ],
+  "actions": [
+    {
+      "id": "get_contact",
+      "version": "4.2.0",
+      "summary": "Retrieve a contact by id.",
+      "description_for_agents": "Returns full contact record including name, company, role, tags, and interaction history. Read only, no side effects.",
+      "input_schema": { "type": "object", "required": ["contact_id"], "properties": { "contact_id": { "type": "string" } } },
+      "output_schema": { "type": "object", "properties": { "contact": { "type": "object" } } },
+      "side_effects": "read",
+      "idempotent": true,
+      "idempotency_window_seconds": 30,
+      "cost": { "type": "subscription_included" },
+      "latency_p95_ms": 100,
+      "rate_limit": { "rpm": 300, "concurrent": 50 },
+      "requires_consent": false,
+      "data_classes_in": [],
+      "data_classes_out": ["pii_contact"],
+      "examples": [
+        {
+          "input": { "contact_id": "c_12345" },
+          "output": { "contact": { "id": "c_12345", "name": "Anna Mueller", "company": "ACME GmbH", "role": "CTO", "email": "anna@acme.example" } }
+        }
+      ]
+    },
+    {
+      "id": "update_deal",
+      "version": "4.2.0",
+      "summary": "Update a deal record.",
+      "description_for_agents": "Updates one or more fields on a deal. Supports optimistic locking via version field. Returns the updated deal and a new version token.",
+      "input_schema": {
+        "type": "object",
+        "required": ["deal_id", "version", "updates"],
+        "properties": {
+          "deal_id": { "type": "string" },
+          "version": { "type": "string" },
+          "updates": { "type": "object" }
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": { "deal": { "type": "object" }, "new_version": { "type": "string" } }
+      },
+      "side_effects": "write",
+      "idempotent": false,
+      "cost": { "type": "subscription_included" },
+      "latency_p95_ms": 200,
+      "rate_limit": { "rpm": 120, "concurrent": 10 },
+      "requires_consent": false,
+      "data_classes_in": ["deal_data"],
+      "data_classes_out": ["deal_data"],
+      "examples": [
+        {
+          "input": { "deal_id": "d_789", "version": "v3", "updates": { "stage": "negotiation", "value_eur": "50000" } },
+          "output": { "deal": { "id": "d_789", "stage": "negotiation", "value_eur": "50000" }, "new_version": "v4" }
+        }
+      ]
+    },
+    {
+      "id": "log_interaction",
+      "version": "4.2.0",
+      "summary": "Log an interaction (call, email, meeting) with a contact.",
+      "description_for_agents": "Creates a timestamped interaction record linked to a contact and optionally a deal. Use after completing a call, sending an email, or attending a meeting.",
+      "input_schema": {
+        "type": "object",
+        "required": ["contact_id", "type", "summary"],
+        "properties": {
+          "contact_id": { "type": "string" },
+          "deal_id": { "type": "string" },
+          "type": { "enum": ["call", "email", "meeting", "chat", "note"] },
+          "summary": { "type": "string" },
+          "duration_minutes": { "type": "integer" }
+        }
+      },
+      "output_schema": { "type": "object", "properties": { "interaction_id": { "type": "string" }, "logged_at": { "type": "string" } } },
+      "side_effects": "write",
+      "idempotent": false,
+      "cost": { "type": "subscription_included" },
+      "latency_p95_ms": 150,
+      "rate_limit": { "rpm": 60, "concurrent": 10 },
+      "requires_consent": false,
+      "data_classes_in": ["interaction_log", "pii_contact"],
+      "data_classes_out": ["interaction_log"],
+      "examples": [
+        {
+          "input": { "contact_id": "c_12345", "deal_id": "d_789", "type": "call", "summary": "Discussed pricing for Q3 renewal.", "duration_minutes": 15 },
+          "output": { "interaction_id": "i_abc", "logged_at": "2026-05-03T14:30:00Z" }
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "models": [
+      {
+        "type": "subscription",
+        "tiers": [
+          { "id": "team", "amount": "29.00", "currency": "EUR", "interval": "month" },
+          { "id": "business", "amount": "79.00", "currency": "EUR", "interval": "month" }
+        ]
+      }
+    ]
+  },
+  "sla": {
+    "uptime_target": 0.999,
+    "latency_p95_ms": 200,
+    "latency_p99_ms": 500,
+    "max_call_duration_ms": 10000,
+    "supports_streaming": false,
+    "supports_async": false,
+    "regions": ["eu-central", "us-east"],
+    "max_concurrency_per_principal": 20,
+    "incident_disclosure_within_hours": 48,
+    "scheduled_maintenance_notice_hours": 168
+  },
+  "trust": {
+    "publisher_verified": true,
+    "code_audited": [],
+    "data_residency": ["EU", "US"],
+    "gdpr_compliant": true,
+    "soc2_type_ii": false,
+    "iso_27001": false,
+    "trust_score": null,
+    "user_reviews": null,
+    "incidents_last_90d": 1
+  },
+  "data_policy": {
+    "stores_principal_data": true,
+    "retention_days": 365,
+    "shares_with_third_parties": false,
+    "third_parties": [],
+    "training_on_principal_data": "never",
+    "deletion_endpoint": "/oap/data/delete",
+    "export_endpoint": "/oap/data/export",
+    "lawful_bases": ["contract"],
+    "special_categories_handled": [],
+    "international_transfers": [
+      { "destination": "US", "mechanism": "standard_contractual_clauses", "reference": "SCC-2021-v2" }
+    ],
+    "subprocessors_url": "https://team-crm.example/legal/subprocessors"
+  },
+  "collaboration": {
+    "supports_concurrent_agents": true,
+    "locking_strategy": "optimistic",
+    "conflict_resolution_endpoint": "https://api.team-crm.example/oap/conflicts",
+    "broadcast_changes": true,
+    "change_subscription": "https://api.team-crm.example/oap/subscribe-changes"
+  },
+  "risk_class": "limited",
+  "jurisdictions": ["DE", "AT", "CH", "US", "GB", "FR", "NL"],
+  "governance": {
+    "dispute_resolution_url": "https://team-crm.example/legal/disputes",
+    "contact_email": "compliance@team-crm.example",
+    "revocation_status_url": "https://team-crm.example/oap/revocation"
+  }
+}

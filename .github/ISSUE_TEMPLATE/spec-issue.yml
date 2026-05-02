@@ -1,0 +1,34 @@
+name: Spec issue
+description: Report ambiguity, error, or improvement request for the OAP spec
+labels: ["spec", "triage"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue type
+      options:
+        - Ambiguity in spec text
+        - Error in schema
+        - Error in example
+        - Missing capability
+        - Conformance question
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: section
+    attributes:
+      label: Spec section or schema file
+      placeholder: e.g. spec/v1.0/OAP-CORE-1.0.md Section 12, or schemas/v1.0/oap-receipt.schema.json
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Quote the relevant text and explain the problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Optional. If you have a concrete proposal.

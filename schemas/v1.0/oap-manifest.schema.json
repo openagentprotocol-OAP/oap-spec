@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-manifest.schema.json",
+  "title": "OAP Tool Manifest",
+  "description": "Normative schema for an Open Agent Protocol Tool Manifest, version 1.0.",
+  "type": "object",
+  "required": [
+    "oap_version",
+    "tool",
+    "endpoints",
+    "auth",
+    "actions",
+    "sla",
+    "trust",
+    "data_policy",
+    "risk_class",
+    "jurisdictions",
+    "governance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "oap_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "tool": {
+      "type": "object",
+      "required": ["id", "did", "name", "version", "publisher", "categories", "description_for_humans", "description_for_agents"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$" },
+        "did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-+].+)?$" },
+        "publisher": {
+          "type": "object",
+          "required": ["did", "legal_name", "verified"],
+          "additionalProperties": false,
+          "properties": {
+            "did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+            "legal_name": { "type": "string" },
+            "registry": {
+              "type": "object",
+              "required": ["type", "id", "country"],
+              "properties": {
+                "type": { "type": "string" },
+                "id": { "type": "string" },
+                "country": { "type": "string", "pattern": "^[A-Z]{2}$" }
+              }
+            },
+            "verified": { "type": "boolean" }
+          }
+        },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "icon": { "type": "string", "format": "uri" },
+        "description_for_humans": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "description_for_agents": { "type": "string", "minLength": 1, "maxLength": 4000 }
+      }
+    },
+    "endpoints": {
+      "type": "object",
+      "required": ["invoke", "audit", "data_delete", "incident"],
+      "additionalProperties": false,
+      "properties": {
+        "invoke":      { "type": "string", "format": "uri" },
+        "stream":      { "type": "string", "format": "uri" },
+        "subscribe":   { "type": "string", "format": "uri" },
+        "billing":     { "type": "string", "format": "uri" },
+        "audit":       { "type": "string", "format": "uri" },
+        "data_export": { "type": "string", "format": "uri" },
+        "data_delete": { "type": "string", "format": "uri" },
+        "consent":     { "type": "string", "format": "uri" },
+        "incident":    { "type": "string", "format": "uri" },
+        "discover":    { "type": "string", "format": "uri" }
+      }
+    },
+    "auth": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["method"],
+        "properties": {
+          "method": { "enum": ["anonymous", "api_key", "oauth2_1", "oap_trust_token", "mtls"] },
+          "config": { "type": "object" }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-action.schema.json" }
+    },
+    "pricing": {
+      "type": "object",
+      "required": ["models"],
+      "properties": {
+        "free_tier": { "type": "object" },
+        "models": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": ["type"],
+                "properties": { "type": { "const": "free" } }
+              },
+              {
+                "type": "object",
+                "required": ["type", "amount", "currency"],
+                "properties": {
+                  "type": { "const": "per_call" },
+                  "amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+                  "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+                }
+              },
+              {
+                "type": "object",
+                "required": ["type", "tiers"],
+                "properties": {
+                  "type": { "const": "subscription" },
+                  "tiers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["id", "amount", "currency", "interval"],
+                      "properties": {
+                        "id": { "type": "string" },
+                        "amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+                        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+                        "interval": { "enum": ["day", "week", "month", "year"] }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": ["type", "unit", "amount_per_1000", "currency"],
+                "properties": {
+                  "type": { "const": "usage_metered" },
+                  "unit": { "type": "string" },
+                  "amount_per_1000": { "type": "string" },
+                  "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+                }
+              },
+              {
+                "type": "object",
+                "required": ["type", "trigger", "amount", "currency"],
+                "properties": {
+                  "type": { "const": "outcome" },
+                  "trigger": { "type": "string" },
+                  "amount": { "type": "string" },
+                  "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "sla": {
+      "type": "object",
+      "required": ["uptime_target", "latency_p95_ms", "max_call_duration_ms", "regions", "incident_disclosure_within_hours"],
+      "properties": {
+        "uptime_target": { "type": "number", "minimum": 0, "maximum": 1 },
+        "latency_p95_ms": { "type": "integer", "minimum": 0 },
+        "latency_p99_ms": { "type": "integer", "minimum": 0 },
+        "max_call_duration_ms": { "type": "integer", "minimum": 0 },
+        "supports_streaming": { "type": "boolean" },
+        "supports_async": { "type": "boolean" },
+        "regions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "max_concurrency_per_principal": { "type": "integer", "minimum": 1 },
+        "incident_disclosure_within_hours": { "type": "integer", "minimum": 1, "maximum": 168 },
+        "scheduled_maintenance_notice_hours": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "trust": {
+      "type": "object",
+      "required": ["publisher_verified", "data_residency", "gdpr_compliant"],
+      "properties": {
+        "publisher_verified": { "type": "boolean" },
+        "code_audited": { "type": "array", "items": { "type": "object" } },
+        "data_residency": { "type": "array", "items": { "type": "string" } },
+        "gdpr_compliant": { "type": "boolean" },
+        "soc2_type_ii": { "type": "boolean" },
+        "iso_27001": { "type": "boolean" },
+        "open_source": { "type": ["string", "null"], "format": "uri" },
+        "trust_score": { "type": ["number", "null"] },
+        "user_reviews": { "type": ["integer", "null"] },
+        "incidents_last_90d": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "data_policy": {
+      "type": "object",
+      "required": ["stores_principal_data", "retention_days", "shares_with_third_parties", "training_on_principal_data", "deletion_endpoint", "lawful_bases"],
+      "properties": {
+        "stores_principal_data": { "type": "boolean" },
+        "retention_days": { "type": "integer", "minimum": 0 },
+        "shares_with_third_parties": { "type": "boolean" },
+        "third_parties": { "type": "array", "items": { "type": "string" } },
+        "training_on_principal_data": { "enum": ["never", "with_consent", "by_default"] },
+        "deletion_endpoint": { "type": "string" },
+        "export_endpoint": { "type": "string" },
+        "lawful_bases": {
+          "type": "array",
+          "items": { "enum": ["consent", "contract", "legal_obligation", "vital_interests", "public_task", "legitimate_interests"] }
+        },
+        "special_categories_handled": { "type": "array", "items": { "type": "string" } },
+        "international_transfers": { "type": "array", "items": { "type": "object" } },
+        "subprocessors_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "collaboration": {
+      "type": "object",
+      "properties": {
+        "supports_concurrent_agents": { "type": "boolean" },
+        "locking_strategy": { "enum": ["optimistic", "pessimistic", "crdt"] },
+        "conflict_resolution_endpoint": { "type": "string" },
+        "broadcast_changes": { "type": "boolean" },
+        "change_subscription": { "type": "string" }
+      }
+    },
+    "risk_class": { "enum": ["minimal", "limited", "high"] },
+    "jurisdictions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[A-Z]{2}$" }
+    },
+    "insurance": {
+      "type": "object",
+      "properties": {
+        "carrier_did": { "type": "string" },
+        "policy_id": { "type": "string" },
+        "coverage_eur": { "type": "string" },
+        "covered_perils": { "type": "array", "items": { "type": "string" } },
+        "valid_until": { "type": "string", "format": "date" },
+        "credential": { "type": "string" }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": ["dispute_resolution_url", "contact_email"],
+      "properties": {
+        "dispute_resolution_url": { "type": "string", "format": "uri" },
+        "contact_email": { "type": "string", "format": "email" },
+        "revocation_status_url": { "type": "string", "format": "uri" }
+      }
+    }
+  }
+}

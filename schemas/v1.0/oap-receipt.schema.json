@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-receipt.schema.json",
+  "title": "OAP Receipt",
+  "type": "object",
+  "required": ["receipt_id", "type", "timestamp", "principal_did", "agent_did", "previous_receipt_hash", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
+    "type": { "enum": ["invocation", "subscription", "settlement", "consent", "deletion", "incident", "kill_switch"] },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "principal_did": { "type": "string" },
+    "agent_did": { "type": "string" },
+    "tool_did": { "type": "string" },
+    "action_id": { "type": "string" },
+    "action_version": { "type": "string" },
+    "input_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "output_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "model_version": { "type": "string" },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "amount": { "type": "string" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      }
+    },
+    "policy_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "outcome"],
+        "properties": {
+          "id": { "type": "string" },
+          "outcome": { "enum": ["allow", "allow_with_conditions", "require_consent", "require_anonymization", "block"] },
+          "rules": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "provenance_tags_in": { "type": "array", "items": { "type": "string" } },
+    "provenance_tags_out": { "type": "array", "items": { "type": "string" } },
+    "previous_receipt_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$|^genesis$" },
+    "anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "log_id": { "type": "string" },
+          "log_index": { "type": "integer" },
+          "inclusion_proof": { "type": "string" }
+        }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["by", "alg", "value"],
+        "properties": {
+          "by": { "type": "string" },
+          "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  }
+}

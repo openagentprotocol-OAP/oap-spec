@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-wallet-statement.schema.json",
+  "title": "OAP Wallet Statement",
+  "type": "object",
+  "required": ["statement_id", "wallet_did", "principal_did", "period_start", "period_end", "currency", "opening_balance", "closing_balance", "entries", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "statement_id": { "type": "string" },
+    "wallet_did": { "type": "string" },
+    "principal_did": { "type": "string" },
+    "period_start": { "type": "string", "format": "date-time" },
+    "period_end": { "type": "string", "format": "date-time" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "opening_balance": { "type": "string" },
+    "closing_balance": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entry_id", "timestamp", "type", "amount", "receipt_id"],
+        "properties": {
+          "entry_id": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "type": { "enum": ["credit", "debit", "hold", "release", "refund", "fee"] },
+          "amount": { "type": "string" },
+          "counterparty_did": { "type": "string" },
+          "receipt_id": { "type": "string" },
+          "memo": { "type": "string" }
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "kid", "value"],
+      "properties": {
+        "alg": { "type": "string" },
+        "kid": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}
