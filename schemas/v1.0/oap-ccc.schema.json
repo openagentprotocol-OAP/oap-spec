@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-ccc.schema.json",
+  "title": "OAP Confidentiality and Compliance Context (CCC)",
+  "type": "object",
+  "required": ["ccc_version", "scope_id"],
+  "additionalProperties": false,
+  "properties": {
+    "ccc_version": { "const": "1.0" },
+    "scope_id": { "type": "string" },
+    "active_ndas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "counterparties", "type", "valid_from", "valid_until", "jurisdiction", "document_hash"],
+        "properties": {
+          "id": { "type": "string" },
+          "counterparties": { "type": "array", "items": { "type": "string" } },
+          "type": { "enum": ["mutual", "one_way_inbound", "one_way_outbound"] },
+          "covered_categories": { "type": "array", "items": { "type": "string" } },
+          "valid_from": { "type": "string", "format": "date" },
+          "valid_until": { "type": "string", "format": "date" },
+          "jurisdiction": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "document_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "non_competes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ex_employer", "valid_until", "scope"],
+        "properties": {
+          "ex_employer": { "type": "string" },
+          "valid_until": { "type": "string", "format": "date" },
+          "scope": { "type": "string" },
+          "covered_industries": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "non_solicits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subject_did": { "type": "string" },
+          "applies_to": { "enum": ["customers", "employees", "both"] },
+          "valid_until": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "embargo_list": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "chinese_walls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["between", "reason"],
+        "properties": {
+          "between": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "professional_codes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "fiduciary_duties": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "regulatory_classification": {
+      "enum": [
+        "none",
+        "attorney_client_privileged",
+        "medical_confidentiality",
+        "tax_advisor_confidentiality",
+        "auditor_confidentiality",
+        "banking_secrecy",
+        "journalist_source_protection",
+        "confessional_seal",
+        "therapeutic_privilege",
+        "diplomatic_classified",
+        "trade_secret"
+      ]
+    },
+    "insider_lists": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issuer": { "type": "string" },
+          "instrument": { "type": "string" },
+          "added_on": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "sanctions_screening": {
+      "type": "array",
+      "items": { "enum": ["ofac", "eu", "un", "uk_ofsi"] }
+    },
+    "export_control_classification": {
+      "type": ["string", "null"],
+      "description": "ECCN, ITAR Category, or EU Dual Use list reference."
+    }
+  }
+}

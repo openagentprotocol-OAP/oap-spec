@@ -1,0 +1,35 @@
+{
+  "decision_id": "pol_8f2a1b3c4d5e",
+  "evaluated_at": "2026-05-03T10:00:00.100Z",
+  "layers_evaluated": ["L1", "L2", "L3", "L4"],
+  "applied_rules": [
+    "l1.universal.no_csam",
+    "l2.eu.gdpr.lawful_basis",
+    "l2.eu.ai_act.high_risk_oversight",
+    "l3.profession.bar_de.client_confidentiality",
+    "l4.principal.spending_cap_monthly",
+    "ccc.nda.coverage.nda_2026_clientA",
+    "ccc.embargo.clear",
+    "ccc.chinese_wall.clientA_clientB",
+    "ccc.sanctions.ofac_clear",
+    "ccc.export.ear_clear"
+  ],
+  "outcome": "allow_with_conditions",
+  "conditions": ["require_human_review", "redact_pii_before_share"],
+  "explanation": "Action involves disclosure of confidential client data covered by NDA nda_2026_clientA. Destination Tool is on the trusted vendor list of Client A. EU AI Act high risk classification requires human oversight per Principal policy.",
+  "explanation_for_principal": "Diese Aktion teilt Daten des Mandanten Client A mit einem von Client A freigegebenen Anbieter. Das ist gemaess NDA und Berufscode zulaessig, benoetigt aber Ihre menschliche Bestaetigung wegen der hohen Risikoklasse.",
+  "verifier_agent": {
+    "agent_did": "did:web:verifier.example",
+    "outcome": "concur",
+    "rationale": "Independent re evaluation produced the same outcome with the same conditions."
+  },
+  "ccc_evaluation": {
+    "embargo_clear": true,
+    "nda_coverage": true,
+    "non_compete_clear": true,
+    "chinese_wall_clear": true,
+    "professional_code_compliant": true,
+    "sanctions_clear": true,
+    "export_classification_compatible": true
+  }
+}

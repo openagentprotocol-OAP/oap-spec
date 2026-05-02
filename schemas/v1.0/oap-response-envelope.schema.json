@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-response-envelope.schema.json",
+  "title": "OAP Response Envelope",
+  "type": "object",
+  "required": ["oap_version", "request_id", "response_id", "timestamp", "status", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "oap_version": { "const": "1.0" },
+    "request_id": { "type": "string" },
+    "response_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["ok", "error", "accepted", "deferred"] },
+    "output": {},
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "details": {}
+      }
+    },
+    "model_version": { "type": "string" },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "amount": { "type": "string" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "anchored_in": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "energy": { "type": "object" },
+    "attestations": { "type": "array", "items": { "type": "object" } },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "kid", "value"],
+      "properties": {
+        "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+        "kid": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}

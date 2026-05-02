@@ -1,0 +1,43 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  schemas:
+    name: Validate schemas and examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install validator dependencies
+        working-directory: reference/validator
+        run: npm install
+      - name: Run ajv strict validation
+        working-directory: reference/validator
+        run: node ajv-validate.js
+
+  reference-server:
+    name: Smoke test reference server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install server dependencies
+        working-directory: reference/server
+        run: npm install
+      - name: Start server and probe manifest
+        working-directory: reference/server
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          sleep 3
+          curl -sf http://localhost:3100/.well-known/oap-tool.json > /dev/null
+          kill $SERVER_PID
