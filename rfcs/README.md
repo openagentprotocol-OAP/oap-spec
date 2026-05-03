@@ -17,6 +17,7 @@ This directory contains the open RFC backlog for the Open Agent Protocol. Each d
 | [0009](RFC-0009-reputation.md) | Reputation and Performance Records | Trust and Reputation | Draft | 1.2 |
 | [0010](RFC-0010-memory-exchange.md) | Memory Exchange Protocol | Core Protocol | Draft | 1.2 |
 | [0011](RFC-0011-sybil-resistance.md) | Sybil Resistance and Sub Agent Anti Abuse | Trust and Reputation | Draft | 1.1 |
+| [0012](RFC-0012-agent-native-web.md) | The Agent Native Web | Web Integration | Draft | 1.2 |
 
 ## Lifecycle
 
