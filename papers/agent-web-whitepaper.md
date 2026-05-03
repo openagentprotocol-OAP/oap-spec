@@ -1,11 +1,11 @@
 # From the Document Web to the Agent Web
 
-**A Whitepaper of the Open Agent Protocol Foundation**
+**A Whitepaper of the Open Agent Protocol**
 
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Foundation, Working Group on Web Integration
+**Authors:** OAP Working Group on Web Integration
 
 ## Abstract
 
@@ -415,7 +415,7 @@ class declared in the manifest.
 The third step is to bind the origin's DID to a Verifiable Credential issued by a recognized
 authority, to participate in at least one public registry, and to publish Asset Descriptors
 for all modality assets. The origin reaches the W3 conformance level and becomes eligible for
-inclusion in conformance directories maintained by the OAP Foundation.
+inclusion in conformance directories maintained by the OAP.
 
 At each step the origin's existing human surface continues to function unchanged. The Agent
 Web layer is additive. There is no point at which the origin must choose between human
@@ -432,8 +432,8 @@ are under active consideration. The first is direct adoption of schema.org with 
 extensions, which has the advantage of immediate familiarity and the disadvantage of inheriting
 weak semantic enforcement. The second is a federation of independent vocabularies with cross
 references through linked data, which has the advantage of decentralization and the
-disadvantage of fragmentation. The third is a single canonical graph maintained by the OAP
-Foundation, which has the advantage of consistency and the disadvantage of governance burden.
+disadvantage of fragmentation. The third is a single canonical graph maintained collectively
+by the protocol's stewards, which has the advantage of consistency and the disadvantage of governance burden.
 The current draft of RFC 0012 permits all three approaches.
 
 The second question concerns the right balance between human readable and machine readable
@@ -453,7 +453,7 @@ unresolved and will require both technical and legal work.
 
 The fourth question concerns governance of the well known paths defined in RFC 0012.
 Reservation of paths under `/.well-known/` historically passes through IETF processes. The
-OAP Foundation is engaged with the IETF on a Provisional Registration for the paths in this
+OAP is engaged with the IETF on a Provisional Registration for the paths in this
 specification, but the timeline of formal registration may lag the timeline of voluntary
 adoption.
 
@@ -474,7 +474,7 @@ traffic is structured rather than parasitic, in which discovery is verifiable ra
 ranked, in which payment is signed rather than clicked, and in which trust is computed
 rather than assumed.
 
-The Open Agent Protocol Foundation publishes the Agent Web specification under permissive
+The Open Agent Protocol publishes the Agent Web specification under permissive
 licensing because the value of the Agent Web is proportional to the breadth of its adoption.
 We invite publishers, registries, agent implementers, and standards bodies to participate in
 its development and to contribute the operational experience that will refine it into the
@@ -482,17 +482,17 @@ substrate the next phase of the web requires.
 
 ## References
 
-OAP Core 1.0. Open Agent Protocol Foundation, 2026.
+OAP Core 1.0. Open Agent Protocol, 2026.
 
-RFC 0004: Sub Agent Delegation. Open Agent Protocol Foundation, 2026.
+RFC 0004: Sub Agent Delegation. Open Agent Protocol, 2026.
 
-RFC 0007: Privacy Preserving Projections. Open Agent Protocol Foundation, 2026.
+RFC 0007: Privacy Preserving Projections. Open Agent Protocol, 2026.
 
-RFC 0009: Reputation and Performance Records. Open Agent Protocol Foundation, 2026.
+RFC 0009: Reputation and Performance Records. Open Agent Protocol, 2026.
 
-RFC 0011: Sybil Resistance and Sub Agent Anti Abuse. Open Agent Protocol Foundation, 2026.
+RFC 0011: Sybil Resistance and Sub Agent Anti Abuse. Open Agent Protocol, 2026.
 
-RFC 0012: The Agent Native Web. Open Agent Protocol Foundation, 2026.
+RFC 0012: The Agent Native Web. Open Agent Protocol, 2026.
 
 W3C Decentralized Identifiers (DIDs) v1.0. World Wide Web Consortium, 2022.
 
