@@ -20,6 +20,7 @@ This directory contains the open RFC backlog for the Open Agent Protocol. Each d
 | [0012](RFC-0012-agent-native-web.md) | The Agent Native Web | Web Integration | Draft | 1.2 |
 | [0013](RFC-0013-commerce-models.md) | Commerce Models for the Agent Economy | Commercial Layer | Draft | 1.2 |
 | [0014](RFC-0014-commerce-primitives.md) | Commerce Primitives, A Generalized Commercial Layer | Commercial Layer | Draft | 1.2 |
+| [0015](RFC-0015-composable-software-primitives.md) | Composable Software Primitives | Marketplace and Discovery | Draft | 1.2 |
 
 ## Lifecycle
 

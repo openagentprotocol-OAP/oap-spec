@@ -71,6 +71,19 @@
     "risk_class": { "enum": ["minimal", "limited", "high"] },
     "data_classes_in": { "type": "array", "items": { "type": "string" } },
     "data_classes_out": { "type": "array", "items": { "type": "string" } },
+    "replaceability": {
+      "type": "object",
+      "description": "Substitution semantics per RFC 0015 section 6. REQUIRED for providers claiming RFC 0015 conformance.",
+      "required": ["category", "input_fingerprint", "output_fingerprint", "side_effect_class", "replaceability_score"],
+      "properties": {
+        "category": { "type": "string", "description": "Canonical capability category drawn from the OAP capability registry." },
+        "input_fingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "output_fingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "side_effect_class": { "enum": ["pure", "read_only", "create", "update", "delete", "external_call", "irreversible_external"] },
+        "replaceability_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "equivalence_uri": { "type": "string", "format": "uri", "description": "Optional URI to a published equivalence proof or test suite." }
+      }
+    },
     "examples": {
       "type": "array",
       "minItems": 1,

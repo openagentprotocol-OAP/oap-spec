@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-composition-manifest.schema.json",
+  "title": "OAP Composition Manifest",
+  "description": "User owned Composition of primitives drawn from one or more providers, per RFC 0015 section 5.",
+  "type": "object",
+  "required": ["composition_id", "name", "owner_did", "nodes", "edges", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "composition_id": { "type": "string", "pattern": "^urn:oap:composition:.+$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "description": { "type": "string", "maxLength": 4000 },
+    "owner_did": { "type": "string", "description": "DID of the user who owns this Composition." },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-+].+)?$" },
+    "created": { "type": "string", "format": "date-time" },
+    "previous_version_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["node_id", "provider_did", "action_id"],
+        "properties": {
+          "node_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,62}$" },
+          "provider_did": { "type": "string" },
+          "action_id": { "type": "string" },
+          "action_version": { "type": "string" },
+          "input_bindings": {
+            "type": "object",
+            "description": "Map from action input field to either a literal value or a reference of the form {{node_id.output_field}}.",
+            "additionalProperties": true
+          },
+          "policy_overrides": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from_node", "to_node"],
+        "properties": {
+          "from_node": { "type": "string" },
+          "from_field": { "type": "string" },
+          "to_node": { "type": "string" },
+          "to_field": { "type": "string" }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "description": "References to user, scope or organization policies that apply when this Composition runs.",
+      "properties": {
+        "user_policy_uri": { "type": "string", "format": "uri" },
+        "scope_id": { "type": "string" },
+        "organization_did": { "type": "string" }
+      }
+    },
+    "surface": {
+      "type": "object",
+      "description": "Optional user interface rendered on top of the Composition. Per RFC 0012 a Surface is a hosted page or template that an agent can also render.",
+      "properties": {
+        "template_uri": { "type": "string", "format": "uri" },
+        "render_target": { "enum": ["chat", "web", "voice", "mobile", "headless"] }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["signer_did", "algorithm", "value"],
+        "properties": {
+          "signer_did": { "type": "string" },
+          "algorithm": { "enum": ["ed25519", "es256", "es384", "es512"] },
+          "value": { "type": "string" },
+          "role": { "enum": ["user_agent", "co_owner", "auditor"] }
+        }
+      }
+    }
+  }
+}

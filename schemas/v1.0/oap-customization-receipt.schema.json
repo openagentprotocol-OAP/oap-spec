@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-customization-receipt.schema.json",
+  "title": "OAP User Customization Receipt",
+  "description": "Receipt emitted whenever a user, or a coding agent acting under the user's authority, creates or modifies a Composition. Per RFC 0015 section 7.",
+  "type": "object",
+  "required": ["receipt_id", "composition_id", "new_version_hash", "intent", "diff", "agent_did", "timestamp", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "receipt_id": { "type": "string", "pattern": "^urn:oap:customization:.+$" },
+    "composition_id": { "type": "string", "pattern": "^urn:oap:composition:.+$" },
+    "previous_version_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$|^genesis$" },
+    "new_version_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "intent": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "description": "Natural language statement of the user's intent that prompted this customization."
+    },
+    "diff": {
+      "type": "object",
+      "description": "Structured diff of the Composition before and after this change.",
+      "properties": {
+        "added_nodes": { "type": "array", "items": { "type": "string" } },
+        "removed_nodes": { "type": "array", "items": { "type": "string" } },
+        "modified_nodes": { "type": "array", "items": { "type": "string" } },
+        "added_edges": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+        "removed_edges": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+        "substitutions": {
+          "type": "array",
+          "description": "List of primitive substitutions made under the Replaceability Index, per RFC 0015 section 6.",
+          "items": {
+            "type": "object",
+            "required": ["node_id", "from_action", "to_action", "replaceability_score"],
+            "properties": {
+              "node_id": { "type": "string" },
+              "from_action": { "type": "string" },
+              "to_action": { "type": "string" },
+              "replaceability_score": { "type": "number", "minimum": 0, "maximum": 1 },
+              "user_confirmed": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "agent_did": { "type": "string", "description": "DID of the coding agent that produced this customization." },
+    "user_did": { "type": "string", "description": "DID of the user on whose behalf the agent acted." },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "visibility": { "enum": ["private", "shared_with_providers", "public"], "default": "private" },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["signer_did", "algorithm", "value"],
+        "properties": {
+          "signer_did": { "type": "string" },
+          "algorithm": { "enum": ["ed25519", "es256", "es384", "es512"] },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  }
+}

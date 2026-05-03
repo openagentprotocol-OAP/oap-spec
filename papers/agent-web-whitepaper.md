@@ -319,7 +319,80 @@ flow. It also creates a substrate in which payment frequency can rise by orders 
 without proportional increase in cost, because each payment is a signed message rather than
 a card network transaction.
 
-## 9. Migration
+## 9. From Shipped Products to Shipped Primitives
+
+Before coding agents reached their current level of competence, every user of a piece of
+software received the same interface. The provider determined the shape of the experience
+and the user accepted that shape with marginal customization, because the marginal cost of
+producing a personalized version exceeded what any individual user could spend. This
+constraint was not a property of software, it was a property of the labor market for
+software engineers. With coding agents capable of acting as forward deployed engineers on
+behalf of ordinary users, that labor market constraint dissolves. The marginal cost of a
+personalized version approaches the cost of the underlying capability calls, and the
+provider that continues to ship a finished good competes against a market in which every
+user can have exactly what they want.
+
+The economic implication is that software companies will increasingly ship shared
+primitives with the explicit expectation that users will radically customize the final
+product themselves. The provider's role shifts from designing a single canonical experience
+to maintaining a set of well behaved capabilities that any user, with the assistance of a
+coding agent, can compose into a personal experience. This is not a small adjustment of
+existing practice. It changes the unit of value from the finished application to the
+underlying primitive, and it changes the locus of design from the provider's product team
+to the user's own coding agent.
+
+The Agent Web is the substrate that makes this transition tractable. A Capability Manifest
+is already a declaration of primitives in machine readable form. RFC 0015 makes the
+shipping of primitives normative, by requiring that every Action be small enough to compose,
+self contained enough to be understood by a coding agent without external documentation,
+and substitutable enough that one provider's primitive can be replaced by another's without
+rewriting the rest of the user's composition. The Composition Manifest defined in that RFC
+records which primitives a user has assembled, in what order, and with what bindings, and
+it is owned and signed by the user rather than by any provider. The User Customization
+Receipt records every change the user's coding agent makes to the composition, with the
+natural language intent that prompted the change, so that the history of how a personal
+version of a product evolved is auditable rather than tacit.
+
+The structural consequence for the Agent Web is that two distinct surfaces coexist for
+every origin. The first is the provider's own canonical surface, hosted as a Surface in the
+sense of section 4 of this paper, available to users who want the experience the provider
+designed. The second is the set of personal compositions produced by users who chose to
+assemble the underlying primitives themselves, executing against the same provider
+infrastructure but rendering through any user agent or coding agent the user prefers. The
+provider does not need to choose between these audiences. Both invoke the same Actions,
+both produce the same Receipts, and both pay through the same commerce models defined in
+RFC 0013 and generalized in RFC 0014. The difference is which party owns the composition.
+
+The competitive implication for software providers is that the quality of their primitives
+becomes more important than the quality of their canonical surface, because the canonical
+surface is increasingly only one of many surfaces through which their primitives are reached.
+Providers who attempt to preserve relevance by withholding capabilities from the manifest
+and exposing them only through their hosted surface will find that users route around them
+through composition with substitutable primitives from other providers, in the same way
+that walled gardens on the Document Web are gradually routed around by federated and open
+alternatives. The provider that wins in the long run is the one whose primitives are the
+smallest, the most reliable, the most cleanly substitutable, and the most aggressively
+documented for coding agents.
+
+The user implication is that the unit of digital ownership changes. A user who composes
+their own version of a product owns the composition, in the form of a signed Composition
+Manifest stored in their own audit log. They can move that composition between providers by
+substituting individual primitives, they can share it with another user, and they can
+inherit composition idioms from a community library in the same way that programmers
+inherit idioms from a standard library. This shifts power toward the user in a way that
+previous platform shifts have promised but not delivered, because the asset being
+transferred is not data alone but the structure of the user's interaction with their own
+software. The asset is portable because the underlying primitives are interchangeable.
+
+This chapter therefore describes both an economic prediction and a protocol commitment. The
+prediction is that the dominant mode of software distribution will shift from finished
+applications to composable primitives within the next decade. The commitment is that the
+Open Agent Protocol will treat that shift as a first class concern, with normative
+machinery for primitive declaration, composition, substitution, and customization receipts,
+rather than leaving these patterns to emerge as ad hoc conventions among the largest
+providers.
+
+## 10. Migration
 
 Adoption of the Agent Web does not require coordinated cutover. It admits incremental
 migration in which any origin can publish its Capability Manifest in isolation and gain
@@ -349,7 +422,7 @@ Web layer is additive. There is no point at which the origin must choose between
 visitors and agent visitors. The two surfaces coexist, with the Agent Web layer providing
 the canonical truth of which the human surface is a projection.
 
-## 10. Open Questions
+## 11. Open Questions
 
 Several questions remain open and are tracked as discussion items in the Working Group on
 Web Integration.
@@ -384,7 +457,7 @@ OAP Foundation is engaged with the IETF on a Provisional Registration for the pa
 specification, but the timeline of formal registration may lag the timeline of voluntary
 adoption.
 
-## 11. Conclusion
+## 12. Conclusion
 
 The web has been overdue for an upgrade for some time. The arrival of autonomous agents at
 scale forces the upgrade. The choice the web's publishers face is not whether agents will
