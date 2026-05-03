@@ -1,7 +1,7 @@
 # RFC 0011: Sybil Resistance and Sub Agent Anti Abuse
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Trust and Reputation
+**Author(s):** OAP Working Group on Trust and Reputation
 **Created:** 2026-05-03
 **Working Group:** Trust and Reputation
 **Targets:** 1.1
@@ -74,7 +74,7 @@ Restricted Action by ID.
 | `oap.marketplace.vote` | Prevents Marketplace ranking manipulation. |
 | `oap.marketplace.review.publish` | Prevents review flooding. |
 | `oap.negotiation.bid` | Prevents Negotiation flooding. |
-| `oap.governance.poll.vote` | Prevents Foundation governance capture. |
+| `oap.governance.poll.vote` | Prevents governance capture. |
 | `oap.entity.deal.close` (above declared `human_required_threshold`) | Prevents commercial commitment laundering. |
 
 A Tool MUST reject a Restricted Action invoked by an Agent whose request envelope contains a
@@ -174,7 +174,7 @@ Aggregation and Restricted Actions. Anti Sybil Proof remains OPTIONAL at all Lev
    Restricted Actions and rate limits.
 3. **Stake Attack on Honest Principals.** Delegation Stake creates a financial liability that
    could be exploited by competitors triggering false misbehavior reports. Stake forfeiture
-   MUST require either a signed Receipt of the misbehavior or a Foundation Dispute Resolution
+   MUST require either a signed Receipt of the misbehavior or a Stewards Dispute Resolution
    ruling.
 
 ## 6. Privacy Considerations

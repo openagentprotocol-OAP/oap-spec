@@ -1,7 +1,7 @@
 # RFC 0005: Canonical Entity Schemas
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Core Protocol
+**Author(s):** OAP Working Group on Core Protocol
 **Created:** 2026-05-03
 **Working Group:** Core Protocol
 **Targets:** 1.1
@@ -50,7 +50,7 @@ oap.entity.location        (v1.0)
 oap.entity.invoice         (v1.0)
 ```
 
-The Foundation maintains the registry. New types follow the RFC process. Versioning is per type, not global.
+The Stewards maintains the registry. New types follow the RFC process. Versioning is per type, not global.
 
 ### 3.3 Required Common Fields
 
@@ -185,7 +185,7 @@ Canonical Entities frequently contain personal data. Tools MUST honor the `data_
 
 ## 7. Conformance Impact
 
-Canonical Entity support is OPTIONAL at all Conformance Levels. The Foundation strongly RECOMMENDS adoption for Tools whose primary value is data storage or workflow management.
+Canonical Entity support is OPTIONAL at all Conformance Levels. The Stewards strongly RECOMMENDS adoption for Tools whose primary value is data storage or workflow management.
 
 ## 8. Implementation Experience
 

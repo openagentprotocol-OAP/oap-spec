@@ -1,7 +1,7 @@
 # RFC 0008: Workflow Composition
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Marketplace and Discovery
+**Author(s):** OAP Working Group on Marketplace and Discovery
 **Created:** 2026-05-03
 **Working Group:** Marketplace and Discovery
 **Targets:** 1.1
@@ -168,7 +168,7 @@ Workflow Receipts disclose execution structure. Workflows that handle personal d
 
 ## 7. Conformance Impact
 
-Workflow support is OPTIONAL at all Conformance Levels. The Foundation will operate a Workflow Registry as a Foundation Service.
+Workflow support is OPTIONAL at all Conformance Levels. The Stewards will operate a Workflow Registry as a Stewards Service.
 
 ## 8. Implementation Experience
 

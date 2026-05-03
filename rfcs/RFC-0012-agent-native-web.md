@@ -1,7 +1,7 @@
 # RFC 0012: The Agent Native Web
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Web Integration
+**Author(s):** OAP Working Group on Web Integration
 **Created:** 2026-05-03
 **Working Group:** Web Integration
 **Targets:** 1.2
@@ -253,7 +253,7 @@ Level **W3 Federated** additionally requires that the Origin participate in at l
 public registry, that all Modality Assets carry valid descriptors, and that the Origin's
 identity be bound to a Verifiable Credential issued by a recognized authority. Origins at
 this level are eligible for inclusion in conformance directories maintained by the OAP
-Foundation.
+Stewards.
 
 ## 7. References
 
@@ -266,7 +266,7 @@ OAP Core 1.0, RFC 0004, RFC 0007, RFC 0009, and RFC 0011.
 The following questions remain open and are tracked as discussion items in the Working Group.
 
 The first question is whether the Knowledge Node vocabulary should be a single canonical
-graph maintained by the OAP Foundation, a federation of independent vocabularies, or a
+graph maintained by the OAP Stewards, a federation of independent vocabularies, or a
 direct adoption of schema.org with OAP specific extensions. The current draft permits all
 three approaches.
 

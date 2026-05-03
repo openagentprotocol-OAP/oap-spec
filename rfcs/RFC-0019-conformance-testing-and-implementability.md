@@ -1,7 +1,7 @@
 # RFC 0019: Conformance Testing and Implementability
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Implementation and Conformance
+**Author(s):** OAP Working Group on Implementation and Conformance
 **Created:** 2026-05-03
 **Working Group:** Implementation and Conformance
 **Targets:** 1.2
@@ -32,13 +32,13 @@ The intent of the Implementability Gate is that no concept may enter the normati
 
 ## 4. The Backward Compatibility Gate
 
-The schemas published under `schemas/v1.0/` are immutable in their semantics. The `$id` field of each schema is a permanent, citable URL. Any change that alters the meaning of an existing field, that removes an existing field, that tightens an existing constraint, or that changes the value range of an existing enumeration MUST be published as a new schema version under `schemas/v1.1/` with a new `$id`, and the previous version MUST remain available at its original location for as long as the Foundation continues to operate. Additive changes that introduce new optional fields are permitted within the existing schema version provided that they do not interact in any way with the meaning of existing fields, and provided that the pull request body explicitly declares the change as `additive only`.
+The schemas published under `schemas/v1.0/` are immutable in their semantics. The `$id` field of each schema is a permanent, citable URL. Any change that alters the meaning of an existing field, that removes an existing field, that tightens an existing constraint, or that changes the value range of an existing enumeration MUST be published as a new schema version under `schemas/v1.1/` with a new `$id`, and the previous version MUST remain available at its original location for as long as the Stewards continues to operate. Additive changes that introduce new optional fields are permitted within the existing schema version provided that they do not interact in any way with the meaning of existing fields, and provided that the pull request body explicitly declares the change as `additive only`.
 
 The Backward Compatibility Gate is enforced automatically by the `backward-compatibility-gate` job in CI. The job inspects the diff against the base branch and rejects any pull request that modifies a v1.0 schema without an explicit additive only declaration in the pull request body. The intent is that an implementation that was conformant with the protocol on the day it was attested remains forever entitled to claim that level of conformance, and that no future Working Group can retroactively void that entitlement by editing a schema underneath it. This guarantee is essential for the long term economic viability of the agentic ecosystem because the alternative, in which conformance can be revoked through silent schema mutation, would make every Conformance Receipt a perishable promise rather than a durable contract.
 
 ## 5. The Charter Review Gate
 
-A Request for Comments that touches any of the user facing rights established by RFC 0016, including but not limited to identity, memory, reputation, projection, persona, cooling off, escalation, deletion, replaceability, or pluralism of model and provider, MUST receive an explicit signed off review from the Working Group on Privacy and Governance and from at least one User Advocacy Voter recognized by the Foundation under the procedure described in section 7 of RFC 0016. The signed off review takes the form of a comment on the pull request bearing the phrase `Charter Review Gate cleared` and the decentralized identifier of the reviewer. Without two such comments the pull request cannot enter Last Call.
+A Request for Comments that touches any of the user facing rights established by RFC 0016, including but not limited to identity, memory, reputation, projection, persona, cooling off, escalation, deletion, replaceability, or pluralism of model and provider, MUST receive an explicit signed off review from the Working Group on Privacy and Governance and from at least one User Advocacy Voter recognized by the Stewards under the procedure described in section 7 of RFC 0016. The signed off review takes the form of a comment on the pull request bearing the phrase `Charter Review Gate cleared` and the decentralized identifier of the reviewer. Without two such comments the pull request cannot enter Last Call.
 
 The Charter Review Gate is enforced procedurally rather than mechanically because the question of whether an RFC respects user sovereignty is irreducible to a syntactic check. Working Group Chairs are responsible for verifying compliance before they record the transition to Last Call. The intent is to ensure that every change to the protocol that touches a user right is reviewed by a party whose institutional incentive is to defend that right, and not solely by parties whose institutional incentive is to ship the change.
 
@@ -80,7 +80,7 @@ The execution of the Conformance Test Suite against a live target produces logs 
 
 ## 12. Conformance Impact
 
-This RFC does not alter the criteria for any existing Conformance Level. It introduces a new artifact, the Conformance Receipt, which becomes the canonical evidence by which any Conformance Level claim is established or contested. From the publication date of this RFC, the Working Group on Implementation and Conformance MAY require a current Conformance Receipt as a precondition for listing in any official OAP registry maintained by the Foundation.
+This RFC does not alter the criteria for any existing Conformance Level. It introduces a new artifact, the Conformance Receipt, which becomes the canonical evidence by which any Conformance Level claim is established or contested. From the publication date of this RFC, the Working Group on Implementation and Conformance MAY require a current Conformance Receipt as a precondition for listing in any official OAP registry maintained by the Stewards.
 
 ## 13. Implementation Experience
 

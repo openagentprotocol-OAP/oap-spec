@@ -1,7 +1,7 @@
 # RFC 0002: Negotiation Protocol
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Confidentiality and Compliance
+**Author(s):** OAP Working Group on Confidentiality and Compliance
 **Created:** 2026-05-03
 **Working Group:** CCC
 **Targets:** 1.1

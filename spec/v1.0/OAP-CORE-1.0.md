@@ -5,7 +5,7 @@
 **Document Identifier:** OAP-CORE-1.0
 **Publication Date:** 2026-05-02
 **License:** Specification text under CC BY 4.0. Reference implementations under Apache License 2.0.
-**Editor:** OAP Foundation, Working Group on Core Protocol
+**Editor:** OAP Working Group on Core Protocol
 **Repository:** https://github.com/openagentprotocol-OAP/oap-spec
 
 ## Abstract
@@ -16,7 +16,7 @@ OAP introduces a single conformance surface that covers identity, capability des
 
 ## Status of This Memo
 
-This document is a Public Working Draft of the Open Agent Protocol Foundation. It is subject to revision through the OAP RFC process. Implementations are encouraged but should expect non breaking refinements until the Final designation is granted. Conformance claims against this document MUST cite the version identifier above.
+This document is a Public Working Draft of the Open Agent Protocol Stewards. It is subject to revision through the OAP RFC process. Implementations are encouraged but should expect non breaking refinements until the Final designation is granted. Conformance claims against this document MUST cite the version identifier above.
 
 ## Table of Contents
 
@@ -51,7 +51,7 @@ This document is a Public Working Draft of the Open Agent Protocol Foundation. I
 29. Privacy Considerations
 30. Regulatory Conformance Mapping
 31. Conformance Levels (L0 through L5)
-32. Foundation Services and Governance
+32. Stewards Services and Governance
 33. References
 34. Appendix A: Normative JSON Schemas
 35. Appendix B: HTTP Status and Error Codes
@@ -81,7 +81,7 @@ The following terms are normative throughout this specification.
 | DID | Decentralized Identifier as defined by the W3C DID Core specification. |
 | Receipt | Cryptographically signed record of a single Invocation, Subscription event, or Settlement. |
 | Manifest | Machine readable self description of a Tool published at a well known location. |
-| Foundation | The Open Agent Protocol Foundation, the neutral governance body of this specification. |
+| Stewards | The Open Agent Protocol Stewards, the neutral governance body of this specification. |
 | Marketplace | Any conformant directory that lists Tools and exposes them for discovery by Agents. |
 | Trust Anchor | Service that signs attestations about the identity, conformance, or behavior of OAP participants. |
 
@@ -114,7 +114,7 @@ OAP defines seven conceptual planes. An implementation MUST address every mandat
 4. **Commercial Plane.** Pricing models, subscriptions, wallets, settlement.
 5. **Governance Plane.** Policy decisions, confidentiality enforcement, jurisdictional routing.
 6. **Accountability Plane.** Receipts, transparency logs, provenance, dispute resolution.
-7. **Foundation Plane.** Neutral services that anchor trust, revocation, and arbitration.
+7. **Coordination Plane.** Neutral services that anchor trust, revocation, and arbitration.
 
 The planes are decoupled. A Tool MAY implement Identity, Discovery, and Invocation without participating in the Commercial Plane. A Tool that participates in the Commercial Plane MUST also implement the Accountability Plane.
 
@@ -140,8 +140,8 @@ OAP uses W3C Verifiable Credentials (VC Data Model 2.0) for assertions about par
 
 | Credential Type | Issuer | Purpose |
 |-----------------|--------|---------|
-| `OAPPublisherVerified` | Foundation accredited verifier | Confirms legal identity of a Tool publisher. |
-| `OAPConformance` | Foundation | States the Conformance Level achieved by a participant. |
+| `OAPPublisherVerified` | community accredited verifier | Confirms legal identity of a Tool publisher. |
+| `OAPConformance` | Stewards | States the Conformance Level achieved by a participant. |
 | `OAPProfessionalCode` | Recognized bar, chamber, or guild | Asserts membership in a regulated profession. |
 | `OAPDataResidency` | Independent auditor | Confirms verifiable data residency claims. |
 | `OAPInsuranceCoverage` | Insurance carrier | Asserts active liability coverage and policy limits. |
@@ -449,7 +449,7 @@ A conformant Manifest MUST declare:
 }
 ```
 
-The Foundation operates a continuous probing service. Measured values are published alongside declared values in every Marketplace listing. Persistent material divergence triggers a downgrade of the Conformance Level until corrected.
+The Stewards operate a continuous probing service. Measured values are published alongside declared values in every Marketplace listing. Persistent material divergence triggers a downgrade of the Conformance Level until corrected.
 
 ## 14. Capabilities Discovery
 
@@ -463,7 +463,7 @@ Tools MUST implement a `discover` endpoint that accepts a structured intent and 
 }
 ```
 
-Marketplaces aggregate `discover` responses across their listed Tools and present ranked results. Ranking algorithms used by a conformant Marketplace MUST be published openly and MUST be auditable by the Foundation.
+Marketplaces aggregate `discover` responses across their listed Tools and present ranked results. Ranking algorithms used by a conformant Marketplace MUST be published openly and MUST be auditable by the Stewards.
 
 ## 15. Multi Agent Coordination
 
@@ -510,7 +510,7 @@ When multiple Agents collaborate on a shared Task, they MAY establish a Coordina
 }
 ```
 
-`trust_score` and `user_reviews` MUST NOT be self reported. They are populated by the Foundation Trust Service and any conformant Marketplace.
+`trust_score` and `user_reviews` MUST NOT be self reported. They are populated by the Stewards Trust Service and any conformant Marketplace.
 
 ### 16.2 Reviews
 
@@ -518,7 +518,7 @@ Reviews MUST cite a Receipt identifier. Reviews not bound to a Receipt MUST NOT 
 
 ### 16.3 Trust Score Computation
 
-The Foundation publishes the Trust Score formula as open source code in the OAP repository. The formula combines: verified publisher status, audit recency, incident history, latency and uptime conformance, dispute rate, and weighted user reviews. Marketplaces are free to compute additional scores but MUST display the canonical Trust Score with at least equal prominence.
+The the Stewards publish the Trust Score formula as open source code in the OAP repository. The formula combines: verified publisher status, audit recency, incident history, latency and uptime conformance, dispute rate, and weighted user reviews. Marketplaces are free to compute additional scores but MUST display the canonical Trust Score with at least equal prominence.
 
 ## 17. Data Policy and Provenance
 
@@ -624,7 +624,7 @@ The result of the evaluation MUST be one of `allow`, `allow_with_conditions`, `r
 Scopes flagged as `attorney_client_privileged`, `medical_confidentiality`, `journalist_source_protection`, `confessional_seal`, or other recognized privileges activate Privileged Mode. In Privileged Mode the following constraints apply:
 
 1. Receipts MUST be stored locally only and anchored only as opaque commitments in any external Transparency Log.
-2. AI providers in the Action chain MUST be on the Foundation maintained Privileged Provider List.
+2. AI providers in the Action chain MUST be on the Stewards maintained Privileged Provider List.
 3. Cross border data transfer is blocked unless an explicit privilege preserving cross border instrument is in place.
 4. Subprocessor disclosure is mandatory.
 5. Loss of privilege through participant misconfiguration MUST trigger an immediate user notification.
@@ -670,7 +670,7 @@ Every Principal maintains an append only chain of Receipts. Each Receipt cites t
 
 ### 19.3 Transparency Log Anchoring
 
-Receipt hashes SHOULD be anchored to at least two Foundation operated Transparency Logs that follow the Sigstore Rekor model. Anchors MAY additionally be committed as periodic Merkle roots to public blockchains for additional censorship resistance. Privileged Mode Receipts are anchored only as commitments that do not reveal participants or contents.
+Receipt hashes SHOULD be anchored to at least two Stewards operated Transparency Logs that follow the Sigstore Rekor model. Anchors MAY additionally be committed as periodic Merkle roots to public blockchains for additional censorship resistance. Privileged Mode Receipts are anchored only as commitments that do not reveal participants or contents.
 
 ## 20. Policy Engine and Decision Records
 
@@ -680,7 +680,7 @@ OAP defines four mandatory policy layers evaluated in order. The first layer tha
 
 | Layer | Source | Examples |
 |-------|--------|----------|
-| L1 Platform | Foundation maintained block list and universal prohibitions. | No assistance with weapons of mass destruction, no sexual content involving minors, no real time mass biometric surveillance. |
+| L1 Platform | community maintained block list and universal prohibitions. | No assistance with weapons of mass destruction, no sexual content involving minors, no real time mass biometric surveillance. |
 | L2 Legal and Jurisdictional | Statutes, regulations, and case law applicable to the Principal and the Tool. | EU AI Act, GDPR, HIPAA, MiCA, OFAC sanctions, export controls. |
 | L3 Organization or Profession | Industry codes and organizational rules. | Bar association conduct, medical confidentiality, antitrust safeguards. |
 | L4 Personal | Principal preferences and Scope policies. | Spending limits, embargo lists, never share specific fields. |
@@ -691,7 +691,7 @@ The L1 list is normative and not subject to local override. It includes: facilit
 
 ### 20.3 Policy Sources
 
-L2 policies are maintained by the Foundation Compliance Working Group with input from accredited national correspondents. Implementations MUST track and apply updates within thirty days of publication.
+L2 policies are maintained by the Stewards Compliance Working Group with input from accredited national correspondents. Implementations MUST track and apply updates within thirty days of publication.
 
 ### 20.4 Decision Record
 
@@ -722,13 +722,13 @@ Actions classified as high risk, irreversible, or above a Principal defined mone
 
 Tools MAY include in any response an `attestations` array with cryptographically verifiable evidence that a claimed effect occurred. Examples include DKIM signatures for outbound email, payment processor receipts for transfers, and on chain transaction identifiers for blockchain operations.
 
-### 21.2 Foundation Sampling
+### 21.2 Sample Verification
 
-The Foundation operates a Sampling Service that submits standardized inputs to a random subset of Tools and verifies outputs against expected ranges. Material deviation triggers escalation through the Trust Service.
+The Stewards operate a Sampling Service that submits standardized inputs to a random subset of Tools and verifies outputs against expected ranges. Material deviation triggers escalation through the Trust Service.
 
 ### 21.3 Reproducibility Score
 
-Tools backed by stochastic models MUST publish a Reproducibility Score computed by the Foundation on a rolling thirty day window. Principals MAY opt to pin a specific `model_version` to ensure stable behavior.
+Tools backed by stochastic models MUST publish a Reproducibility Score computed by the Stewards on a rolling thirty day window. Principals MAY opt to pin a specific `model_version` to ensure stable behavior.
 
 ### 21.4 Counter Verification
 
@@ -738,7 +738,7 @@ Agents MAY invoke the same Action through a second independent Tool of the same 
 
 ### 22.1 Revocation Service
 
-The Foundation operates a Revocation Service modeled on OCSP and Certificate Transparency. Every Agent and Tool MUST consult the Revocation Service before acting on any DID or VC older than the cache validity period stated by the issuer.
+The Stewards operate a Revocation Service modeled on OCSP and Certificate Transparency. Every Agent and Tool MUST consult the Revocation Service before acting on any DID or VC older than the cache validity period stated by the issuer.
 
 ### 22.2 Incident Reports
 
@@ -746,7 +746,7 @@ Tools MUST publish material incidents at the `incident` endpoint within the time
 
 ### 22.3 Emergency Kill Switch
 
-Every Principal MUST be able to invoke a Kill Switch through the Wallet or Foundation portal that immediately revokes all active Subscription Tokens, all OAuth grants, all Trust Tokens, and all Webhook subscriptions associated with the Principal. Kill Switch invocation is recorded as a Receipt.
+Every Principal MUST be able to invoke a Kill Switch through the Wallet or Stewards portal that immediately revokes all active Subscription Tokens, all OAuth grants, all Trust Tokens, and all Webhook subscriptions associated with the Principal. Kill Switch invocation is recorded as a Receipt.
 
 ### 22.4 Time Locks
 
@@ -761,7 +761,7 @@ Default liability allocation:
 1. Tool publisher is liable for breaches of declared Manifest commitments.
 2. Agent operator is liable for selection of Tools inconsistent with applicable policy.
 3. Principal is liable for instructions issued to the Agent within policy.
-4. Foundation is not a party to commercial transactions.
+4. The Stewards are not a party to commercial transactions.
 
 ### 23.2 Insurance Tag
 
@@ -782,19 +782,19 @@ Tools above Conformance Level L3 SHOULD declare:
 
 ### 23.3 Insurance Pool
 
-The Foundation MAY operate an opt in mutual Insurance Pool funded by a portion of Wallet transaction fees. The Pool indemnifies Principals against losses caused by conformant Tools that exhaust their primary coverage.
+The Stewards MAY operate an opt in mutual Insurance Pool funded by a portion of Wallet transaction fees. The Pool indemnifies Principals against losses caused by conformant Tools that exhaust their primary coverage.
 
 ### 23.4 Refund Endpoint
 
-Tools MUST expose a `billing/refund` operation that accepts disputes referencing one or more Receipts. The Tool MUST acknowledge within seventy two hours and resolve within thirty days or escalate to the Foundation Dispute Resolution Service.
+Tools MUST expose a `billing/refund` operation that accepts disputes referencing one or more Receipts. The Tool MUST acknowledge within seventy two hours and resolve within thirty days or escalate to the Stewards Dispute Resolution Service.
 
 ### 23.5 Dispute Resolution
 
-The Foundation operates a tiered Dispute Resolution Service:
+The Stewards operate a tiered Dispute Resolution Service:
 
 1. **Negotiation.** Parties exchange positions through a structured channel.
-2. **Mediation.** Foundation appointed mediator, non binding.
-3. **Arbitration.** Foundation appointed arbitral tribunal applying the Foundation Arbitration Rules and the substantive law of the Tool jurisdiction.
+2. **Mediation.** community appointed mediator, non binding.
+3. **Arbitration.** community appointed arbitral tribunal applying the Stewards Arbitration Rules and the substantive law of the Tool jurisdiction.
 4. **Court referral.** Either party retains the right to seek judicial relief in any competent court. Arbitration awards are enforceable under the New York Convention where applicable.
 
 ## 24. Internationalization and Jurisdictional Routing
@@ -819,7 +819,7 @@ Outputs intended for human consumption MUST be representable in plain text and M
 
 ### 25.2 Interaction Accessibility
 
-Consent and dispute interfaces operated by Tools, Marketplaces, and the Foundation MUST conform to WCAG 2.2 Level AA. Agents acting on behalf of users with declared accessibility needs MUST prefer Tools that publish stronger accessibility commitments.
+Consent and dispute interfaces operated by Tools, Marketplaces, and the Stewards MUST conform to WCAG 2.2 Level AA. Agents acting on behalf of users with declared accessibility needs MUST prefer Tools that publish stronger accessibility commitments.
 
 ## 26. Carbon and Energy Accounting
 
@@ -872,15 +872,15 @@ Idempotent Actions MUST honor the `OAP-Idempotency-Key` header for the declared 
 
 ### 28.5 Key Compromise
 
-A participant that suspects key compromise MUST immediately publish a revocation entry and rotate keys. All Receipts signed by the compromised key after the suspected compromise time are flagged for review by the Foundation Trust Service.
+A participant that suspects key compromise MUST immediately publish a revocation entry and rotate keys. All Receipts signed by the compromised key after the suspected compromise time are flagged for review by the Stewards Trust Service.
 
 ### 28.6 Sybil Resistance
 
-Reputation contributions are weighted by: verified DID assurance level, account age, breadth and recency of unique counterparties, dispute history, and behavioral signals processed by an independently audited model whose feature set is documented in the Foundation Trust Service repository.
+Reputation contributions are weighted by: verified DID assurance level, account age, breadth and recency of unique counterparties, dispute history, and behavioral signals processed by an independently audited model whose feature set is documented in the Stewards Trust Service repository.
 
 ### 28.7 Canary Tokens
 
-The Foundation periodically distributes Canary Tokens disguised as ordinary Principal data. Detection of a Canary Token outside its declared scope is treated as conclusive evidence of Manifest non conformance and triggers immediate listing suspension pending investigation.
+The Stewards periodically distributes Canary Tokens disguised as ordinary Principal data. Detection of a Canary Token outside its declared scope is treated as conclusive evidence of Manifest non conformance and triggers immediate listing suspension pending investigation.
 
 ### 28.8 Supply Chain
 
@@ -916,11 +916,11 @@ The following is normative guidance for implementations. Each row identifies how
 |------------|---------------|
 | EU AI Act | Manifest `risk_class` is mandatory. High risk Tools require human oversight and Multi Party Review. Right to explanation satisfied by Decision Record. |
 | GDPR | `data_policy` is mandatory. `data_delete` and `data_export` endpoints are mandatory. Provenance tags carry purpose limitation. Cross border transfers cite lawful instrument. |
-| Digital Services Act | Marketplaces publish quarterly Transparency Reports. Notice and action procedures route through the Foundation Dispute Resolution Service. |
+| Digital Services Act | Marketplaces publish quarterly Transparency Reports. Notice and action procedures route through the Stewards Dispute Resolution Service. |
 | Digital Markets Act | Identity, Reputation, Subscriptions, and Wallet are portable. No Marketplace may foreclose interoperable participation. |
 | NIS2 | Tools above ten thousand monthly active Principals publish incidents within seventy two hours through the `incident` endpoint. |
 | MiCA | OAP Wallet operators are regulated electronic money institutions or operate through licensed partners. Crypto denominated balances follow MiCA disclosures. |
-| HIPAA | Privileged Mode for medical confidentiality. Business Associate Agreement template published by the Foundation. PHI tagged through provenance. |
+| HIPAA | Privileged Mode for medical confidentiality. Business Associate Agreement template published by the Stewards. PHI tagged through provenance. |
 | SOC 2 and ISO 27001 | Mandatory at Conformance Level L5. Audit credentials issued as VCs. |
 | OFAC and EU Sanctions | Pre Action Confidentiality Gate consults sanctions lists declared in CCC. |
 | Export Controls (EU Dual Use, US ITAR and EAR) | Export classification carried in CCC. Transfers blocked when classification incompatible with destination jurisdiction. |
@@ -929,7 +929,7 @@ The following is normative guidance for implementations. Each row identifies how
 
 ## 31. Conformance Levels
 
-Implementations declare a Conformance Level through an `OAPConformance` Verifiable Credential issued by the Foundation. Levels are cumulative.
+Implementations declare a Conformance Level through an `OAPConformance` Verifiable Credential issued by the Stewards. Levels are cumulative.
 
 | Level | Designation | Requirements |
 |-------|-------------|--------------|
@@ -938,17 +938,17 @@ Implementations declare a Conformance Level through an `OAPConformance` Verifiab
 | L2 | Billable | Pricing, Auth, Subscription, Wallet integration, refund endpoint. |
 | L3 | Trusted | Audit Log, Data Policy, CCC, Verified Publisher, Multi Party Review for high risk Actions. |
 | L4 | Collaborative | Multi Agent Coordination, Conflict Resolution, Change Broadcast, Coordination Sessions. |
-| L5 | Certified | External SOC 2 Type II or ISO 27001, declared SLA contract, Insurance Tag, full Foundation audit. |
+| L5 | Certified | External SOC 2 Type II or ISO 27001, declared SLA contract, Insurance Tag, full community audit. |
 
 Marketplaces MUST display the Conformance Level of every listed Tool with equal prominence to its name.
 
-## 32. Foundation Services and Governance
+## 32. Stewards Services and Governance
 
-### 32.1 Foundation Mission
+### 32.1 Mission of the Stewards
 
-The Open Agent Protocol Foundation is a neutral non profit organization that maintains this specification, operates the trust anchoring services that the protocol depends on, and adjudicates disputes that participants cannot resolve directly.
+The Open Agent Protocol Stewards is a neutral non profit organization that maintains this specification, operates the trust anchoring services that the protocol depends on, and adjudicates disputes that participants cannot resolve directly.
 
-### 32.2 Mandatory Foundation Services
+### 32.2 Mandatory Stewards Services
 
 1. Specification stewardship and the OAP RFC process.
 2. Transparency Log operation in at least three independent geographic regions.
@@ -961,7 +961,7 @@ The Open Agent Protocol Foundation is a neutral non profit organization that mai
 9. Compliance Working Group maintaining L2 policy mappings.
 10. Accessibility Working Group maintaining the WCAG mapping.
 
-### 32.3 Optional Foundation Services
+### 32.3 Optional Stewards Services
 
 1. Insurance Pool operated through a licensed carrier.
 2. Reference Marketplace.
@@ -970,17 +970,17 @@ The Open Agent Protocol Foundation is a neutral non profit organization that mai
 
 ### 32.4 Governance
 
-The Foundation is governed by a Board with seats reserved for industry, civil society, academia, and government observers. No single corporate participant may hold more than fifteen percent of voting weight. Specification changes follow an open RFC process with publicly archived discussion. The Ethics Board includes practitioners from law, medicine, journalism, accessibility advocacy, and labor representation.
+The The Stewards are governed by a Board with seats reserved for industry, civil society, academia, and government observers. No single corporate participant may hold more than fifteen percent of voting weight. Specification changes follow an open RFC process with publicly archived discussion. The Ethics Board includes practitioners from law, medicine, journalism, accessibility advocacy, and labor representation.
 
 ### 32.5 Funding
 
-The Foundation is funded by a fee of fifty basis points on settlements that traverse a Foundation operated Wallet, by membership dues from corporate participants, and by public research grants. Foundation budgets and audits are published annually.
+The The Stewards are funded by a fee of fifty basis points on settlements that traverse a Stewards operated Wallet, by membership dues from corporate participants, and by public research grants. Project budgets and audits are published annually.
 
 ### 32.6 Anti Capture Provisions
 
-1. The Marketplace ranking algorithm operated by any Foundation member is open source.
-2. Foundation services are operated under a public service charter with binding non discrimination obligations.
-3. The Foundation has no veto over Marketplace listings beyond the L1 Universal Prohibitions and validated Manifest non conformance.
+1. The Marketplace ranking algorithm operated by any Stewards participant is open source.
+2. Stewards services are operated under a public service charter with binding non discrimination obligations.
+3. The The Stewards have no veto over Marketplace listings beyond the L1 Universal Prohibitions and validated Manifest non conformance.
 4. Conformance Level credentials are revocable and appealable through the Dispute Resolution Service.
 5. Multiple competing Marketplaces are presumed and encouraged.
 
@@ -1079,13 +1079,13 @@ This specification requests the following registrations:
 5. HTTP header registrations for `OAP-Version`, `OAP-Request-Id`, `OAP-Signature`, `OAP-Idempotency-Key`, and `OAP-Trace`.
 6. JWT claim registrations for `oap_principal`, `oap_agent`, `oap_scope`, `oap_subscription`, `oap_consent`.
 
-The Foundation operates the OAP Registry for non IANA identifiers including category taxonomies, professional codes, jurisdictional codes beyond ISO 3166, and approved verifiable credential issuers.
+The Stewards operate the OAP Registry for non IANA identifiers including category taxonomies, professional codes, jurisdictional codes beyond ISO 3166, and approved verifiable credential issuers.
 
 ## 38. Appendix E: Migration from MCP and A2A
 
 ### 38.1 MCP Compatibility
 
-A conformant L0 Tool MAY publish both an MCP descriptor and an OAP Manifest. The Foundation publishes a normative mapping that translates MCP `tool` and `resource` definitions to OAP Actions. The OAP Reference Adapter exposes an MCP server and Client interface that transparently routes through OAP.
+A conformant L0 Tool MAY publish both an MCP descriptor and an OAP Manifest. The the Stewards publish a normative mapping that translates MCP `tool` and `resource` definitions to OAP Actions. The OAP Reference Adapter exposes an MCP server and Client interface that transparently routes through OAP.
 
 ### 38.2 A2A Compatibility
 
@@ -1097,7 +1097,7 @@ Function definitions for legacy function calling interfaces may be derived from 
 
 ## Acknowledgments
 
-This specification consolidates work and conversations across the agent platforms community. The Foundation thanks the contributors who shaped the precursors to OAP including the Model Context Protocol working group, the Agent2Agent contributors, the W3C Decentralized Identifier and Verifiable Credential working groups, the Sigstore community, and the Kantara Initiative.
+This specification consolidates work and conversations across the agent platforms community. The The Stewards thank the contributors who shaped the precursors to OAP including the Model Context Protocol working group, the Agent2Agent contributors, the W3C Decentralized Identifier and Verifiable Credential working groups, the Sigstore community, and the Kantara Initiative.
 
 ## Document History
 

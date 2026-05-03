@@ -1,7 +1,7 @@
 # RFC 0006: Persona and Scope Layer
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Confidentiality and Compliance
+**Author(s):** OAP Working Group on Confidentiality and Compliance
 **Created:** 2026-05-03
 **Working Group:** CCC
 **Targets:** 1.1
@@ -86,7 +86,7 @@ The Scope Manifest enumerates active Scopes, their industry profile, and their d
 
 ### 3.4 Industry Profiles
 
-The Foundation maintains a registry of normative Industry Profiles:
+The Stewards maintains a registry of normative Industry Profiles:
 
 | Profile Identifier | Domain |
 |--------------------|--------|

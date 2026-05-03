@@ -1,7 +1,7 @@
 # RFC 0004: Sub Agent Delegation
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Core Protocol
+**Author(s):** OAP Working Group on Core Protocol
 **Created:** 2026-05-03
 **Working Group:** Core Protocol
 **Targets:** 1.1
@@ -104,7 +104,7 @@ When `billing = parent`, the Tool MUST issue a Settlement Receipt against the Pa
 
 ### 3.5 Depth Limits
 
-A Tool MUST refuse Delegation Tokens whose `delegation_depth` exceeds `max_delegation_depth`. The Parent Agent SHOULD set `max_delegation_depth` to the smallest value sufficient for the task. The Foundation strongly RECOMMENDS a global ceiling of `max_delegation_depth = 5`.
+A Tool MUST refuse Delegation Tokens whose `delegation_depth` exceeds `max_delegation_depth`. The Parent Agent SHOULD set `max_delegation_depth` to the smallest value sufficient for the task. The Stewards strongly RECOMMENDS a global ceiling of `max_delegation_depth = 5`.
 
 ### 3.6 Manifest Declaration
 

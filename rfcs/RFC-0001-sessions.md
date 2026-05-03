@@ -1,7 +1,7 @@
 # RFC 0001: Coordination Sessions
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Core Protocol
+**Author(s):** OAP Working Group on Core Protocol
 **Created:** 2026-05-03
 **Working Group:** Core Protocol
 **Targets:** 1.1

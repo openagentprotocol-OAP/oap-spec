@@ -1,7 +1,7 @@
 # RFC 0014: Commerce Primitives, A Generalized Commercial Layer
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Commercial Layer
+**Author(s):** OAP Working Group on Commercial Layer
 **Created:** 2026-05-03
 **Working Group:** Commercial Layer
 **Targets:** 1.2

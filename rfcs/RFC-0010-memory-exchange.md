@@ -1,7 +1,7 @@
 # RFC 0010: Memory Exchange Protocol
 
 **Status:** Draft
-**Author(s):** OAP Foundation, Working Group on Core Protocol
+**Author(s):** OAP Working Group on Core Protocol
 **Created:** 2026-05-03
 **Working Group:** Core Protocol
 **Targets:** 1.2
@@ -158,7 +158,7 @@ Memory contains intimate personal information. Tools MUST honor deletion request
 
 ## 7. Conformance Impact
 
-Memory Exchange is OPTIONAL at all Conformance Levels. The Foundation will publish reference implementations and a portable export format.
+Memory Exchange is OPTIONAL at all Conformance Levels. The Stewards will publish reference implementations and a portable export format.
 
 ## 8. Implementation Experience
 
