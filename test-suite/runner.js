@@ -106,6 +106,9 @@ function inferSchemaIdFromFixture(fixturePath) {
     'subscription': 'oap-subscription.schema.json',
     'wallet-statement': 'oap-wallet-statement.schema.json',
     'conformance-receipt': 'oap-conformance-receipt.schema.json',
+    'aql-decision': 'oap-aql-decision.schema.json',
+    'intent-response': 'oap-intent-response.schema.json',
+    'intent': 'oap-intent.schema.json',
   };
   for (const [key, schemaFile] of Object.entries(map)) {
     if (base.includes(key)) return schemaFile;

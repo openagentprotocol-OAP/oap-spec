@@ -1,0 +1,55 @@
+[
+  {
+    "id": "shop-a:sku-001",
+    "score": 0.92,
+    "cost": "79.99",
+    "quality": { "performance_score": 0.84, "conformance_level": "L2" },
+    "record": {
+      "manifest_id": "manifest:shop-a:sku-001",
+      "seller_did": "did:web:shop-a.example",
+      "category": "running_shoes",
+      "price": { "amount": "79.99", "currency": "EUR" },
+      "inventory": { "available": 14 },
+      "internal_metadata": { "warehouse_zone": "DE-3" }
+    }
+  },
+  {
+    "id": "shop-b:sku-077",
+    "score": 0.88,
+    "cost": "94.50",
+    "quality": { "performance_score": 0.78, "conformance_level": "L2" },
+    "record": {
+      "manifest_id": "manifest:shop-b:sku-077",
+      "seller_did": "did:web:shop-b.example",
+      "category": "running_shoes",
+      "price": { "amount": "94.50", "currency": "EUR" },
+      "inventory": { "available": 3 }
+    }
+  },
+  {
+    "id": "shop-c:sku-200",
+    "score": 0.71,
+    "cost": "120.00",
+    "quality": { "performance_score": 0.6, "conformance_level": "L1" },
+    "record": {
+      "manifest_id": "manifest:shop-c:sku-200",
+      "seller_did": "did:web:shop-c.example",
+      "category": "running_shoes",
+      "price": { "amount": "120.00", "currency": "EUR" },
+      "inventory": { "available": 30 }
+    }
+  },
+  {
+    "id": "shop-d:sku-101",
+    "score": 0.65,
+    "cost": "55.00",
+    "quality": { "performance_score": 0.7, "conformance_level": "L2" },
+    "record": {
+      "manifest_id": "manifest:shop-d:sku-101",
+      "seller_did": "did:web:shop-d.example",
+      "category": "hiking_boots",
+      "price": { "amount": "55.00", "currency": "EUR" },
+      "inventory": { "available": 8 }
+    }
+  }
+]

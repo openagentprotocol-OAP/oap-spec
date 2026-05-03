@@ -1,0 +1,34 @@
+{
+  "response_id": "urn:oap:intent-response:fixture-1",
+  "intent_id": "urn:oap:intent:fixture-discovery-1",
+  "resolver_did": "did:web:resolver.example",
+  "resolver_role": "match_broker",
+  "evaluated_at": "2026-05-03T10:00:00Z",
+  "candidates": [
+    {
+      "candidate_id": "shop-a:sku-001",
+      "rank": 1,
+      "score": 0.92,
+      "payload": {
+        "manifest_id": "manifest:shop-a:sku-001",
+        "price": { "amount": "79.99", "currency": "EUR" }
+      },
+      "decision_record": {
+        "decision_id": "urn:oap:decision:fixture-d1",
+        "evaluated_at": "2026-05-03T10:00:00Z",
+        "outcome": "accept",
+        "constraint_evaluations": [
+          { "path": "/category", "operator": "eq", "value": "running_shoes", "candidate_value": "running_shoes", "passed": true },
+          { "path": "/price/amount", "operator": "lte", "value": "100.00", "candidate_value": "79.99", "passed": true }
+        ],
+        "explanation": "all constraints satisfied"
+      },
+      "inclusion_proof": {
+        "root": "sha256:abc",
+        "path": ["sha256:def", "sha256:ghi"],
+        "leaf_hash": "sha256:jkl"
+      }
+    }
+  ],
+  "signature": { "alg": "EdDSA", "value": "fixture-resolver-signature" }
+}

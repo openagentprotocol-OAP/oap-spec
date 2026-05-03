@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-aql-decision.schema.json",
+  "title": "OAP AQL Decision Record",
+  "description": "Per candidate AQL Decision Record produced by a Resolver under RFC 0020 section 3.7 and by Match Brokers under RFC 0021 section 4.2. Distinct from oap-decision-record.schema.json which records four layer Policy Stack outcomes.",
+  "type": "object",
+  "required": ["decision_id", "evaluated_at", "outcome", "constraint_evaluations"],
+  "additionalProperties": false,
+  "properties": {
+    "decision_id": { "type": "string" },
+    "evaluated_at": { "type": "string", "format": "date-time" },
+    "outcome": { "enum": ["accept", "reject", "over_budget", "below_quality_floor"] },
+    "constraint_evaluations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "operator", "value", "passed"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "operator": { "type": "string" },
+          "value": {},
+          "candidate_value": {},
+          "passed": { "type": "boolean" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "ranking_function": {
+      "type": "object",
+      "description": "Required when the Resolver is a Match Broker and ranks the candidate set. Mirrors the Disclosed Ranking Function block in the Match Broker Manifest.",
+      "additionalProperties": false,
+      "properties": {
+        "function_id": { "type": "string" },
+        "function_version": { "type": "string" },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "value", "weight", "contribution"],
+            "properties": {
+              "name": { "type": "string" },
+              "value": { "type": "number" },
+              "weight": { "type": "number" },
+              "contribution": { "type": "number" }
+            }
+          }
+        },
+        "score": { "type": "number" },
+        "rank": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "policy_decision_ref": {
+      "type": "string",
+      "description": "Optional reference to a separate policy Decision Record produced under the four layer Policy Stack."
+    },
+    "explanation": { "type": "string" }
+  }
+}

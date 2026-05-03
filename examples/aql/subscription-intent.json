@@ -1,0 +1,19 @@
+{
+  "intent_id": "urn:oap:intent:demo-subscription-1",
+  "issuer_did": "did:web:agent.example",
+  "category": "subscription",
+  "constraints": {
+    "all_of": [
+      { "path": "/category", "operator": "eq", "value": "running_shoes" },
+      { "path": "/inventory/available", "operator": "gt", "value": 0 },
+      { "path": "/price/amount", "operator": "lte", "value": "100.00" }
+    ]
+  },
+  "projection": {
+    "include": ["/manifest_id", "/seller_did", "/price", "/inventory"]
+  },
+  "budget": { "amount": "0.50", "currency": "EUR", "allocation": "single_winner" },
+  "validity": { "from": "2026-05-03T00:00:00Z", "to": "2026-08-03T00:00:00Z" },
+  "max_event_rate_per_minute": 60,
+  "signature": { "alg": "EdDSA", "value": "demo-signature" }
+}

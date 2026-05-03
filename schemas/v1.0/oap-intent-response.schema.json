@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-intent-response.schema.json",
+  "title": "OAP Intent Response",
+  "description": "Normative schema for an Intent Response returned by a Resolver under RFC 0020 section 3.7. Carries the matching candidates, per candidate AQL Decision Records, and a Resolver Signature over the response body.",
+  "type": "object",
+  "required": ["response_id", "intent_id", "resolver_did", "evaluated_at", "candidates", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "response_id": { "type": "string", "pattern": "^urn:oap:intent-response:.+$" },
+    "intent_id": { "type": "string", "pattern": "^urn:oap:intent:.+$" },
+    "resolver_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "resolver_role": {
+      "enum": ["match_broker", "provider", "storage_substrate", "publisher"],
+      "description": "Role under which the Resolver is responding."
+    },
+    "evaluated_at": { "type": "string", "format": "date-time" },
+    "candidates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/candidate" }
+    },
+    "rejected": {
+      "type": "array",
+      "description": "Candidates evaluated and explicitly rejected. Their Decision Records carry the failed constraint.",
+      "items": { "$ref": "#/$defs/rejection" }
+    },
+    "completeness_attestation_ref": {
+      "type": "string",
+      "description": "Reference to the Completeness Attestation under RFC 0021 covering the window in which this response was evaluated."
+    },
+    "next_cursor": {
+      "type": "string",
+      "description": "For paginated full_set responses."
+    },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+        "value": { "type": "string" },
+        "kid": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "required": ["candidate_id", "payload", "decision_record"],
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": { "type": "string" },
+        "rank": { "type": "integer", "minimum": 1 },
+        "score": { "type": "number" },
+        "payload": {
+          "type": "object",
+          "description": "Projected fields under the Intent's projection block. Fields outside the projection MUST NOT appear here."
+        },
+        "decision_record": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-aql-decision.schema.json" },
+        "inclusion_proof": {
+          "type": "object",
+          "description": "Required when resolver_role is match_broker and the broker claims RFC 0021 conformance.",
+          "required": ["root", "path"],
+          "properties": {
+            "root": { "type": "string" },
+            "path": { "type": "array", "items": { "type": "string" } },
+            "leaf_hash": { "type": "string" }
+          }
+        },
+        "over_budget": { "type": "boolean", "default": false }
+      }
+    },
+    "rejection": {
+      "type": "object",
+      "required": ["candidate_id", "decision_record"],
+      "properties": {
+        "candidate_id": { "type": "string" },
+        "decision_record": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-aql-decision.schema.json" }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "intent_id": "urn:oap:intent:demo-commercial-1",
+  "issuer_did": "did:web:agent.example",
+  "category": "commercial",
+  "constraints": {
+    "all_of": [
+      { "path": "/product/gtin", "operator": "eq", "value": "00012345678905" },
+      { "path": "/delivery/by", "operator": "before", "value": "2026-05-08T18:00:00Z" },
+      {
+        "any_of": [
+          { "path": "/shipping/origin_country", "operator": "in", "value": ["DE", "AT", "CH"] },
+          { "path": "/fulfillment/mode", "operator": "eq", "value": "warehouse" }
+        ]
+      }
+    ]
+  },
+  "projection": {
+    "include": ["/seller_did", "/price", "/delivery", "/return_policy"],
+    "exclude": ["/seller_internal_notes"]
+  },
+  "budget": {
+    "amount": "120.00",
+    "currency": "EUR",
+    "allocation": "single_winner"
+  },
+  "quality_floor": { "performance_score": 0.8 },
+  "validity": { "from": "2026-05-03T00:00:00Z", "to": "2026-05-04T00:00:00Z" },
+  "resolution_policy": "single_best",
+  "signature": { "alg": "EdDSA", "value": "demo-signature" }
+}

@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-intent.schema.json",
+  "title": "OAP Intent",
+  "description": "Normative schema for an Intent expressed in the Agent Query Language under RFC 0020. An Intent is a signed structured document expressing a desired outcome together with the constraints under which the outcome is acceptable. The Procurement Intent of RFC 0013 is a specialization of this schema with category set to commercial.",
+  "type": "object",
+  "required": ["intent_id", "issuer_did", "category", "constraints", "projection", "validity", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "intent_id": {
+      "type": "string",
+      "pattern": "^urn:oap:intent:.+$",
+      "description": "Unique identifier minted by the issuer. URN namespace urn:oap:intent: is reserved for AQL intents."
+    },
+    "issuer_did": {
+      "type": "string",
+      "pattern": "^did:[a-z0-9]+:.+$",
+      "description": "Decentralized identifier of the Principal that signed the Intent."
+    },
+    "agent_did": {
+      "type": "string",
+      "pattern": "^did:[a-z0-9]+:.+$",
+      "description": "Optional. Decentralized identifier of the agent acting on behalf of the issuer."
+    },
+    "delegation_chain": {
+      "type": "array",
+      "description": "Optional delegation tokens linking agent_did back to issuer_did per RFC 0004.",
+      "items": { "type": "object" }
+    },
+    "category": {
+      "enum": ["commercial", "knowledge", "action", "delegation", "discovery", "subscription"],
+      "description": "Intent category as defined in RFC 0020 section 3.6."
+    },
+    "constraints": {
+      "$ref": "#/$defs/constraintNode",
+      "description": "Constraint tree the response MUST satisfy. The root MAY be a single Constraint or a boolean combination."
+    },
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["include"],
+      "properties": {
+        "include": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "JSON Pointers (extended with * and **) that the response MUST contain."
+        },
+        "exclude": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "JSON Pointers that the response MUST NOT contain."
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "required": ["amount", "currency", "allocation"],
+      "additionalProperties": false,
+      "properties": {
+        "amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$", "description": "Decimal string." },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3,5}$", "description": "ISO 4217 code or registered crypto symbol." },
+        "allocation": { "enum": ["single_winner", "ranked_top_k", "proportional_quality"] },
+        "top_k": { "type": "integer", "minimum": 1 },
+        "distribution": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "description": "Required when allocation is ranked_top_k. MUST sum to 1.0."
+        }
+      }
+    },
+    "quality_floor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "performance_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "conformance_level": { "type": "string", "description": "RFC 0019 conformance level identifier (L1, L2, L3, L4, M1, M2, M3, S1, S2, S3, D1, D2, D3, V1, V2, V3, Q1, Q2, Q3)." },
+        "latency_p99_ms": { "type": "integer", "minimum": 0 },
+        "provider_reputation": { "type": "number", "minimum": 0, "maximum": 1 },
+        "cooling_off_minutes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "required": ["from", "to"],
+      "additionalProperties": false,
+      "properties": {
+        "from": { "type": "string", "format": "date-time" },
+        "to": { "type": "string", "format": "date-time" }
+      }
+    },
+    "resolution_policy": {
+      "enum": ["single_best", "ranked_set", "full_set"],
+      "default": "ranked_set"
+    },
+    "max_event_rate_per_minute": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Required for category subscription. Maximum acceptable event rate."
+    },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+        "value": { "type": "string" },
+        "kid": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "constraintNode": {
+      "oneOf": [
+        { "$ref": "#/$defs/constraintLeaf" },
+        { "$ref": "#/$defs/constraintAllOf" },
+        { "$ref": "#/$defs/constraintAnyOf" },
+        { "$ref": "#/$defs/constraintNot" }
+      ]
+    },
+    "constraintLeaf": {
+      "type": "object",
+      "required": ["path", "operator", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/.*",
+          "description": "JSON Pointer extended with the wildcard segment * and the descendant operator **."
+        },
+        "operator": {
+          "enum": [
+            "eq", "ne", "lt", "lte", "gt", "gte",
+            "in", "not_in",
+            "contains", "matches",
+            "before", "after", "within", "outside",
+            "exists"
+          ]
+        },
+        "value": {
+          "description": "JSON value compatible with the operator and the typed range of the path."
+        }
+      }
+    },
+    "constraintAllOf": {
+      "type": "object",
+      "required": ["all_of"],
+      "additionalProperties": false,
+      "properties": {
+        "all_of": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/constraintNode" }
+        }
+      }
+    },
+    "constraintAnyOf": {
+      "type": "object",
+      "required": ["any_of"],
+      "additionalProperties": false,
+      "properties": {
+        "any_of": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/constraintNode" }
+        }
+      }
+    },
+    "constraintNot": {
+      "type": "object",
+      "required": ["not"],
+      "additionalProperties": false,
+      "properties": {
+        "not": { "$ref": "#/$defs/constraintNode" }
+      }
+    }
+  }
+}

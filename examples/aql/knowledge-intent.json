@@ -1,0 +1,21 @@
+{
+  "intent_id": "urn:oap:intent:demo-knowledge-1",
+  "issuer_did": "did:web:agent.example",
+  "category": "knowledge",
+  "constraints": {
+    "all_of": [
+      { "path": "/topic", "operator": "in", "value": ["renewable_energy", "grid_storage"] },
+      { "path": "/jurisdiction", "operator": "eq", "value": "EU" },
+      { "path": "/published_at", "operator": "after", "value": "2025-01-01T00:00:00Z" },
+      { "path": "/license", "operator": "in", "value": ["CC-BY-4.0", "CC-BY-SA-4.0", "CDLA-Permissive-2.0"] }
+    ]
+  },
+  "projection": {
+    "include": ["/node_id", "/title", "/abstract", "/citation", "/license", "/price_per_token"]
+  },
+  "budget": { "amount": "5.00", "currency": "EUR", "allocation": "ranked_top_k", "top_k": 5, "distribution": [0.4, 0.25, 0.15, 0.12, 0.08] },
+  "quality_floor": { "performance_score": 0.85 },
+  "validity": { "from": "2026-05-03T00:00:00Z", "to": "2026-05-10T00:00:00Z" },
+  "resolution_policy": "ranked_set",
+  "signature": { "alg": "EdDSA", "value": "demo-signature" }
+}

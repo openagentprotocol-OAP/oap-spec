@@ -1,0 +1,13 @@
+{
+  "intent_id": "urn:oap:intent:fixture-bad-1",
+  "issuer_did": "did:web:agent.example",
+  "category": "discovery",
+  "constraints": {
+    "path": "/x",
+    "operator": "starts_with",
+    "value": "y"
+  },
+  "projection": { "include": ["/manifest_id"] },
+  "validity": { "from": "2026-05-03T00:00:00Z", "to": "2026-08-03T00:00:00Z" },
+  "signature": { "alg": "EdDSA", "value": "fixture" }
+}

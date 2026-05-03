@@ -1,0 +1,14 @@
+{
+  "intent_id": "urn:oap:intent:fixture-discovery-1",
+  "issuer_did": "did:web:agent.example",
+  "category": "discovery",
+  "constraints": {
+    "all_of": [
+      { "path": "/category", "operator": "eq", "value": "running_shoes" },
+      { "path": "/price/amount", "operator": "lte", "value": "100.00" }
+    ]
+  },
+  "projection": { "include": ["/manifest_id", "/price"] },
+  "validity": { "from": "2026-05-03T00:00:00Z", "to": "2026-08-03T00:00:00Z" },
+  "signature": { "alg": "EdDSA", "value": "fixture-signature" }
+}

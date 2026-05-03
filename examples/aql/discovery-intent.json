@@ -1,0 +1,24 @@
+{
+  "intent_id": "urn:oap:intent:demo-discovery-1",
+  "issuer_did": "did:web:agent.example",
+  "category": "discovery",
+  "constraints": {
+    "all_of": [
+      { "path": "/category", "operator": "eq", "value": "running_shoes" },
+      { "path": "/inventory/available", "operator": "gt", "value": 0 },
+      { "path": "/price/amount", "operator": "lte", "value": "100.00" },
+      { "path": "/price/currency", "operator": "eq", "value": "EUR" }
+    ]
+  },
+  "projection": {
+    "include": ["/manifest_id", "/seller_did", "/price", "/inventory"],
+    "exclude": ["/internal_metadata"]
+  },
+  "quality_floor": {
+    "performance_score": 0.7,
+    "conformance_level": "L2"
+  },
+  "validity": { "from": "2026-05-03T00:00:00Z", "to": "2026-08-03T00:00:00Z" },
+  "resolution_policy": "ranked_set",
+  "signature": { "alg": "EdDSA", "value": "demo-signature" }
+}
