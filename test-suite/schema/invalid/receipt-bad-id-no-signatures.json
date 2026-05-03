@@ -1,0 +1,13 @@
+{
+  "receipt_id": "not-a-urn-oap-receipt",
+  "type": "invocation",
+  "timestamp": "2026-05-03T10:00:00.000Z",
+  "principal_did": "did:plc:test",
+  "tool_did": "did:web:test.local",
+  "action_id": "noop",
+  "action_version": "1.0.0",
+  "input_hash": "sha256:abc",
+  "output_hash": "sha256:def",
+  "previous_receipt_hash": "genesis",
+  "signatures": []
+}

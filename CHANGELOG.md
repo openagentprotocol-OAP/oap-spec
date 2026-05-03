@@ -30,6 +30,13 @@ This project adheres to [Semantic Versioning](https://semver.org/) at the specif
 - Action `irreversibility_class` and `irreversibility_cooling_off_seconds` (RFC 0017 § 5.1).
 - Receipt new types `irreversible_pending`, `irreversible_withdrawn`, `escalation_response` and `irreversibility` and `escalation` blocks (RFC 0017 § 5.2, RFC 0018 § 6.3).
 - Manifest `consequential_provider` and `escalation_service_level` (RFC 0018 § 6.1).
+- RFC 0019 Conformance Testing and Implementability (Implementation and Conformance, targets 1.2).
+- New schema `oap-conformance-receipt.schema.json` (RFC 0019 § 7).
+- Manifest `conformance` block with `claimed_levels`, `receipt_uri`, `suite_version`, `last_attested_at`, `next_attestation_due`, and `attestor` (RFC 0019 § 4).
+- New `test-suite/` directory containing schema, behavior, level, and charter sub suites, the runner, and the attest CLI.
+- New library `reference/agent/conformance-verifier.js` enabling any consuming Agent to verify another Agent's conformance autonomously per RFC 0019 § 6.
+- CI workflow extended with three new jobs: `conformance-test-suite`, `implementability-gate`, `backward-compatibility-gate` (RFC 0019 § 3 and § 4).
+- RFC Process updated with section 5a binding all future RFCs to the Implementability Gate, the Backward Compatibility Gate, and the Charter Review Gate.
 - Whitepaper chapter 9 "From Shipped Products to Shipped Primitives" added.
 - Working Group 9 Web Integration and Working Group 10 Commercial Layer added to governance.
 - Initial Public Working Draft of OAP-CORE-1.0 specification.

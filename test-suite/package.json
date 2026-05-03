@@ -1,0 +1,19 @@
+{
+  "name": "oap-test-suite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official conformance test suite for the Open Agent Protocol.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "node runner.js",
+    "test:schema": "node runner.js --only schema",
+    "test:behavior": "node runner.js --only behavior",
+    "test:charter": "node runner.js --only charter",
+    "attest": "node attest.js",
+    "start-reference-server": "node ../reference/server/server.js"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}

@@ -24,6 +24,7 @@ This directory contains the open RFC backlog for the Open Agent Protocol. Each d
 | [0016](RFC-0016-user-sovereignty-charter.md) | User Sovereignty Charter | Privacy and Governance | Draft | 1.2 |
 | [0017](RFC-0017-irreversibility-and-cooling-off.md) | Irreversibility and Cooling Off Periods | CCC | Draft | 1.2 |
 | [0018](RFC-0018-right-to-human-path.md) | The Right to a Human Path | Privacy and Governance | Draft | 1.2 |
+| [0019](RFC-0019-conformance-testing-and-implementability.md) | Conformance Testing and Implementability | Implementation and Conformance | Draft | 1.2 |
 
 ## Lifecycle
 

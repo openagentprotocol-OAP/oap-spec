@@ -41,3 +41,96 @@ jobs:
           sleep 3
           curl -sf http://localhost:3100/.well-known/oap-tool.json > /dev/null
           kill $SERVER_PID
+
+  conformance-test-suite:
+    name: Run conformance test suite
+    runs-on: ubuntu-latest
+    needs: [schemas]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install reference server dependencies
+        working-directory: reference/server
+        run: npm install
+      - name: Install test suite dependencies
+        working-directory: test-suite
+        run: npm install
+      - name: Start reference server
+        working-directory: reference/server
+        run: |
+          node server.js &
+          echo $! > /tmp/oap-server.pid
+          sleep 3
+      - name: Run schema tests
+        working-directory: test-suite
+        run: node runner.js --only schema
+      - name: Run behavior tests against reference server
+        working-directory: test-suite
+        env:
+          OAP_TARGET: http://localhost:3100
+        run: node runner.js --only behavior
+      - name: Run charter tests against reference server
+        working-directory: test-suite
+        env:
+          OAP_TARGET: http://localhost:3100
+        run: node runner.js --only charter
+      - name: Stop reference server
+        if: always()
+        run: |
+          if [ -f /tmp/oap-server.pid ]; then
+            kill $(cat /tmp/oap-server.pid) || true
+          fi
+
+  implementability-gate:
+    name: Implementability Gate (RFC 0019)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect normative changes without test coverage
+        run: |
+          set -e
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD")
+          echo "$CHANGED" | tee changed.txt
+          NORMATIVE=$(echo "$CHANGED" | grep -E '^(schemas/v1\.0/|spec/v1\.0/|rfcs/RFC-)' || true)
+          TESTS=$(echo "$CHANGED" | grep -E '^(test-suite/|reference/)' || true)
+          if [ -n "$NORMATIVE" ] && [ -z "$TESTS" ]; then
+            echo "::error::Implementability Gate failure. This pull request modifies normative artifacts (schemas, spec, or RFCs) without modifying test-suite/ or reference/ accordingly. See RFC 0019 section 3."
+            echo "Changed normative files:"
+            echo "$NORMATIVE"
+            exit 1
+          fi
+          echo "Implementability Gate passed."
+
+  backward-compatibility-gate:
+    name: Backward Compatibility Gate (RFC 0019)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reject silent edits to v1.0 schemas
+        run: |
+          set -e
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+          MODIFIED=$(git diff --name-only --diff-filter=M "$BASE" "$HEAD" -- 'schemas/v1.0/*.schema.json' || true)
+          if [ -z "$MODIFIED" ]; then
+            echo "No v1.0 schema modifications. Backward Compatibility Gate not triggered."
+            exit 0
+          fi
+          PR_BODY="${{ github.event.pull_request.body }}"
+          if echo "$PR_BODY" | grep -qiE 'backward[- ]compatibility[- ]exception|additive[- ]only'; then
+            echo "Backward Compatibility exception declared in pull request body. Reviewer MUST validate that all changes are additive and that no \$id was altered."
+            exit 0
+          fi
+          echo "::error::Backward Compatibility Gate failure. Modifications to v1.0 schemas detected without an additive only declaration. Either bump to v1.1 with a new \$id or declare 'additive only' in the pull request body. See RFC 0019 section 4."
+          echo "$MODIFIED"
+          exit 1

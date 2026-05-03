@@ -1,0 +1,17 @@
+{
+  "receipt_id": "urn:oap:receipt:01TESTGENESIS00000000000000",
+  "type": "invocation",
+  "timestamp": "2026-05-03T10:00:00.000Z",
+  "principal_did": "did:plc:test_principal",
+  "agent_did": "did:assistnet:test_agent",
+  "tool_did": "did:web:test.local",
+  "action_id": "noop",
+  "action_version": "1.0.0",
+  "input_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "output_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "cost": { "amount": "0.000", "currency": "EUR" },
+  "previous_receipt_hash": "genesis",
+  "signatures": [
+    { "by": "did:web:test.local#key-1", "alg": "EdDSA", "value": "base64url-test-signature" }
+  ]
+}

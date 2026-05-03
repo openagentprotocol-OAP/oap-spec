@@ -1,0 +1,65 @@
+{
+  "oap_version": "1.0",
+  "tool": {
+    "id": "test-minimal",
+    "did": "did:web:test.local",
+    "name": "Minimal Conformant Tool",
+    "version": "1.0.0",
+    "publisher": {
+      "did": "did:web:test.local",
+      "legal_name": "Test GmbH",
+      "verified": false
+    },
+    "categories": ["test"],
+    "description_for_humans": "Minimal manifest used for schema conformance testing.",
+    "description_for_agents": "A reference manifest exercising the smallest set of fields required by the OAP v1.0 schema."
+  },
+  "endpoints": {
+    "invoke": "https://test.local/oap/invoke",
+    "audit": "https://test.local/oap/audit",
+    "data_delete": "https://test.local/oap/data/delete",
+    "incident": "https://test.local/oap/incident"
+  },
+  "auth": [{ "method": "anonymous" }],
+  "actions": [
+    {
+      "id": "noop",
+      "version": "1.0.0",
+      "summary": "No operation.",
+      "description_for_agents": "Does nothing. Returns an empty object. Used for connectivity testing.",
+      "input_schema": { "type": "object" },
+      "output_schema": { "type": "object" },
+      "side_effects": "none",
+      "idempotent": true,
+      "idempotency_window_seconds": 60,
+      "rate_limit": { "rpm": 60, "concurrent": 10 },
+      "data_classes_in": [],
+      "data_classes_out": [],
+      "examples": [
+        { "input": {}, "output": {} }
+      ]
+    }
+  ],
+  "risk_class": "minimal",
+  "jurisdictions": ["EU"],
+  "governance": {
+    "dispute_resolution_url": "https://test.local/disputes",
+    "contact_email": "support@test.local"
+  },
+  "sla": {
+    "uptime_target": 0.99,
+    "latency_p95_ms": 100,
+    "max_call_duration_ms": 1000,
+    "regions": ["eu-west"],
+    "incident_disclosure_within_hours": 72
+  },
+  "trust": { "publisher_verified": false, "data_residency": ["EU"], "gdpr_compliant": true },
+  "data_policy": {
+    "stores_principal_data": false,
+    "retention_days": 0,
+    "shares_with_third_parties": false,
+    "training_on_principal_data": "never",
+    "deletion_endpoint": "/oap/data/delete",
+    "lawful_bases": ["contract"]
+  }
+}

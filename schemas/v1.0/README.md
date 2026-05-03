@@ -22,5 +22,6 @@ Normative JSON Schema 2020-12 documents for the Open Agent Protocol, version 1.0
 | `oap-commerce-primitive.schema.json` | Five axis Commerce Primitive (RFC 0014) |
 | `oap-composition-manifest.schema.json` | User owned Composition of primitives (RFC 0015 § 5) |
 | `oap-customization-receipt.schema.json` | Receipt for user customization of a Composition (RFC 0015 § 7) |
+| `oap-conformance-receipt.schema.json` | Signed attestation that an implementation passed the Conformance Test Suite (RFC 0019 § 7) |
 
-Schemas are versioned independently of the specification text. Conformance is asserted against this directory in combination with `spec/v1.0/OAP-CORE-1.0.md`.
+Schemas are versioned independently of the specification text. Conformance is asserted against this directory in combination with `spec/v1.0/OAP-CORE-1.0.md` and is mechanically verifiable through the Conformance Test Suite under `test-suite/` per RFC 0019.

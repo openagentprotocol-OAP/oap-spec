@@ -99,6 +99,32 @@
       "type": "boolean",
       "description": "Per RFC 0018 \u00a7 3. True if any Action affects legal, financial, medical, familial, or otherwise consequential status of a person. Requires the 'escalate_to_human' Action and the escalation_service_level block."
     },
+    "conformance": {
+      "type": "object",
+      "description": "Per RFC 0019 \u00a7 4. Self attested or independently witnessed conformance claims. Consuming Agents SHOULD verify these claims through the procedure in RFC 0019 \u00a7 6 before engaging the Provider for Consequential Actions.",
+      "properties": {
+        "claimed_levels": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^(L[0-5]|W[1-3]|C[1-3])$" },
+          "description": "Conformance Levels the Provider claims to satisfy. Each claimed level MUST be evidenced by the linked Conformance Receipt."
+        },
+        "receipt_uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "Public URL of the signed Conformance Receipt that evidences the claimed_levels. The Receipt MUST conform to oap-conformance-receipt.schema.json."
+        },
+        "suite_version": { "type": "string", "description": "Version of the OAP Conformance Test Suite under which the receipt was issued." },
+        "last_attested_at": { "type": "string", "format": "date-time" },
+        "next_attestation_due": { "type": "string", "format": "date-time" },
+        "attestor": {
+          "type": "object",
+          "properties": {
+            "did": { "type": "string" },
+            "method": { "type": "string", "enum": ["self", "third_party_replay", "live_witness", "registry"] }
+          }
+        }
+      }
+    },
     "escalation_service_level": {
       "type": "object",
       "description": "Service Level for the Escalation Action per RFC 0018 \u00a7 4.3. REQUIRED when consequential_provider is true.",

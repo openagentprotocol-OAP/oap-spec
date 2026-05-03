@@ -1,0 +1,21 @@
+{
+  "tool": {
+    "id": "missing-version",
+    "did": "did:web:test.local",
+    "name": "Tool Without OAP Version",
+    "version": "1.0.0",
+    "publisher": { "did": "did:web:test.local", "legal_name": "Test GmbH", "verified": false },
+    "categories": ["test"],
+    "description_for_humans": "Manifest deliberately missing oap_version to exercise schema rejection.",
+    "description_for_agents": "Schema MUST reject manifests without the oap_version property."
+  },
+  "endpoints": {
+    "invoke": "https://test.local/oap/invoke",
+    "audit": "https://test.local/oap/audit",
+    "data_delete": "https://test.local/oap/data/delete",
+    "incident": "https://test.local/oap/incident"
+  },
+  "auth": [{ "method": "anonymous" }],
+  "actions": [],
+  "jurisdictions": ["EU"]
+}
