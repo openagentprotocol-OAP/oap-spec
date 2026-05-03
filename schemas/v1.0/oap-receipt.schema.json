@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "properties": {
     "receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
-    "type": { "enum": ["invocation", "subscription", "settlement", "consent", "deletion", "incident", "kill_switch"] },
+    "type": { "enum": ["invocation", "subscription", "settlement", "consent", "deletion", "incident", "kill_switch", "procurement_offer", "procurement_acceptance", "delivery_proof", "citation_attribution", "task_completion"] },
     "timestamp": { "type": "string", "format": "date-time" },
     "principal_did": { "type": "string" },
     "agent_did": { "type": "string" },
@@ -38,6 +38,34 @@
     },
     "provenance_tags_in": { "type": "array", "items": { "type": "string" } },
     "provenance_tags_out": { "type": "array", "items": { "type": "string" } },
+    "consumption_proof": {
+      "type": "object",
+      "description": "Per Token Knowledge Commerce consumption proof per RFC 0013 § 3.5. Present for receipts that meter content delivery.",
+      "required": ["unit", "count", "content_hash"],
+      "properties": {
+        "knowledge_node_ids": { "type": "array", "items": { "type": "string" } },
+        "unit": { "enum": ["token", "byte", "knowledge_node", "citation"] },
+        "count": { "type": "integer", "minimum": 0 },
+        "content_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "metering_mechanism": { "enum": ["volume", "watermark", "embedding_attribution", "zero_knowledge"], "description": "Mechanism per RFC 0013 § 3.9." },
+        "price_per_unit": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      }
+    },
+    "citations": {
+      "type": "array",
+      "description": "Citation Attribution Receipts per RFC 0013 § 3.5. Present when an agent's output incorporates content from one or more Knowledge Providers.",
+      "items": {
+        "type": "object",
+        "required": ["provider_did", "knowledge_node_id"],
+        "properties": {
+          "provider_did": { "type": "string" },
+          "knowledge_node_id": { "type": "string" },
+          "contribution_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+          "output_segment_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+        }
+      }
+    },
     "previous_receipt_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$|^genesis$" },
     "anchors": {
       "type": "array",

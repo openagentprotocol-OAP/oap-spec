@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-offer.schema.json",
+  "title": "OAP Offer",
+  "description": "Normative schema for an Offer returned by a Capability Provider in response to a Procurement Intent under RFC 0013 Section 3.4.",
+  "type": "object",
+  "required": ["offer_id", "intent_id", "provider_did", "issued_at", "valid_until", "price", "delivery_commitment", "commitment_endpoint", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "offer_id": { "type": "string", "pattern": "^urn:oap:offer:.+$" },
+    "intent_id": { "type": "string", "pattern": "^urn:oap:intent:.+$", "description": "The Procurement Intent this Offer responds to." },
+    "provider_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "valid_until": { "type": "string", "format": "date-time" },
+    "price": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "includes_tax": { "type": "boolean" },
+        "includes_shipping": { "type": "boolean" }
+      }
+    },
+    "goods_identification": {
+      "type": "object",
+      "description": "What exactly the Offer covers. Categories and identifiers per RFC 0013 Section 3.4.",
+      "properties": {
+        "gtin": { "type": "string", "pattern": "^\\d{8,14}$" },
+        "isbn": { "type": "string" },
+        "service_code": { "type": "string" },
+        "free_text_description": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "delivery_commitment": {
+      "type": "object",
+      "required": ["committed_by"],
+      "properties": {
+        "committed_by": { "type": "string", "format": "date-time" },
+        "earliest_by": { "type": "string", "format": "date-time" },
+        "carrier": { "type": "string" },
+        "tracking_endpoint": { "type": "string", "format": "uri" }
+      }
+    },
+    "return_policy": {
+      "type": "object",
+      "properties": {
+        "accepts_returns": { "type": "boolean" },
+        "return_window_days": { "type": "integer", "minimum": 0 },
+        "restocking_fee_amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" }
+      }
+    },
+    "reputation": {
+      "type": "object",
+      "description": "Snapshot of the Provider's current reputation handle per RFC 0009.",
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "issuer_did": { "type": "string" },
+        "as_of": { "type": "string", "format": "date-time" }
+      }
+    },
+    "carbon_intensity_g_co2e": { "type": "integer", "minimum": 0, "description": "Estimated CO2 equivalent emissions for fulfilment." },
+    "commitment_endpoint": { "type": "string", "format": "uri", "description": "Endpoint where the agent submits a signed Acceptance to commit to this Offer." },
+    "broker_did": { "type": "string", "description": "If this Offer was returned via a Match Broker, the broker's DID for fee accounting." },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["by", "alg", "value"],
+        "properties": {
+          "by": { "type": "string" },
+          "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  }
+}

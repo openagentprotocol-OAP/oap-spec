@@ -95,6 +95,45 @@
       "minItems": 1,
       "items": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-action.schema.json" }
     },
+    "commerce": {
+      "type": "object",
+      "description": "Top level commerce declaration per RFC 0013. Capabilities MAY override individual fields at the action level via the action's cost block.",
+      "properties": {
+        "default_model": { "enum": ["per_invocation", "per_outcome", "per_token_knowledge", "per_capability", "per_delegation"] },
+        "settlement_window_days": { "type": "integer", "minimum": 1, "maximum": 365, "description": "Billing window for Settlement Statements per RFC 0013 \u00a7 3.5 and \u00a7 3.10." },
+        "reconciliation_log": {
+          "type": "object",
+          "description": "Reference to the OAP Reconciliation Log entry per RFC 0013 \u00a7 3.10. REQUIRED at conformance level C3.",
+          "properties": {
+            "endpoint": { "type": "string", "format": "uri" },
+            "anchor_cadence": { "enum": ["weekly", "monthly", "quarterly", "annually"] }
+          }
+        },
+        "match_broker": {
+          "type": "object",
+          "description": "If this Origin acts as a Match Broker per RFC 0013 \u00a7 3.4, the methodology disclosure MUST be linked here.",
+          "properties": {
+            "is_broker": { "type": "boolean" },
+            "ranking_methodology_uri": { "type": "string", "format": "uri" },
+            "broker_fee_per_match": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+            "broker_fee_currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+          }
+        },
+        "knowledge_metering": {
+          "type": "object",
+          "description": "Knowledge metering capabilities per RFC 0013 \u00a7 3.9. The 'volume' mechanism is REQUIRED for any Origin that prices content per_token_knowledge.",
+          "properties": {
+            "mechanisms": {
+              "type": "array",
+              "items": { "enum": ["volume", "watermark", "embedding_attribution", "zero_knowledge"] },
+              "minItems": 1
+            },
+            "embedding_catalog_uri": { "type": "string", "format": "uri" },
+            "audit_endpoint": { "type": "string", "format": "uri" }
+          }
+        }
+      }
+    },
     "pricing": {
       "type": "object",
       "required": ["models"],

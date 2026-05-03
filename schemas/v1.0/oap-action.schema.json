@@ -31,10 +31,30 @@
     "idempotency_window_seconds": { "type": "integer", "minimum": 0 },
     "cost": {
       "type": "object",
+      "description": "Per Action pricing. The 'type' enum accepts both the legacy v1.0 identifiers and the RFC 0013 commerce model identifiers (per_invocation, per_outcome, per_token_knowledge, per_capability, per_delegation).",
       "properties": {
-        "type": { "enum": ["free", "per_call", "subscription_included", "usage_metered", "outcome"] },
+        "type": { "enum": ["free", "per_call", "subscription_included", "usage_metered", "outcome", "per_invocation", "per_outcome", "per_token_knowledge", "per_capability", "per_delegation"] },
         "amount": { "type": "string" },
-        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "unit": { "enum": ["call", "token", "byte", "knowledge_node", "citation", "task", "outcome"], "description": "Unit of metering. Required for per_token_knowledge." },
+        "quote_endpoint": { "type": "string", "format": "uri", "description": "Endpoint that returns a signed Quote for a proposed invocation. Required for per_invocation per RFC 0013 § 3.3." },
+        "procurement_endpoint": { "type": "string", "format": "uri", "description": "Endpoint that accepts Procurement Intents and returns Offers. Required for per_outcome per RFC 0013 § 3.4." },
+        "delegation_endpoint": { "type": "string", "format": "uri", "description": "Endpoint that accepts Task Orders. Required for per_delegation per RFC 0013 § 3.8." },
+        "budget_window_days": { "type": "integer", "minimum": 1, "description": "Budget window length for per_capability per RFC 0013 § 3.6." },
+        "renewal_behavior": { "enum": ["roll_over", "expire", "prorate"], "description": "Behavior at window close for per_capability." },
+        "stake_required": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$", "description": "Stake amount for per_delegation per RFC 0013 § 3.8." }
+      }
+    },
+    "cost_disclosure": {
+      "type": "object",
+      "description": "Build versus Buy Decision Protocol disclosure per RFC 0013 § 3.7. REQUIRED at conformance level C2 or higher.",
+      "properties": {
+        "token_equivalent": { "type": "integer", "minimum": 0, "description": "Output volume of one invocation expressed as tokens of a reference inference model." },
+        "reference_model": { "type": "string", "description": "Identifier of the reference model used for the token_equivalent estimate." },
+        "latency_p50_ms": { "type": "integer", "minimum": 0 },
+        "latency_p99_ms": { "type": "integer", "minimum": 0 },
+        "quality_claim": { "type": "string", "maxLength": 4000 },
+        "quality_evidence": { "type": "string", "format": "uri", "description": "URI to a signed benchmark, attestation, or audit supporting the quality_claim." }
       }
     },
     "latency_p95_ms": { "type": "integer", "minimum": 0 },

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-settlement-statement.schema.json",
+  "title": "OAP Settlement Statement",
+  "description": "Normative schema for a Settlement Statement issued by a Capability Provider at the close of a billing window under RFC 0013 Section 3.5 and Section 3.10. Aggregates Consumption Proofs and per invocation Receipts into a single signed total.",
+  "type": "object",
+  "required": ["statement_id", "provider_did", "agent_did", "principal_did", "window_start", "window_end", "currency", "total_amount_due", "line_items", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "statement_id": { "type": "string", "pattern": "^urn:oap:settlement:.+$" },
+    "provider_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "agent_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "principal_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "window_start": { "type": "string", "format": "date-time" },
+    "window_end": { "type": "string", "format": "date-time" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "total_amount_due": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+    "line_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["receipt_id", "amount", "model"],
+        "properties": {
+          "receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
+          "model": { "enum": ["per_invocation", "per_outcome", "per_token_knowledge", "per_capability", "per_delegation"] },
+          "unit": { "enum": ["call", "token", "byte", "knowledge_node", "citation", "task", "outcome"] },
+          "count": { "type": "integer", "minimum": 0 },
+          "price_per_unit": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+          "amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+          "consumption_proof_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "adjustments": {
+      "type": "array",
+      "description": "Discounts, refunds, dispute resolutions, broker fees, or other adjustments to the line item total.",
+      "items": {
+        "type": "object",
+        "required": ["reason", "amount"],
+        "properties": {
+          "reason": { "enum": ["volume_discount", "promotional_credit", "refund", "dispute_resolution", "broker_fee", "tax", "other"] },
+          "amount": { "type": "string", "pattern": "^-?\\d+(?:\\.\\d+)?$" },
+          "reference": { "type": "string" }
+        }
+      }
+    },
+    "payment_instrument": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["card", "sepa", "wire", "stablecoin", "wallet_transfer", "credit_line"] },
+        "instrument_id": { "type": "string" }
+      }
+    },
+    "anchor": {
+      "type": "object",
+      "description": "Optional anchoring of this statement's hash on the OAP Reconciliation Log per RFC 0013 Section 3.10. REQUIRED at conformance level C3.",
+      "properties": {
+        "log_id": { "type": "string" },
+        "log_index": { "type": "integer" },
+        "inclusion_proof": { "type": "string" }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Provider signature is REQUIRED on issuance. Agent counter signature is REQUIRED on acceptance and triggers payment.",
+      "items": {
+        "type": "object",
+        "required": ["by", "alg", "value"],
+        "properties": {
+          "by": { "type": "string" },
+          "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+          "value": { "type": "string" },
+          "role": { "enum": ["provider_issuance", "agent_acceptance"] }
+        }
+      }
+    }
+  }
+}

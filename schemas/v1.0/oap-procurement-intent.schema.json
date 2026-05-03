@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-procurement-intent.schema.json",
+  "title": "OAP Procurement Intent",
+  "description": "Normative schema for a Procurement Intent issued by an agent under RFC 0013 Section 3.4. Expresses a user's desired outcome together with the constraints under which it is acceptable.",
+  "type": "object",
+  "required": ["intent_id", "category", "issued_at", "expires_at", "principal_did", "agent_did", "constraints", "budget", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "intent_id": { "type": "string", "pattern": "^urn:oap:intent:.+$" },
+    "category": {
+      "enum": ["physical_goods", "digital_goods", "scheduled_service", "professional_service", "transportation", "information_retrieval"],
+      "description": "Category determines which constraint sub schema applies."
+    },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "principal_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "agent_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "delegation_chain": {
+      "type": "array",
+      "description": "Delegation tokens linking agent_did back to principal_did per RFC 0004.",
+      "items": { "type": "object" }
+    },
+    "constraints": {
+      "type": "object",
+      "description": "Category specific structured constraints. Keys vary by category.",
+      "properties": {
+        "product_identifier": {
+          "type": "object",
+          "description": "For physical_goods or digital_goods.",
+          "properties": {
+            "gtin": { "type": "string", "pattern": "^\\d{8,14}$" },
+            "isbn": { "type": "string" },
+            "model_number": { "type": "string" },
+            "free_text_description": { "type": "string", "maxLength": 2000 }
+          }
+        },
+        "quantity": { "type": "integer", "minimum": 1 },
+        "size": { "type": "string" },
+        "color": { "type": "string" },
+        "delivery_by": { "type": "string", "format": "date-time" },
+        "delivery_address_did": { "type": "string", "description": "Pseudonymous address reference resolvable per RFC 0007 projection rules." },
+        "service_window_start": { "type": "string", "format": "date-time" },
+        "service_window_end": { "type": "string", "format": "date-time" },
+        "origin_location": { "type": "string" },
+        "destination_location": { "type": "string" },
+        "query": { "type": "string", "description": "For information_retrieval intents." },
+        "required_certifications": { "type": "array", "items": { "type": "string" } },
+        "excluded_providers": { "type": "array", "items": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" } }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "required": ["max_amount", "currency"],
+      "properties": {
+        "max_amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "preferred_amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" }
+      }
+    },
+    "ranking_policy": {
+      "type": "object",
+      "description": "Policy under which the agent will rank received Offers.",
+      "properties": {
+        "weight_price": { "type": "number", "minimum": 0, "maximum": 1 },
+        "weight_latency": { "type": "number", "minimum": 0, "maximum": 1 },
+        "weight_reputation": { "type": "number", "minimum": 0, "maximum": 1 },
+        "weight_carbon_intensity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "minimum_reputation_score": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "fallbacks": {
+      "type": "array",
+      "description": "Alternative acceptance criteria if no Offer satisfies the primary constraints.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "relax_field": { "type": "string" },
+          "to_value": {}
+        }
+      }
+    },
+    "broadcast_to": {
+      "type": "array",
+      "description": "Optional explicit list of provider DIDs or Match Broker URIs to address. If omitted, the issuing agent selects targets according to its own discovery state.",
+      "items": { "type": "string" }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["by", "alg", "value"],
+        "properties": {
+          "by": { "type": "string" },
+          "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  }
+}

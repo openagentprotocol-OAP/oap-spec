@@ -52,6 +52,18 @@ Each Working Group is responsible for a coherent area of the specification, its 
 
 **Chair:** To be elected.
 
+### 9. Web Integration
+
+**Scope:** RFC 0012 (The Agent Native Web), well known surfaces (`/.well-known/oap/*`), Knowledge Node vocabularies, Modality Asset Descriptors with C2PA Content Credentials, federation graphs, `agents.txt` directive language, W1 through W3 web conformance levels.
+
+**Chair:** To be elected.
+
+### 10. Commercial Layer
+
+**Scope:** RFC 0013 (Commerce Models for the Agent Economy), the five commerce models (Per Invocation, Per Outcome, Per Token Knowledge, Per Capability, Per Delegation), Procurement Intent and Offer schemas, Build versus Buy Decision Protocol, Citation Attribution Receipts, Settlement Statements, the OAP Reconciliation Log, and Match Broker disclosure rules. Coordinates with Wallet and Settlement on payment instrument integration and with Trust and Reputation on training data licensing questions.
+
+**Chair:** To be elected.
+
 ## Joining a Working Group
 
 Any Individual or organizational member in good standing may join a Working Group by notifying the Chair. Participation requires adherence to the Code of Conduct and disclosure of material conflicts of interest.
