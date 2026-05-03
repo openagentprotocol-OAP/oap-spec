@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Safety and Compliance
+**Authors:** OAP Privacy and Governance Working Group and OAP Confidentiality and Compliance Context Working Group
 
 ## Abstract
 
@@ -72,3 +72,27 @@ The composition is not exhaustive of the regulatory regimes that will eventually
 ## 7. Conclusion
 
 A safety architecture for autonomous agents must respect the layered structure of the obligations that bind the agents' principals. The Open Agent Protocol responds with a four layer policy stack whose order of evaluation is normative, whose decisions are recorded with structured explanations, whose conflicts are resolved by precedence rules that no implementation may override, and whose composition with major regulatory regimes is engineered rather than accidental. The Multi Party Review mechanism extends the stack to the high stakes actions for which a single principal's authorization is insufficient. The result is a safety architecture that is simultaneously stricter than the contemporary single layer guardrail model and more respectful of the autonomy of each layer to impose constraints within its own domain. It is the architecture appropriate to the deployment of autonomous agents into the institutional settings where they will live for the next decade.
+
+## References
+
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification.
+
+[RFC 0003](/rfcs/0003): Standing Permissions. Defines the consent grants that Personal Preference draws on.
+
+[RFC 0006](/rfcs/0006): Persona and Scope Layer. Defines the Scope to which Scope Policy attaches.
+
+[RFC 0007](/rfcs/0007): Privacy Preserving Projections. Defines the projections that the policy stack composes with at the data layer.
+
+[RFC 0016](/rfcs/0016): User Sovereignty Charter. Defines the principles that bind the Personal Preference layer to non-negotiable user rights.
+
+[RFC 0017](/rfcs/0017): Irreversibility and Cooling Off Periods. Defines the temporal safeguards that compose with Multi Party Review for high-stakes actions.
+
+[RFC 0018](/rfcs/0018): The Right to a Human Path. Defines the escalation action that the policy stack must always preserve.
+
+Related whitepapers: [Confidentiality and Compliance Context](/papers/confidentiality-and-compliance-context), [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy), [Governance of an Ownerless Protocol](/papers/governance-of-an-ownerless-protocol).
+
+Regulation (EU) 2024/1689 on harmonised rules for artificial intelligence (AI Act).
+
+Regulation (EU) 2016/679 (General Data Protection Regulation).
+
+Regulation (EU) 2022/2065 on a Single Market for Digital Services (Digital Services Act).

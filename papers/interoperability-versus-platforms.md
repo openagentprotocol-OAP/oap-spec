@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Interoperability
+**Authors:** OAP Web Integration Working Group and OAP Implementation and Conformance Working Group
 
 ## Abstract
 
@@ -70,3 +70,23 @@ The protocol's specification is published in a format that any standards body co
 ## 7. Conclusion
 
 The Open Agent Protocol does not compete with vendor specific function calling, with the Model Context Protocol, or with the Agent to Agent Protocol. It composes with each of them at the layer at which each of them operates, and it provides the substrate primitives at the layers above and beneath that none of them provides. A deployment that has invested in any of the contemporary approaches can adopt the Open Agent Protocol incrementally without abandoning the existing investment, and the bridge implementations in the protocol's reference repository make the adoption mechanical in most cases. The choice between the captive integration model of the present and the open substrate of the protocol is therefore not a binary migration. It is a gradient that any deployment may traverse at the rate its operational maturity permits, and the protocol's design is intended to make every step of the gradient pay for itself.
+
+## References
+
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification.
+
+[RFC 0001](/rfcs/0001): Coordination Sessions. Defines the multi-agent session abstraction that the Coordination Plane endpoints implement.
+
+[RFC 0004](/rfcs/0004): Sub Agent Delegation. Defines the delegation tree whose cost attribution machinery the Agent to Agent Protocol does not provide.
+
+[RFC 0005](/rfcs/0005): Canonical Entity Schemas. Defines the Manifest format that the Open Agent Protocol uses for discovery.
+
+[RFC 0012](/rfcs/0012): The Agent Native Web. Defines the well-known endpoints by which Manifests are published at any origin.
+
+[RFC 0019](/rfcs/0019): Conformance Testing and Implementability. Defines the conformance posture that bridge implementations must satisfy.
+
+Related whitepapers: [From the Document Web to the Agent Web](/papers/agent-web-whitepaper), [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy), [The Economics of the Agent Economy](/papers/economics-of-the-agent-economy), [Verifiable Conformance](/papers/verifiable-conformance).
+
+Model Context Protocol Specification, Anthropic, 2024.
+
+Agent to Agent Protocol, version 0.x, Linux Foundation Joint Development Foundation Project.

@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Commercial Layer
+**Authors:** OAP Commercial Layer Working Group
 
 ## Abstract
 
@@ -45,7 +45,7 @@ The anti invoice property has a second consequence that is easy to overlook. It 
 
 ## 5. The Build Versus Buy Decision Protocol
 
-A market is honest only if its participants can compare offers on a like for like basis. The Open Agent Protocol formalizes the comparison through the Build Versus Buy Decision Protocol described in RFC 0014. The protocol requires that any Tool participating in the commercial layer publish, alongside its pricing, a token equivalent cost that expresses the cost of the action in a normalized unit, a measured latency in the relevant percentiles, and a quality evidence link that points to either an audit report or a public benchmark. The agent considering whether to invoke the Tool can therefore evaluate the proposed Invocation against alternatives, including the alternative of building the capability locally rather than buying it from the Tool.
+A market is honest only if its participants can compare offers on a like for like basis. The Open Agent Protocol formalizes the comparison through the Build Versus Buy Decision Protocol described in [RFC 0014](/rfcs/0014). The protocol requires that any Tool participating in the commercial layer publish, alongside its pricing, a token equivalent cost that expresses the cost of the action in a normalized unit, a measured latency in the relevant percentiles, and a quality evidence link that points to either an audit report or a public benchmark. The agent considering whether to invoke the Tool can therefore evaluate the proposed Invocation against alternatives, including the alternative of building the capability locally rather than buying it from the Tool.
 
 The build versus buy decision is the engine that distinguishes a competitive market from a captured one. A consumer who can credibly threaten to build is a consumer for whom the market must compete, and a consumer who cannot is a consumer who pays whatever the market charges. The protocol's contribution is to make the build versus buy decision computable. The agent does not need to consult a procurement department or a benchmarking firm. It reads the published cost, latency, and quality evidence, computes the cost of the alternative, and chooses on the merits. The choice is then recorded in the Decision Record that accompanies the Receipt, which means that the basis of the choice is auditable after the fact.
 
@@ -58,3 +58,23 @@ Each of these properties has been argued for in detail in the antitrust literatu
 ## 7. Conclusion
 
 The economics of the Agent Economy are not a marginal extension of the economics of the human consumer internet. They are a different system that requires a different substrate. The Open Agent Protocol provides that substrate with a small, normative set of pricing models, a portable Wallet abstraction grounded in the existing regulatory regime for held funds, a settlement format anchored in the Receipt chain, a comparability surface that lets agents make build versus buy decisions on the merits, and a structural posture that forecloses the rent extraction patterns of the contemporary platform economy. The result is an economy in which the price of an action is what the action actually costs, the choice between providers is made on the basis of evidence, and the discipline of competition is enforced by the protocol rather than by the regulator.
+
+## References
+
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification.
+
+[RFC 0008](/rfcs/0008): Workflow Composition. Defines the multi-step compositions over which pricing aggregates.
+
+[RFC 0013](/rfcs/0013): Commerce Models for the Agent Economy. Defines the five normative pricing models referenced throughout this paper.
+
+[RFC 0014](/rfcs/0014): Commerce Primitives, A Generalized Commercial Layer. Defines the Wallet, Settlement Receipt, and Build Versus Buy Decision Protocol.
+
+[RFC 0015](/rfcs/0015): Composable Software Primitives. Defines the Replaceability Index that disciplines provider lock-in.
+
+Related whitepapers: [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy), [Verifiable Conformance](/papers/verifiable-conformance), [Interoperability Versus Platforms](/papers/interoperability-versus-platforms).
+
+Regulation (EU) 2023/1114 on Markets in Crypto Assets.
+
+Directive (EU) 2015/2366 on payment services in the internal market (PSD2).
+
+ISO 4217. Codes for the representation of currencies.

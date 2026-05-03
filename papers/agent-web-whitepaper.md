@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Web Integration
+**Authors:** OAP Web Integration Working Group
 
 ## Abstract
 
@@ -482,17 +482,21 @@ substrate the next phase of the web requires.
 
 ## References
 
-OAP Core 1.0. Open Agent Protocol, 2026.
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification.
 
-RFC 0004: Sub Agent Delegation. Open Agent Protocol, 2026.
+[RFC 0004](/rfcs/0004): Sub Agent Delegation.
 
-RFC 0007: Privacy Preserving Projections. Open Agent Protocol, 2026.
+[RFC 0005](/rfcs/0005): Canonical Entity Schemas.
 
-RFC 0009: Reputation and Performance Records. Open Agent Protocol, 2026.
+[RFC 0007](/rfcs/0007): Privacy Preserving Projections.
 
-RFC 0011: Sybil Resistance and Sub Agent Anti Abuse. Open Agent Protocol, 2026.
+[RFC 0009](/rfcs/0009): Reputation and Performance Records.
 
-RFC 0012: The Agent Native Web. Open Agent Protocol, 2026.
+[RFC 0011](/rfcs/0011): Sybil Resistance and Sub Agent Anti Abuse.
+
+[RFC 0012](/rfcs/0012): The Agent Native Web.
+
+Related whitepapers: [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy), [The Economics of the Agent Economy](/papers/economics-of-the-agent-economy), [Confidentiality and Compliance Context](/papers/confidentiality-and-compliance-context), [Interoperability Versus Platforms](/papers/interoperability-versus-platforms).
 
 W3C Decentralized Identifiers (DIDs) v1.0. World Wide Web Consortium, 2022.
 
@@ -500,7 +504,7 @@ W3C Verifiable Credentials Data Model v2.0. World Wide Web Consortium, 2025.
 
 C2PA Technical Specification. Coalition for Content Provenance and Authenticity, 2024.
 
-RFC 8615: Well Known Uniform Resource Identifiers. Internet Engineering Task Force, 2019.
+IETF RFC 8615: Well Known Uniform Resource Identifiers. Internet Engineering Task Force, 2019.
 
 ## License
 

@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Governance and Stewardship
+**Authors:** OAP Privacy and Governance Working Group
 
 ## Abstract
 
@@ -68,3 +68,19 @@ Continuity in the absence of an owner is not a hope. It is the engineered proper
 ## 7. Conclusion
 
 The Open Agent Protocol is governed without an owner because a protocol that arbitrates trust between competing agents cannot afford to have an owner. Ownerlessness is the architectural property that distinguishes a substrate of the Agent Economy from a product of the Agent Economy, and it is the property that the protocol's design has been organized to preserve. The mechanisms by which ownerlessness is operationally maintained, namely the request for comments process, the Working Group structure, the conformance test suite, the reference implementation, the two implementations requirement, the public objection record, and the right to fork, are mechanisms with long histories in adjacent communities and proven track records. The community of contributors who at any given moment do the work of maintaining the protocol is referred to as the Stewards, and Stewardship is a function of contribution rather than of accreditation. The result is a governance model that is suitable to the stakes of the Agent Economy and that is structurally resistant to the capture patterns that have historically converted neutral standards into instruments of incumbent advantage.
+
+## References
+
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification.
+
+[RFC 0016](/rfcs/0016): User Sovereignty Charter. Defines the user-facing principles whose enforcement the governance model must preserve across protocol revisions.
+
+[RFC 0019](/rfcs/0019): Conformance Testing and Implementability. Defines the test suite that operationalizes the protocol's semantics and that disciplines proposed changes through the implementability and backward compatibility gates.
+
+Related whitepapers: [Verifiable Conformance](/papers/verifiable-conformance), [Interoperability Versus Platforms](/papers/interoperability-versus-platforms), [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy).
+
+IETF RFC 7282. On Consensus and Humming in the IETF. Internet Engineering Task Force, 2014.
+
+IETF RFC 8890. The Internet is for End Users. Internet Engineering Task Force, 2020.
+
+Open Agent Protocol Code of Conduct and Maintainers Charter, available in the canonical repository.

@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Core Protocol and OAP Working Group on Trust and Reputation
+**Authors:** OAP Core Protocol Working Group and OAP Trust and Reputation Working Group
 
 ## Abstract
 
@@ -51,7 +51,7 @@ The Receipt and the Receipt chain are not designed only for after the fact dispu
 
 Billing in the Agent Economy is performed by reading the Receipt chain. A Settlement Receipt cites the Invocation Receipts that it covers, and the Wallet that processes the settlement verifies that each cited Invocation occurred and that the cost recorded in the Invocation Receipt matches the cost asserted by the Settlement. The Wallet does not need to trust the Tool's invoice, because the invoice is constructed from Receipts that the Wallet can verify independently. This eliminates an entire class of disputes that today consume substantial human attention.
 
-Reputation in the Agent Economy is computed by reading the Receipt chain. A Performance Record under RFC 0009 cites the Receipt of the Invocation that the record describes, which means that no Performance Record can refer to an event that did not actually occur. This eliminates the class of fake reviews that has corroded the credibility of every consumer rating system built on top of unauthenticated text. Aggregate reputation scores are derived from authentic Performance Records by an open algorithm published under `oap.reputation.aggregation.v1`, and any consuming Agent can recompute the score from the underlying records to satisfy itself that the aggregate is honest.
+Reputation in the Agent Economy is computed by reading the Receipt chain. A Performance Record under [RFC 0009](/rfcs/0009) cites the Receipt of the Invocation that the record describes, which means that no Performance Record can refer to an event that did not actually occur. This eliminates the class of fake reviews that has corroded the credibility of every consumer rating system built on top of unauthenticated text. Aggregate reputation scores are derived from authentic Performance Records by an open algorithm published under `oap.reputation.aggregation.v1`, and any consuming Agent can recompute the score from the underlying records to satisfy itself that the aggregate is honest.
 
 Regulatory inspection in the Agent Economy is performed by reading the Receipt chain. The Decision Records that the protocol attaches to each Receipt enumerate the policy layers that were evaluated and the rules that were applied. A regulator examining a particular outcome can determine in seconds whether the policy stack permitted the outcome, whether the relevant Conformance Level was honored, and whether the reasoning recorded in the explanation field is consistent with the obligations of the cited regulation. The right to explanation under the EU Artificial Intelligence Act is satisfied by the explanation_for_principal field. The right of access under the General Data Protection Regulation is satisfied by the chain itself, which the Principal can export at any time. The right to erasure is satisfied by the data_delete endpoint, whose successful execution produces a Deletion Receipt that becomes part of the chain.
 
@@ -74,3 +74,29 @@ The Receipt design described in this whitepaper is operating in production. The 
 ## 8. Conclusion
 
 The unit of trust in the Agent Economy is not the operator, not the platform, and not the auditor. The unit of trust is the cryptographically signed Receipt and the chain that links Receipts into a verifiable history. This shift is comparable in scope to the shift from physical receipts to electronic billing, and it is comparable in necessity to the shift from unauthenticated email to authenticated email after the rise of phishing. The Open Agent Protocol provides the normative artifacts and the reference implementations that make the shift possible, and the conformance test suite provides the evidence that the implementations are honest. The result is an accountability substrate that operates at machine speed, that survives the failure or absence of any single party, and that produces evidence which holds up in commercial dispute, in regulatory inspection, and in court.
+
+## References
+
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification, version 1.0.
+
+[RFC 0001](/rfcs/0001): Coordination Sessions. Defines the session abstraction whose lifecycle events produce Receipts.
+
+[RFC 0004](/rfcs/0004): Sub Agent Delegation. Defines the delegation tree whose cost attribution is anchored in the Receipt chain.
+
+[RFC 0009](/rfcs/0009): Reputation and Performance Records. Defines the Performance Record format that cites Receipts as evidence.
+
+[RFC 0011](/rfcs/0011): Sybil Resistance and Sub Agent Anti Abuse. Defines the identity binding that gives Receipt signatures their non-repudiation property.
+
+[RFC 0014](/rfcs/0014): Commerce Primitives, A Generalized Commercial Layer. Defines the Settlement Receipt that the anti-invoice property depends on.
+
+[RFC 0016](/rfcs/0016): User Sovereignty Charter. Defines the export and erasure rights that the Receipt chain operationalizes.
+
+[RFC 0019](/rfcs/0019): Conformance Testing and Implementability. Defines the conformance test suite that exercises Receipt production.
+
+Related whitepapers: [Verifiable Conformance](/papers/verifiable-conformance), [Confidentiality and Compliance Context](/papers/confidentiality-and-compliance-context), [The Economics of the Agent Economy](/papers/economics-of-the-agent-economy), [The Safety and Policy Stack](/papers/safety-and-policy-stack).
+
+Sigstore Project. Rekor Transparency Log Specification.
+
+W3C Decentralized Identifiers (DIDs) v1.0. World Wide Web Consortium, 2022.
+
+W3C Verifiable Credentials Data Model v2.0. World Wide Web Consortium, 2025.

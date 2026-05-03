@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Confidentiality and Compliance
+**Authors:** OAP Confidentiality and Compliance Context Working Group
 
 ## Abstract
 
@@ -21,7 +21,7 @@ The Confidentiality and Compliance Context is the layer that makes the obligatio
 
 ## 2. The Structure of the Context
 
-The Context is a structured object attached to a Scope. The Scope, defined in RFC 0006, is the bounded execution context under which an Agent acts at a particular moment. A single Principal may operate under many Scopes, and the Context attached to each Scope encodes the obligations that apply to the work the Agent performs while operating in that Scope.
+The Context is a structured object attached to a Scope. The Scope, defined in [RFC 0006](/rfcs/0006), is the bounded execution context under which an Agent acts at a particular moment. A single Principal may operate under many Scopes, and the Context attached to each Scope encodes the obligations that apply to the work the Agent performs while operating in that Scope.
 
 The Context enumerates active non disclosure agreements with their counterparties, their covered data categories, their validity windows, and their governing jurisdiction. It enumerates non compete and non solicitation obligations with their durations and territorial scope. It enumerates explicit embargo lists, which are the parties to whom the Principal has chosen not to disclose specific categories of information regardless of any other consideration. It enumerates Chinese walls between Scopes, which are the situations in which information held in one Scope is forbidden from reaching another Scope held by the same Principal. It enumerates the professional codes that bind the Principal, the fiduciary duties owed to other parties, the regulatory classifications that apply to the data held in the Scope, the insider lists on which the Principal sits, the sanctions screening regime that applies to the Principal's interactions, and the export control classification of the data the Scope produces. Each of these fields is structured. Each of them is machine readable. Each of them is verifiable against an independently published authority.
 
@@ -70,3 +70,25 @@ The Provenance Cascade is the protocol level answer to the problem that confiden
 ## 7. Conclusion
 
 Confidentiality is not a feature that can be added to an Agent platform after the fact. It is a property that must be present at every layer of the stack, from the Manifest that the Tool publishes to the Decision Record that records each policy evaluation to the Cascade Report that demonstrates the closure of an obligation. The Confidentiality and Compliance Context is the protocol level mechanism by which that property is achieved. It encodes the obligations a Principal has assumed in the world outside software, it makes those obligations machine readable, it enforces them at the moment of every Invocation, and it produces evidence of enforcement that survives commercial dispute, regulatory inspection, and the lifetime of the obligations themselves. Without such a mechanism, the deployment of autonomous Agents into professional and organizational settings is incompatible with the obligations those settings impose. With it, the deployment becomes not merely tolerable but actively safer than the human only baseline, because the obligations are enforced consistently rather than depending on the memory of the practitioner under time pressure.
+
+## References
+
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification, including Section 18 on Privileged Mode.
+
+[RFC 0003](/rfcs/0003): Standing Permissions. Defines the consent model under which the Confidentiality and Compliance Context grants and revokes access.
+
+[RFC 0006](/rfcs/0006): Persona and Scope Layer. Defines the Scope abstraction to which a Confidentiality and Compliance Context attaches.
+
+[RFC 0007](/rfcs/0007): Privacy Preserving Projections. Defines the projection mechanism by which Tools receive only the data fields a Decision permits.
+
+[RFC 0016](/rfcs/0016): User Sovereignty Charter. Defines the data export and erasure rights that the Provenance Cascade fulfils.
+
+[RFC 0017](/rfcs/0017): Irreversibility and Cooling Off Periods. Defines the temporal safeguards that compose with the Pre Action Confidentiality Gate for high-stakes disclosures.
+
+Related whitepapers: [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy), [The Safety and Policy Stack](/papers/safety-and-policy-stack), [Governance of an Ownerless Protocol](/papers/governance-of-an-ownerless-protocol).
+
+Regulation (EU) 2016/679 (General Data Protection Regulation).
+
+US Health Insurance Portability and Accountability Act, 45 CFR Parts 160 and 164.
+
+American Bar Association Model Rules of Professional Conduct, Rule 1.6.

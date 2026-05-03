@@ -5,7 +5,7 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Working Group on Conformance and Trust
+**Authors:** OAP Implementation and Conformance Working Group
 
 ## Abstract
 
@@ -86,3 +86,21 @@ The level structure is the protocol's response to the observation that not every
 ## 7. Conclusion
 
 The conformance question is the load bearing question on which the credibility of the agent ecosystem depends. An agent that invokes a non conformant tool produces failures whose cost is borne by the agent's principal, and the discipline that prevents such failures must be supplied by the protocol rather than left to the principal's own diligence. The Open Agent Protocol responds with a two tier conformance system in which the lower tier is established by a self issued cryptographic receipt that any party may verify by re running the same conformance test suite, and the higher tier is established by an independent witness whose attestation is itself a cryptographic receipt. The system is anchored in the same transparency log infrastructure that anchors the protocol's accountability layer, which means that the verification of conformance and the audit of behaviour share a single substrate. The result is a guarantee that is more frequent, more machine readable, more honest, and more economical than the third party audit model alone, and it is a guarantee that scales to the cadence at which agents will integrate with one another in the years ahead.
+
+## References
+
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification, including the Conformance Levels L0 through L4.
+
+[RFC 0009](/rfcs/0009): Reputation and Performance Records. Defines the reputation surface on which conformance receipts compose.
+
+[RFC 0011](/rfcs/0011): Sybil Resistance and Sub Agent Anti Abuse. Defines the identity binding that grounds the signature on a conformance receipt.
+
+[RFC 0014](/rfcs/0014): Commerce Primitives, A Generalized Commercial Layer. Defines the Settlement Receipt format that the conformance receipt mirrors structurally.
+
+[RFC 0019](/rfcs/0019): Conformance Testing and Implementability. Defines the conformance test suite, the conformance receipt format, and the implementability gate.
+
+Related whitepapers: [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy), [Governance of an Ownerless Protocol](/papers/governance-of-an-ownerless-protocol), [Interoperability Versus Platforms](/papers/interoperability-versus-platforms).
+
+Sigstore Project. Rekor Transparency Log Specification.
+
+Certificate Transparency. IETF RFC 9162, 2021.
