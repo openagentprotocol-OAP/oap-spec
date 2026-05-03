@@ -6,7 +6,7 @@
 **Publication Date:** 2026-05-02
 **License:** Specification text under CC BY 4.0. Reference implementations under Apache License 2.0.
 **Editor:** OAP Foundation, Working Group on Core Protocol
-**Repository:** https://github.com/openagentprotocol/spec
+**Repository:** https://github.com/openagentprotocol-OAP/oap-spec
 
 ## Abstract
 
