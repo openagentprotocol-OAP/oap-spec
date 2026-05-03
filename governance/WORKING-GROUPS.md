@@ -64,6 +64,12 @@ Each Working Group is responsible for a coherent area of the specification, its 
 
 **Chair:** To be elected.
 
+### 11. Data Plane
+
+**Scope:** RFC 0020 (Agent Query Language), RFC 0021 (Verifiable Indexes and Match Broker Conformance), RFC 0022 (Manifest Subscription Protocol), RFC 0023 (Agent Native Storage Substrate), RFC 0024 (Schema Negotiation and Versioning). Defines the data layer of the protocol, including the canonical query language, the verifiability obligations of indexed surfaces, the push delivery semantics for Manifest changes, the Storage Substrate primitives, and the schema evolution rules. Coordinates with Marketplace and Discovery on Match Broker conformance, with Web Integration on subscription transports, and with Confidentiality and Compliance on the Pre Read Policy Gate.
+
+**Chair:** To be elected.
+
 ## Joining a Working Group
 
 Any Individual or organizational member in good standing may join a Working Group by notifying the Chair. Participation requires adherence to the Code of Conduct and disclosure of material conflicts of interest.
