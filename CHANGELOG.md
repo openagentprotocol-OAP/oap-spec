@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](https://semver.org/) at the specif
 - RFC 0013 Commerce Models for the Agent Economy (Commercial Layer, targets 1.2).
 - RFC 0014 Commerce Primitives, A Generalized Commercial Layer (Commercial Layer, targets 1.2).
 - RFC 0015 Composable Software Primitives (Marketplace and Discovery, targets 1.2).
+- RFC 0016 User Sovereignty Charter (Privacy and Governance, targets 1.2).
+- RFC 0017 Irreversibility and Cooling Off Periods (CCC, targets 1.2).
+- RFC 0018 The Right to a Human Path (Privacy and Governance, targets 1.2).
 - Whitepaper From the Document Web to the Agent Web (Foundation publication).
 - Manifest schema extended with top level `commerce` block: `default_model`, `settlement_window_days`, `reconciliation_log`, `match_broker`, `knowledge_metering`.
 - Action schema `cost.type` enum extended with the five RFC 0013 commerce model identifiers and new fields `unit`, `quote_endpoint`, `procurement_endpoint`, `delegation_endpoint`, `budget_window_days`, `renewal_behavior`, `stake_required`.
@@ -24,6 +27,9 @@ This project adheres to [Semantic Versioning](https://semver.org/) at the specif
 - New schema `oap-commerce-primitive.schema.json` (RFC 0014).
 - Manifest `commerce.primitives` array, action `cost.primitive`, receipt `commerce_primitive` block (RFC 0014 § 5).
 - Action `replaceability` block (RFC 0015 § 6); new schemas `oap-composition-manifest.schema.json` and `oap-customization-receipt.schema.json`.
+- Action `irreversibility_class` and `irreversibility_cooling_off_seconds` (RFC 0017 § 5.1).
+- Receipt new types `irreversible_pending`, `irreversible_withdrawn`, `escalation_response` and `irreversibility` and `escalation` blocks (RFC 0017 § 5.2, RFC 0018 § 6.3).
+- Manifest `consequential_provider` and `escalation_service_level` (RFC 0018 § 6.1).
 - Whitepaper chapter 9 "From Shipped Products to Shipped Primitives" added.
 - Working Group 9 Web Integration and Working Group 10 Commercial Layer added to governance.
 - Initial Public Working Draft of OAP-CORE-1.0 specification.

@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "properties": {
     "receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
-    "type": { "enum": ["invocation", "subscription", "settlement", "consent", "deletion", "incident", "kill_switch", "procurement_offer", "procurement_acceptance", "delivery_proof", "citation_attribution", "task_completion"] },
+    "type": { "enum": ["invocation", "subscription", "settlement", "consent", "deletion", "incident", "kill_switch", "procurement_offer", "procurement_acceptance", "delivery_proof", "citation_attribution", "task_completion", "irreversible_pending", "irreversible_withdrawn", "escalation_response"] },
     "timestamp": { "type": "string", "format": "date-time" },
     "principal_did": { "type": "string" },
     "agent_did": { "type": "string" },
@@ -66,8 +66,29 @@
         }
       }
     },
-    "commerce_primitive": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-commerce-primitive.schema.json", "description": "Self describing record of which Commerce Primitive applied at settlement, per RFC 0014 \u00a7 5.4." },
-    "previous_receipt_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$|^genesis$" },
+    "commerce_primitive": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-commerce-primitive.schema.json", "description": "Self describing record of which Commerce Primitive applied at settlement, per RFC 0014 \u00a7 5.4." },    "irreversibility": {
+      "type": "object",
+      "description": "Per RFC 0017. Present on irreversible_pending, irreversible_withdrawn, and on final receipts that follow a Pending Receipt.",
+      "properties": {
+        "irreversibility_class": { "enum": ["legal_status_change", "bodily_intervention", "immovable_property", "irreversible_financial", "public_disclosure"] },
+        "cooling_off_deadline": { "type": "string", "format": "date-time" },
+        "withdrawal_endpoint": { "type": "string", "format": "uri" },
+        "pending_receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
+        "consequence_statement_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "emergency_declaration_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    },
+    "escalation": {
+      "type": "object",
+      "description": "Per RFC 0018. Present on escalation_response receipts.",
+      "properties": {
+        "case_id": { "type": "string" },
+        "operator_identifier": { "type": "string" },
+        "channel": { "enum": ["voice", "video", "text_chat", "email", "physical"] },
+        "duration_seconds": { "type": "integer", "minimum": 0 },
+        "transcript_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    },    "previous_receipt_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$|^genesis$" },
     "anchors": {
       "type": "array",
       "items": {

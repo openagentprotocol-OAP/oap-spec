@@ -27,6 +27,8 @@
     "input_schema": { "type": "object" },
     "output_schema": { "type": "object" },
     "side_effects": { "enum": ["none", "read", "write", "external", "irreversible"] },
+    "irreversibility_class": { "enum": ["legal_status_change", "bodily_intervention", "immovable_property", "irreversible_financial", "public_disclosure"], "description": "REQUIRED when side_effects is 'irreversible'. Per RFC 0017 \u00a7 3." },
+    "irreversibility_cooling_off_seconds": { "type": "integer", "minimum": 0, "description": "Cooling off period in seconds. MUST be at least the default minimum for the declared class per RFC 0017 \u00a7 4.1." },
     "idempotent": { "type": "boolean" },
     "idempotency_window_seconds": { "type": "integer", "minimum": 0 },
     "cost": {

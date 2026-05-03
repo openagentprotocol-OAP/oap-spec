@@ -21,6 +21,9 @@ This directory contains the open RFC backlog for the Open Agent Protocol. Each d
 | [0013](RFC-0013-commerce-models.md) | Commerce Models for the Agent Economy | Commercial Layer | Draft | 1.2 |
 | [0014](RFC-0014-commerce-primitives.md) | Commerce Primitives, A Generalized Commercial Layer | Commercial Layer | Draft | 1.2 |
 | [0015](RFC-0015-composable-software-primitives.md) | Composable Software Primitives | Marketplace and Discovery | Draft | 1.2 |
+| [0016](RFC-0016-user-sovereignty-charter.md) | User Sovereignty Charter | Privacy and Governance | Draft | 1.2 |
+| [0017](RFC-0017-irreversibility-and-cooling-off.md) | Irreversibility and Cooling Off Periods | CCC | Draft | 1.2 |
+| [0018](RFC-0018-right-to-human-path.md) | The Right to a Human Path | Privacy and Governance | Draft | 1.2 |
 
 ## Lifecycle
 

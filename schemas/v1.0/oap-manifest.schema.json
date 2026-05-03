@@ -95,6 +95,33 @@
       "minItems": 1,
       "items": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-action.schema.json" }
     },
+    "consequential_provider": {
+      "type": "boolean",
+      "description": "Per RFC 0018 \u00a7 3. True if any Action affects legal, financial, medical, familial, or otherwise consequential status of a person. Requires the 'escalate_to_human' Action and the escalation_service_level block."
+    },
+    "escalation_service_level": {
+      "type": "object",
+      "description": "Service Level for the Escalation Action per RFC 0018 \u00a7 4.3. REQUIRED when consequential_provider is true.",
+      "properties": {
+        "response_seconds_by_urgency": {
+          "type": "object",
+          "properties": {
+            "low": { "type": "integer", "minimum": 0 },
+            "normal": { "type": "integer", "minimum": 0 },
+            "high": { "type": "integer", "minimum": 0 },
+            "critical": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "channels": {
+          "type": "array",
+          "items": { "enum": ["voice", "video", "text_chat", "email", "physical"] },
+          "minItems": 1
+        },
+        "working_hours": { "type": "string", "description": "ISO 8601 timezone aware description of working hours, e.g. 'Mon-Fri 09:00-18:00 Europe/Berlin'." },
+        "out_of_hours_fallback_channel": { "enum": ["voice", "video", "text_chat", "email", "physical"] },
+        "performance_report_uri": { "type": "string", "format": "uri" }
+      }
+    },
     "commerce": {
       "type": "object",
       "description": "Top level commerce declaration per RFC 0013. Capabilities MAY override individual fields at the action level via the action's cost block.",
