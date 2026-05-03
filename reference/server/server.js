@@ -122,10 +122,10 @@ function createReceipt(type, req, output) {
     receipt_id: `urn:oap:receipt:${generateUlid()}`,
     type,
     timestamp: new Date().toISOString(),
-    principal_did: req.body.principal_did || 'anonymous',
-    agent_did: req.body.agent_did || 'anonymous',
+    principal_did: (req.body.principal && req.body.principal.did) || req.body.principal_did || 'anonymous',
+    agent_did: (req.body.agent && req.body.agent.did) || req.body.agent_did || 'anonymous',
     tool_did: TOOL_DID,
-    action_id: req.body.action || null,
+    action_id: req.body.action_id || req.body.action || null,
     input_hash: hashJson(req.body.input || {}),
     output_hash: hashJson(output || {}),
     cost: { amount: '0', currency: 'EUR' },
@@ -154,7 +154,7 @@ app.get('/.well-known/oap-tool.json', (_req, res) => {
 // ---------------------------------------------------------------------------
 
 app.post('/oap/invoke', (req, res) => {
-  const actionId = req.body.action;
+  const actionId = req.body.action_id || req.body.action;
   const action = manifest.actions.find(a => a.id === actionId);
 
   if (!action) {
