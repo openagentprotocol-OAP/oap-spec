@@ -226,6 +226,146 @@
         "change_subscription": { "type": "string" }
       }
     },
+    "sessions": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0001 (Coordination Sessions). Declares support for multi turn collaborative sessions with shared state.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "max_participants": { "type": "integer", "minimum": 2 },
+        "max_duration_hours": { "type": "integer", "minimum": 1 },
+        "state_schema": { "type": "string", "format": "uri" },
+        "concurrency_model": { "enum": ["optimistic", "pessimistic", "crdt"] },
+        "resumable_after_disconnect": { "type": "boolean" },
+        "supports_pause": { "type": "boolean" },
+        "supports_handoff": { "type": "boolean" }
+      }
+    },
+    "negotiation": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0002 (Negotiation Protocol). Declares support for structured multi round bargaining.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "categories": {
+          "type": "array",
+          "items": { "enum": ["pricing", "scheduling", "scope", "sla", "terms"] }
+        },
+        "max_rounds": { "type": "integer", "minimum": 1 },
+        "default_validity_minutes": { "type": "integer", "minimum": 1 },
+        "binding_acceptance": { "type": "boolean" },
+        "withdrawal_penalty_terms": { "type": "string", "format": "uri" }
+      }
+    },
+    "standing_permissions": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0003 (Standing Permissions). Declares support for pre authorized recurring invocations.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "max_grants_per_principal": { "type": "integer", "minimum": 1 },
+        "max_grant_duration_days": { "type": "integer", "minimum": 1, "maximum": 365 },
+        "minimum_revocation_check_interval_seconds": { "type": "integer", "minimum": 60 },
+        "supports_push_revocation": { "type": "boolean" }
+      }
+    },
+    "delegation": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0004 (Sub Agent Delegation). Declares support for parent and sub agent invocation trees with cost attribution.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "max_concurrent_sub_agents_per_parent": { "type": "integer", "minimum": 1 },
+        "max_delegation_depth": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "supports_aggregation_receipt": { "type": "boolean" },
+        "billing_modes": {
+          "type": "array",
+          "items": { "enum": ["parent", "sub_agent"] }
+        }
+      }
+    },
+    "canonical_entities": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0005 (Canonical Entity Schemas). Declares which oap.entity.* types the Tool natively supports.",
+      "properties": {
+        "supported": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "versions", "modes"],
+            "properties": {
+              "type": { "type": "string", "pattern": "^oap\\.entity\\.[a-z_]+$" },
+              "versions": { "type": "array", "items": { "type": "string" } },
+              "modes": {
+                "type": "array",
+                "items": { "enum": ["read", "write", "search", "merge"] }
+              }
+            }
+          }
+        },
+        "translation_endpoint": { "type": "string", "format": "uri" }
+      }
+    },
+    "personas": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0006 (Persona and Scope Layer). Declares support for multiple bounded identities per Principal with industry profiles.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "max_scopes_per_principal": { "type": "integer", "minimum": 1 },
+        "supports_industry_profiles": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^oap\\.profile\\.[a-z_]+\\.[a-z_]+$" }
+        },
+        "scope_inheritance_for_sub_agents": { "enum": ["always", "explicit", "never"] }
+      }
+    },
+    "projections": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0007 (Privacy Preserving Projections). Declares support for trust level dependent partial entity disclosure.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "default_trust_level_for_unknown_did": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "supported_profiles": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^oap\\.profile\\.projection\\." }
+        },
+        "trust_evidence_accepted": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "workflows": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0008 (Workflow Composition). Declares support for multi step Action compositions discoverable by intent.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "registry_url": { "type": "string", "format": "uri" },
+        "workflows_published": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^oap\\.workflow\\." }
+        }
+      }
+    },
+    "reputation": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0009 (Reputation and Performance Records). Declares portable reputation publication and dispute endpoints.",
+      "properties": {
+        "publishes_records": { "type": "boolean" },
+        "accepts_records_about_self": { "type": "boolean" },
+        "response_endpoint": { "type": "string", "format": "uri" },
+        "dispute_endpoint": { "type": "string", "format": "uri" }
+      }
+    },
+    "memory_exchange": {
+      "type": "object",
+      "description": "OPTIONAL extension proposed in RFC 0010 (Memory Exchange Protocol). Declares support for granted, scoped exchange of agent memory items between Agents.",
+      "properties": {
+        "supported": { "type": "boolean" },
+        "max_grant_duration_days": { "type": "integer", "minimum": 1, "maximum": 365 },
+        "max_grant_size_items": { "type": "integer", "minimum": 1 },
+        "supported_redaction_profiles": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^oap\\.profile\\.projection\\." }
+        }
+      }
+    },
     "risk_class": { "enum": ["minimal", "limited", "high"] },
     "jurisdictions": {
       "type": "array",
