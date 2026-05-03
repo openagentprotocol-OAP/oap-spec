@@ -71,6 +71,12 @@ To prevent Sybil inflation:
 1. Records are valid only if both Issuer and Subject have a verified `OAPPublisherVerified` credential.
 2. Records from Issuers without an `OAPPublisherVerified` credential are aggregated separately and labelled as "unverified".
 3. Marketplaces MUST disclose how they weight verified versus unverified records.
+4. **Sub Tree Aggregation.** All Issuers that share a common root Principal in their Delegation
+   Tree MUST be aggregated as a single Issuer for the purposes of Reputation weighting. The
+   Trust Anchor walks the `parent_invocation_id` chain to determine the root. Sibling decay
+   per RFC 0011 Section 3.6 applies before all other weighting steps. This closes the attack
+   in which a Principal spawns many Sub Agents that each issue a Performance Record about the
+   same Subject.
 
 ### 3.5 Right to Respond and Right to Be Forgotten
 

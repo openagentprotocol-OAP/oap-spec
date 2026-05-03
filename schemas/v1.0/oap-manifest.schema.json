@@ -277,6 +277,30 @@
         "billing_modes": {
           "type": "array",
           "items": { "enum": ["parent", "sub_agent"] }
+        },
+        "sub_tree_bucket_enforcement": {
+          "type": "boolean",
+          "description": "RFC 0011: Tool aggregates rate limits, budgets, and reputation across the entire Delegation Tree as one Actor."
+        },
+        "requires_anti_sybil_proof": {
+          "type": "array",
+          "description": "RFC 0011: Anti Sybil Proof types accepted at sub agent spawn time.",
+          "items": { "enum": ["VerifiedPrincipal", "DelegationStake", "VerifiableComputation"] }
+        },
+        "minimum_delegation_stake_eur": {
+          "type": "string",
+          "description": "RFC 0011: Refundable stake the parent must commit when DelegationStake proof is required."
+        },
+        "coordinated_behavior_threshold": {
+          "type": "number",
+          "description": "RFC 0011: Coordinated Behavior Score above which the Tool refuses, throttles, or labels invocations.",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "restricted_actions_policy": {
+          "type": "string",
+          "description": "RFC 0011: Policy applied to Restricted Actions (reputation issuance, marketplace voting, negotiation bids, governance polls).",
+          "enum": ["platform_default", "stricter", "by_explicit_grant_only"]
         }
       }
     },
