@@ -19,5 +19,6 @@ Normative JSON Schema 2020-12 documents for the Open Agent Protocol, version 1.0
 | `oap-procurement-intent.schema.json` | Procurement Intent (RFC 0013 § 3.4) |
 | `oap-offer.schema.json` | Provider Offer responding to a Procurement Intent (RFC 0013 § 3.4) |
 | `oap-settlement-statement.schema.json` | Aggregated billing statement for a window (RFC 0013 § 3.5, § 3.10) |
+| `oap-commerce-primitive.schema.json` | Five axis Commerce Primitive (RFC 0014) |
 
 Schemas are versioned independently of the specification text. Conformance is asserted against this directory in combination with `spec/v1.0/OAP-CORE-1.0.md`.

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-commerce-primitive.schema.json",
+  "title": "OAP Commerce Primitive",
+  "description": "Five axis generalization of commerce models defined in RFC 0014. Every commercial offer in the agent economy is expressible as a single point in this space.",
+  "type": "object",
+  "properties": {
+    "preset": {
+      "type": "string",
+      "description": "Optional named preset from RFC 0014 section 4. When present the five axes are implied and SHOULD be omitted, or, if present, MUST not contradict the preset.",
+      "enum": [
+        "per_invocation",
+        "per_outcome",
+        "per_token_knowledge",
+        "per_capability",
+        "per_delegation",
+        "retail_purchase",
+        "subscription",
+        "metered_utility",
+        "marketplace_intermediation",
+        "advertising",
+        "professional_service",
+        "licensing",
+        "lease",
+        "lending",
+        "insurance"
+      ]
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": ["good", "knowledge", "capability", "attention", "risk", "capital", "time", "intermediation"]
+    },
+    "transfer_pattern": {
+      "type": "string",
+      "enum": ["ownership_transfer", "access_grant", "action_delegation", "risk_pooling", "intermediation", "capital_lending"]
+    },
+    "settlement_trigger": {
+      "type": "string",
+      "enum": ["on_invocation", "on_outcome", "on_schedule", "on_event", "on_claim", "on_consumption"]
+    },
+    "pricing_function": {
+      "type": "string",
+      "enum": ["fixed", "metered", "auction", "formula", "negotiated", "reputation_weighted"]
+    },
+    "risk_allocation": {
+      "type": "string",
+      "enum": ["buyer", "seller", "mutual_pool", "escrow", "stake", "third_party_guarantor"]
+    },
+    "unit": {
+      "type": "string",
+      "description": "Unit of metering, for example token, byte, citation, call, knowledge_node, month, claim."
+    },
+    "price_per_unit": {
+      "type": "number",
+      "minimum": 0
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 code or token symbol."
+    },
+    "premium_per_period": {
+      "type": "number",
+      "minimum": 0,
+      "description": "For risk pooling primitives."
+    },
+    "period_days": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pricing_parameters": {
+      "type": "object",
+      "description": "Open object for formula or auction parameters, including reserve_price, surge_multiplier_uri, reputation_weight_function_uri.",
+      "additionalProperties": true
+    }
+  },
+  "anyOf": [
+    { "required": ["preset"] },
+    { "required": ["resource_type", "transfer_pattern", "settlement_trigger", "pricing_function", "risk_allocation"] }
+  ],
+  "additionalProperties": false
+}

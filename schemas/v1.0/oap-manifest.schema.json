@@ -130,8 +130,11 @@
             },
             "embedding_catalog_uri": { "type": "string", "format": "uri" },
             "audit_endpoint": { "type": "string", "format": "uri" }
-          }
-        }
+          }        },
+        "primitives": {
+          "type": "array",
+          "description": "Commerce Primitives per RFC 0014. Each entry is a five axis description of an offered commerce model. Providers MAY mix any number of primitives.",
+          "items": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-commerce-primitive.schema.json" }        }
       }
     },
     "pricing": {

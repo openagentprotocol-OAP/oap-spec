@@ -42,7 +42,8 @@
         "delegation_endpoint": { "type": "string", "format": "uri", "description": "Endpoint that accepts Task Orders. Required for per_delegation per RFC 0013 § 3.8." },
         "budget_window_days": { "type": "integer", "minimum": 1, "description": "Budget window length for per_capability per RFC 0013 § 3.6." },
         "renewal_behavior": { "enum": ["roll_over", "expire", "prorate"], "description": "Behavior at window close for per_capability." },
-        "stake_required": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$", "description": "Stake amount for per_delegation per RFC 0013 § 3.8." }
+        "stake_required": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$", "description": "Stake amount for per_delegation per RFC 0013 § 3.8." },
+        "primitive": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-commerce-primitive.schema.json", "description": "Optional Commerce Primitive per RFC 0014. When present it overrides 'type' for this action and supplies a full five axis description." }
       }
     },
     "cost_disclosure": {
