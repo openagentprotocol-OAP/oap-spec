@@ -1,0 +1,29 @@
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Ask a design question
+
+        For questions about how to model something in OAP, which RFC applies, or how a primitive composes with another. For spec defects, open an Issue. For new proposals, use the RFC Proposal template.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What you are building, what you have read in the spec, and where you got stuck.
+    validations:
+      required: true
+
+  - type: input
+    id: relevant
+    attributes:
+      label: Relevant RFCs or schemas
+      placeholder: "RFC 0020, oap-manifest.schema.json"

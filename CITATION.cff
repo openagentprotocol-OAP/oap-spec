@@ -1,0 +1,103 @@
+cff-version: 1.2.0
+message: "If you use the Open Agent Protocol in your research, please cite it using the metadata in this file."
+title: "Open Agent Protocol"
+abstract: >-
+  The Open Agent Protocol is a vendor neutral standard for how autonomous
+  agents discover, invoke, pay for, govern, and audit the tools and services
+  they use. It defines a single conformance surface that unifies identity,
+  capability description, structured invocation, monetization, multi agent
+  coordination, confidentiality enforcement, and tamper evident auditing.
+type: software
+version: "1.0.0-pwd"
+date-released: 2026-05-01
+license:
+  - Apache-2.0
+  - CC-BY-4.0
+url: "https://openagentprotocol.org"
+repository-code: "https://github.com/openagentprotocol-OAP/oap-spec"
+repository-artifact: "https://github.com/openagentprotocol-OAP/oap-spec/releases"
+keywords:
+  - autonomous agents
+  - multi agent systems
+  - agent protocol
+  - interoperability
+  - agent economy
+  - decentralized identity
+  - verifiable credentials
+  - agent query language
+  - conformance
+  - policy engine
+  - tamper evident audit
+identifiers:
+  - type: url
+    value: "https://openagentprotocol.org"
+    description: Project website
+  - type: url
+    value: "https://github.com/openagentprotocol-OAP/oap-spec"
+    description: Specification repository
+  - type: other
+    value: "OAP-CORE-1.0"
+    description: Document identifier of the core specification
+authors:
+  - name: "Open Agent Protocol Working Groups"
+    website: "https://openagentprotocol.org/governance"
+preferred-citation:
+  type: report
+  title: "Open Agent Protocol, Version 1.0 Public Working Draft"
+  authors:
+    - name: "Open Agent Protocol Working Groups"
+  year: 2026
+  month: 5
+  institution:
+    name: "Open Agent Protocol Stewards"
+  number: "OAP-CORE-1.0"
+  url: "https://openagentprotocol.org/spec"
+  abstract: >-
+    The normative specification of the Open Agent Protocol, including the
+    Manifest, Request Envelope, Response Envelope, Receipt, Decision Record,
+    Audit Log, Agent Query Language, Verifiable Index, Manifest Subscription
+    Protocol, and the four layer Policy Stack. The document references 24
+    Request for Comments documents and 10 supporting whitepapers.
+references:
+  - type: report
+    title: "RFC 0020: Agent Query Language"
+    authors:
+      - name: "OAP Working Group on the Agent Query Language"
+    year: 2026
+    url: "https://openagentprotocol.org/rfcs/0020"
+  - type: report
+    title: "RFC 0021: Verifiable Indexes"
+    authors:
+      - name: "OAP Working Group on Verifiable Indexes"
+    year: 2026
+    url: "https://openagentprotocol.org/rfcs/0021"
+  - type: report
+    title: "RFC 0022: Manifest Subscription Protocol"
+    authors:
+      - name: "OAP Working Group on the Manifest Subscription Protocol"
+    year: 2026
+    url: "https://openagentprotocol.org/rfcs/0022"
+  - type: report
+    title: "RFC 0023: Agent Native Storage Substrate"
+    authors:
+      - name: "OAP Working Group on the Agent Native Storage Substrate"
+    year: 2026
+    url: "https://openagentprotocol.org/rfcs/0023"
+  - type: report
+    title: "RFC 0024: Schema Negotiation and Versioning"
+    authors:
+      - name: "OAP Working Group on Schema Negotiation and Versioning"
+    year: 2026
+    url: "https://openagentprotocol.org/rfcs/0024"
+  - type: article
+    title: "Databases for the Agent Economy"
+    authors:
+      - name: "OAP Data Working Group"
+    year: 2026
+    url: "https://openagentprotocol.org/papers/databases-for-the-agent-economy"
+  - type: article
+    title: "From Storefront to Manifest"
+    authors:
+      - name: "OAP Commerce Working Group"
+    year: 2026
+    url: "https://openagentprotocol.org/papers/from-storefront-to-manifest"

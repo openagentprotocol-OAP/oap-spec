@@ -1,0 +1,64 @@
+labels: ["implementer-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Share an implementation, integration, or interoperability report
+
+        Implementer reports help the Working Groups understand which parts of the specification are clear, ambiguous, or impractical. Reports become input to the next minor version.
+
+  - type: input
+    id: implementation
+    attributes:
+      label: Implementation name
+      placeholder: "your.product, your.library, your.platform"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: OAP version targeted
+      placeholder: "1.0 PWD"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: level
+    attributes:
+      label: Conformance level claimed or targeted
+      options: [L0, L1, L2, L3, L4, L5]
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What you built, what role it plays (Agent, Resolver, Match Broker, Auditor, other), what it does well, what is hard.
+    validations:
+      required: true
+
+  - type: textarea
+    id: ambiguities
+    attributes:
+      label: Specification ambiguities encountered
+      description: Sections of the spec or RFCs where the intended behavior was unclear and how you resolved it.
+
+  - type: textarea
+    id: schema-issues
+    attributes:
+      label: Schema or wire format issues
+      description: Cases where the schemas were too strict, too loose, or surprised you.
+
+  - type: textarea
+    id: results
+    attributes:
+      label: Conformance suite results
+      description: If you ran reference/validator or test-suite/runner.js, paste the relevant output.
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact
+      description: Optional. GitHub handle, email, or organization.

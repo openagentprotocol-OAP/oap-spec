@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discussions
+    url: https://github.com/openagentprotocol-OAP/oap-spec/discussions
+    about: For RFC drafting, design questions, implementer reports, and general questions, please open a Discussion instead of an Issue.
+  - name: Security disclosures
+    url: https://github.com/openagentprotocol-OAP/oap-spec/security/policy
+    about: Report security vulnerabilities privately following the policy in SECURITY.md.

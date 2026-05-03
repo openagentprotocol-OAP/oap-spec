@@ -1,0 +1,70 @@
+labels: ["rfc-proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Propose a new RFC or a substantive change to an existing RFC
+
+        Substantive protocol changes follow the RFC process documented at [governance/RFC-PROCESS.md](https://github.com/openagentprotocol-OAP/oap-spec/blob/main/governance/RFC-PROCESS.md).
+
+        Editorial corrections do not require an RFC. Open a Pull Request against the latest published draft instead.
+
+  - type: input
+    id: title
+    attributes:
+      label: Working title
+      placeholder: "RFC 00XX: <title>"
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem does this RFC solve. What concrete use cases does it unlock or block.
+    validations:
+      required: true
+
+  - type: textarea
+    id: design
+    attributes:
+      label: Design summary
+      description: A concise description of the proposed wire format, semantics, and conformance requirements. Reference existing RFCs and schemas where relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other designs were considered. Why is the proposed design preferred.
+    validations:
+      required: true
+
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and migration
+      description: Does this RFC introduce a breaking change. What is the migration path for existing implementations and Manifests.
+
+  - type: textarea
+    id: security
+    attributes:
+      label: Security and privacy
+      description: New attack surface, confidentiality implications, audit and policy implications.
+
+  - type: dropdown
+    id: working-group
+    attributes:
+      label: Suggested Working Group
+      options:
+        - WG-CORE
+        - WG-COMMERCE
+        - WG-POLICY
+        - WG-DATA
+        - WG-IDENTITY
+        - WG-CONFORMANCE
+        - WG-GOVERNANCE
+        - Unsure
+    validations:
+      required: true
