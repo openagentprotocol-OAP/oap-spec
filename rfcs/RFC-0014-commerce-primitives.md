@@ -1,12 +1,12 @@
 # RFC 0014: Commerce Primitives, A Generalized Commercial Layer
 
-- Status: Draft
-- Working Group: Commercial Layer
-- Targets: 1.2
-- Authors: Open Agent Protocol Foundation
-- Created: 2026-05-03
-- Supersedes: None
-- Extends: RFC 0013
+**Status:** Draft
+**Author(s):** OAP Foundation, Working Group on Commercial Layer
+**Created:** 2026-05-03
+**Working Group:** Commercial Layer
+**Targets:** 1.2
+**Supersedes:** None
+**Extends:** RFC 0013
 
 ## Abstract
 
