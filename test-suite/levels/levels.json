@@ -60,6 +60,23 @@
       "behavior/peer-witness-independence.test.js",
       "behavior/registry-anchor.test.js"
     ],
+    "L5-FINANCE": [
+      "behavior/cooling-off.test.js",
+      "behavior/escalation.test.js",
+      "behavior/multi-agent-coordination.test.js",
+      "behavior/conflict-resolution.test.js",
+      "behavior/external-audit-attestation.test.js",
+      "behavior/peer-witness-min-3.test.js",
+      "behavior/peer-witness-independence.test.js",
+      "behavior/registry-anchor.test.js",
+      "behavior/model-inventory.test.js",
+      "behavior/symbiotic-escalation.test.js",
+      "behavior/disparate-impact.test.js",
+      "behavior/adverse-action-notice.test.js",
+      "behavior/champion-challenger.test.js",
+      "behavior/counterfactual-explanation.test.js",
+      "behavior/regulated-peer-witness.test.js"
+    ],
     "W1": [],
     "W2": [],
     "W3": [],
