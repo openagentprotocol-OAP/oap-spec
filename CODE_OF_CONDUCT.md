@@ -18,12 +18,12 @@ The Open Agent Protocol community is committed to providing a harassment free, i
 
 ## Reporting
 
-Concerns may be reported to the Foundation Conduct Committee at `conduct@openagentprotocol.eu`. Reports are handled confidentially. Reporters are protected under the Foundation Whistleblower Program from retaliation.
+Concerns may be reported to `conduct@openagentprotocol.eu`. Reports are handled confidentially by a rotating panel of three Maintainers that excludes any Maintainer involved in the report. Reporters are protected from retaliation.
 
 ## Enforcement
 
-The Conduct Committee may, after due process, issue warnings, suspend participation, or revoke contributor privileges. Decisions may be appealed to the Foundation Board.
+The conduct panel may, after due process, issue warnings, suspend participation, or revoke contributor privileges. Decisions may be appealed to the full Peer Review Quorum.
 
 ## Attribution
 
-This Code of Conduct is informed by established norms in standards organizations and open source projects, adapted to the OAP governance structure.
+This Code of Conduct is adapted from the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/), tailored to the OAP governance structure.
