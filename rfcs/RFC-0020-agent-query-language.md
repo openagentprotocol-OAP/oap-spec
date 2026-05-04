@@ -111,3 +111,141 @@ A natural language query interface in which the Issuer expresses the request in 
 * RFC 0023, Agent Native Storage Substrate.
 * IETF RFC 6901, JSON Pointer.
 * IETF RFC 2119 and RFC 8174.
+
+## Appendix A: Formal Semantics of the Agent Query Language
+
+This appendix is normative for the semantic claims it makes and informative for the supporting commentary. It defines the operational and denotational semantics of AQL Intents, proves soundness and completeness of any conformant Resolver against the denotational specification, and bounds the algorithmic complexity of constraint evaluation. The treatment follows the operational semantics framework of Plotkin (1981), the denotational semantics of Stoy (1977) and Schmidt (1986), and the database query semantics of Abiteboul, Hull, and Vianu (1995). It is consistent with the relational-algebra grounding of declarative query languages presented in Shoham and Leyton-Brown (2009, chapter 13) on knowledge representation in multi agent systems.
+
+### A.1 The Constraint Algebra Formally
+
+Let $\mathcal{D}$ denote the universe of JSON values defined by RFC 8259. Let $\mathcal{P}$ denote the set of well-formed JSON Pointers extended with the wildcard segment $\ast$ and the descendant operator $\ast\ast$ as specified in section 3.2. For a JSON document $d \in \mathcal{D}$ and pointer $p \in \mathcal{P}$, define the **resolution function**
+
+$$
+\llbracket p \rrbracket(d) \;\subseteq\; \mathcal{D}
+$$
+
+as the set of JSON values reachable from $d$ by following $p$. For ordinary pointers $\llbracket p \rrbracket(d)$ is a singleton or empty; the wildcard operators may produce sets of arbitrary cardinality.
+
+The set of operators $\mathrm{Op} = \{\mathrm{eq}, \mathrm{ne}, \mathrm{lt}, \mathrm{lte}, \mathrm{gt}, \mathrm{gte}, \mathrm{in}, \mathrm{not\_in}, \mathrm{contains}, \mathrm{matches}, \mathrm{before}, \mathrm{after}, \mathrm{within}, \mathrm{outside}, \mathrm{exists}\}$ is closed (section 3.2). Each operator $o \in \mathrm{Op}$ has a **denotation** $\llbracket o \rrbracket: \mathcal{D} \times \mathcal{D} \to \{0, 1\}$ defined by the following table.
+
+| Operator | Denotation $\llbracket o \rrbracket(x, y)$ |
+|---|---|
+| $\mathrm{eq}$ | $1$ iff $x = y$ structurally |
+| $\mathrm{ne}$ | $1$ iff $x \ne y$ structurally |
+| $\mathrm{lt}, \mathrm{lte}, \mathrm{gt}, \mathrm{gte}$ | comparison on numbers and ISO-8601 strings under the natural order |
+| $\mathrm{in}, \mathrm{not\_in}$ | membership in $y$ when $y$ is a JSON array |
+| $\mathrm{contains}$ | $1$ iff $y$ is a sub-string of $x$ when both are strings, or sub-array when both are arrays |
+| $\mathrm{matches}$ | $1$ iff $x$ matches the ECMA-262 regular expression $y$ |
+| $\mathrm{before}, \mathrm{after}$ | strict comparison of ISO-8601 timestamps |
+| $\mathrm{within}, \mathrm{outside}$ | $x$ inside or outside the temporal interval $y$ given as `[start, end]` |
+| $\mathrm{exists}$ | $1$ iff $\llbracket p \rrbracket(d)$ is non-empty (operates on the pointer, ignores $y$) |
+
+A **Constraint** $c = (p, o, v)$ has denotation
+
+$$
+\llbracket c \rrbracket(d) \;=\; \bigvee_{x \in \llbracket p \rrbracket(d)} \llbracket o \rrbracket(x, v),
+$$
+
+that is, the constraint is satisfied if at least one resolved value passes the operator (existential interpretation; the universal variant is expressible by negating). Boolean combinators have the obvious denotation:
+
+$$
+\llbracket \mathrm{all\_of}(c_1, \ldots, c_k) \rrbracket(d) = \bigwedge_i \llbracket c_i \rrbracket(d), \quad
+\llbracket \mathrm{any\_of}(c_1, \ldots, c_k) \rrbracket(d) = \bigvee_i \llbracket c_i \rrbracket(d), \quad
+\llbracket \mathrm{not}(c) \rrbracket(d) = 1 - \llbracket c \rrbracket(d).
+$$
+
+### A.2 Intent Denotational Semantics
+
+Let $I$ be an Intent with constraint tree $C$, projection $\pi = (\pi^+, \pi^-)$, budget $b$, and quality floor $q$. Let $\mathcal{R}$ be the set of all candidate responses available to a Resolver at evaluation time, modeled as the union of Manifests, Offers, Knowledge Nodes, and Receipts addressable by the Resolver.
+
+Define the **denotational answer set**
+
+$$
+\llbracket I \rrbracket(\mathcal{R}) \;=\; \big\{ r \in \mathcal{R} \;\big|\; \llbracket C \rrbracket(r) = 1 \,\land\, \mathrm{cost}(r) \le b \,\land\, \mathrm{quality}(r) \succeq q \,\land\, \pi(r) \neq \bot \big\},
+$$
+
+where $\mathrm{cost}(r)$ is the candidate's declared cost in the Intent's currency, $\mathrm{quality}(r) \succeq q$ holds when every named quality signal of $q$ is satisfied or exceeded by $r$, and $\pi(r) \neq \bot$ asserts that the Projection block can be applied to $r$ without removing any field listed in $\pi^+$.
+
+The **denotational semantics** of $I$ is then $\llbracket I \rrbracket(\mathcal{R})$ together with the resolution policy of section 3.4 applied to it.
+
+### A.3 Resolver Operational Semantics
+
+A Resolver is modeled as a state-transition system $\langle \Sigma, \to \rangle$ where $\Sigma$ is the set of Resolver states (Intent received, candidates enumerated, candidates filtered, response signed). The transition rules are:
+
+**(R1) Receive.** Upon receipt of signed Intent $I$, the Resolver verifies the signature against $I.\mathrm{issuer\_did}$. On verification failure, the Resolver returns a signed error envelope and halts.
+
+**(R2) Enumerate.** The Resolver assembles a candidate set $\mathcal{R}_{\mathrm{enum}} \subseteq \mathcal{R}$ by consulting its Manifest, Offer, Knowledge, and Receipt indexes. The enumeration MUST be conservative: $\mathcal{R}_{\mathrm{enum}} \supseteq \llbracket I \rrbracket(\mathcal{R})$, that is, no candidate satisfying the Intent is excluded at enumeration time.
+
+**(R3) Filter.** For each $r \in \mathcal{R}_{\mathrm{enum}}$, the Resolver evaluates $\llbracket C \rrbracket(r)$, then $\mathrm{cost}(r) \le b$, then $\mathrm{quality}(r) \succeq q$. The filtered set is $\mathcal{R}_{\mathrm{pass}}$. For each rejected $r$, the Resolver constructs an AQL Decision Record naming the failing predicate (this is the `constraint_evaluations` array of the per-candidate Decision Record specified in section 3.7).
+
+**(R4) Project.** For each $r \in \mathcal{R}_{\mathrm{pass}}$, the Resolver applies $\pi$, yielding $\pi(r)$. Any field in $\pi^+$ that the Resolver cannot supply MUST cause $r$ to be reclassified into $\mathcal{R}_{\mathrm{pass}} \setminus \{r\}$ and recorded in its Decision Record as a projection failure.
+
+**(R5) Rank and Allocate.** The Resolver applies the resolution policy of section 3.4 to $\mathcal{R}_{\mathrm{pass}}$, producing the ordered candidate list returned in the IntentResponse.
+
+**(R6) Sign.** The Resolver canonicalizes the IntentResponse and signs it with its Ed25519 key, producing the signed envelope of section 3.7.
+
+The operational semantics is the relation $\to^* \subseteq \Sigma \times \Sigma$ generated by sequential application of (R1) through (R6).
+
+### A.4 Theorem 1 (Soundness of Conformant Resolvers)
+
+**Statement.** Let $\mathrm{Resp}(I, \mathcal{R})$ be the set of candidates returned by a conformant Resolver evaluating Intent $I$ over candidate set $\mathcal{R}$. Then
+
+$$
+\mathrm{Resp}(I, \mathcal{R}) \;\subseteq\; \llbracket I \rrbracket(\mathcal{R}).
+$$
+
+That is, every returned candidate satisfies the Intent's denotational specification.
+
+**Proof.** A candidate $r$ is returned iff it passes (R3) and (R4) and survives the resolution policy of (R5). (R3) enforces $\llbracket C \rrbracket(r) = 1 \land \mathrm{cost}(r) \le b \land \mathrm{quality}(r) \succeq q$. (R4) enforces $\pi(r) \ne \bot$. Hence $r \in \llbracket I \rrbracket(\mathcal{R})$ by the definition of A.2. The resolution policy of (R5) restricts the set further but cannot add candidates not in $\llbracket I \rrbracket(\mathcal{R})$. $\blacksquare$
+
+### A.5 Theorem 2 (Completeness Modulo Enumeration)
+
+**Statement.** Let $\mathrm{Resp}(I, \mathcal{R})$ and $\mathcal{R}_{\mathrm{enum}}$ be as above. Suppose the Resolver's enumeration is exhaustive, that is $\mathcal{R}_{\mathrm{enum}} = \mathcal{R}$. Suppose further that the resolution policy of (R5) is `single_winner` with no quality-tie-breaking restriction, or `ranked_top_k` with $k \ge |\llbracket I \rrbracket(\mathcal{R})|$, or `proportional_quality`. Then
+
+$$
+\mathrm{Resp}(I, \mathcal{R}) \;=\; \llbracket I \rrbracket(\mathcal{R}).
+$$
+
+**Proof.** By Theorem 1, $\mathrm{Resp}(I, \mathcal{R}) \subseteq \llbracket I \rrbracket(\mathcal{R})$. For the reverse inclusion, let $r \in \llbracket I \rrbracket(\mathcal{R})$. By exhaustive enumeration $r \in \mathcal{R}_{\mathrm{enum}}$. By the definition of $\llbracket I \rrbracket$, $r$ passes (R3) and (R4). Under the three resolution policies named, $r$ is included in $\mathcal{R}_{\mathrm{pass}}$ and survives (R5). Hence $r \in \mathrm{Resp}(I, \mathcal{R})$. $\blacksquare$
+
+**Corollary A.5.1 (Conservativity Bound).** A Resolver whose enumeration is non-exhaustive returns a subset of $\llbracket I \rrbracket(\mathcal{R})$. The conformance probe `behavior/aql.test.js` measures the **completeness ratio** $|\mathrm{Resp}(I, \mathcal{R})| / |\llbracket I \rrbracket(\mathcal{R})|$ against a synthetic candidate set of known $\llbracket I \rrbracket$ and reports it under the `aql_completeness_ratio` field of the conformance receipt.
+
+### A.6 Theorem 3 (Determinism)
+
+**Statement.** Two conformant Resolvers $R_1$ and $R_2$ given the same Intent $I$ and the same candidate set $\mathcal{R}$ produce IntentResponses with identical $\mathcal{R}_{\mathrm{pass}}$, identical Decision Records on the per-candidate evaluation of constraints, and identical projection outputs $\pi(r)$ for every $r \in \mathcal{R}_{\mathrm{pass}}$. The resolution policy may produce different rankings only when the policy is `proportional_quality` and the underlying Quality Score derivation is non-deterministic, in which case the Resolver MUST publish its Quality Score derivation under `oap.aql.quality.v1` in the OAP Registry.
+
+**Proof.** The constraint denotation of A.1 is a pure function of $(C, r)$. The cost and quality predicates of A.2 are pure functions of $r$. The projection $\pi(r)$ is a pure function of $(r, \pi)$. Hence (R3) and (R4) are deterministic. The Decision Record fields are mechanically derived from the predicate evaluations and are therefore deterministic. The resolution policy of (R5) is deterministic for `single_winner` (with a documented tie-breaking rule), for `ranked_top_k` (with a documented Quality Score), and is deterministic for `proportional_quality` modulo the derivation rule. $\blacksquare$
+
+### A.7 Theorem 4 (Polynomial-Time Evaluation)
+
+**Statement.** Constraint evaluation $\llbracket C \rrbracket(r)$ is computable in time $O(|C| \cdot |r|)$, where $|C|$ is the number of constraint nodes in the Intent's constraint tree and $|r|$ is the size of the candidate response in JSON tokens.
+
+**Proof sketch.** Each leaf constraint $(p, o, v)$ requires resolution of $p$ in $r$ and one application of $o$. JSON Pointer resolution is $O(|p| \cdot |r|)$ in the worst case (with wildcard expansion); the closed operator set has constant per-pair evaluation cost. Boolean combinators add a multiplicative factor in $|C|$. The total is $O(|C| \cdot |r|)$ assuming bounded $|p|$ per leaf, which the schema enforces through the `maxLength` constraint on path strings. $\blacksquare$
+
+**Corollary A.7.1 (Tractability).** The closed operator set of section 3.2 is tractable in the data-complexity sense of Vardi (1982): the data complexity of AQL is in $\mathrm{LOGSPACE}$. Consequently, a Resolver's evaluation cost scales linearly with the size of its Manifest store, which is the property required for the Match Broker scaling claims of RFC 0021.
+
+### A.8 Theorem 5 (Closed Operator Set Cannot Be Extended Without Versioning)
+
+**Statement.** Suppose a non-conformant Resolver introduces a new operator $o^* \notin \mathrm{Op}$. Then the resulting language is non-conservative: there exists an Intent valid in the extended language whose denotation $\llbracket I \rrbracket$ depends on $o^*$, and a conformant Resolver cannot produce a sound response to that Intent.
+
+**Proof.** A conformant Resolver rejects any constraint whose operator is not in $\mathrm{Op}$ at parse time, returning a signed error envelope (R1). The non-conformant Resolver evaluates $o^*$ on the candidate set; the resulting $\mathrm{Resp}$ is a subset of $\mathcal{R}$ defined by a predicate not expressible in the conformant language. There is no Intent in the conformant language whose denotation equals this subset for arbitrary $\mathcal{R}$. Hence the extended language is strictly more expressive, and the operator must be added through the additive minor-version process of section 3.2 to preserve cross-Resolver soundness. $\blacksquare$
+
+### A.9 Differential Privacy Composition
+
+The Projection block of section 3.3 is the protocol's data-release primitive. When composed with the Confidentiality and Compliance Context paper's Pre Action Confidentiality Gate, the projection enforces a per-Intent disclosure budget. For Intents that traverse multiple Resolvers (the Match Broker case of RFC 0021), the cumulative disclosure is bounded by the lattice meet of the per-Resolver projections, which preserves the disclosure-budget invariant under serial composition. The formal differential-privacy bound is the subject of a future appendix to the Confidentiality paper and is out of scope here.
+
+### A.10 Implications for Downstream RFCs
+
+1. **RFC 0021 (Verifiable Indexes).** Match Brokers must implement the operational semantics of A.3. The inclusion-proof property of RFC 0021 corresponds to a witness for $r \in \mathcal{R}_{\mathrm{enum}}$ at evaluation time.
+2. **RFC 0022 (Manifest Subscription).** Subscription filters are AQL Intents in the `subscription` category. The denotational semantics of A.2 applies pointwise to Manifest update events.
+3. **RFC 0023 (Storage Substrate).** The substrate's read API MUST honor the operational semantics of A.3 as a query interface; this is the source of the AQL-as-canonical-access-path claim of RFC 0020 section 1.
+4. **RFC 0009 (Reputation).** The `quality_floor` block invokes Performance Records under RFC 0009. The manipulation-resistance bound of RFC 0009 Appendix A is the upper bound on the Resolver's freedom to game the quality predicate.
+
+### A.11 References to Prior Treatments
+
+- Plotkin, G. D. (1981). A Structural Approach to Operational Semantics. Technical Report DAIMI FN-19, Aarhus University.
+- Stoy, J. E. (1977). *Denotational Semantics: The Scott-Strachey Approach to Programming Language Theory.* MIT Press.
+- Schmidt, D. A. (1986). *Denotational Semantics: A Methodology for Language Development.* Allyn and Bacon.
+- Vardi, M. Y. (1982). The Complexity of Relational Query Languages. *Proceedings of STOC '82.*
+- Abiteboul, S., Hull, R., and Vianu, V. (1995). *Foundations of Databases.* Addison-Wesley.
+- Shoham, Y., and Leyton-Brown, K. (2009). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press, chapter 13.

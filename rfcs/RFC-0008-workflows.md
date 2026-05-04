@@ -183,3 +183,104 @@ AssistNet operates a Workflow Engine in production with named compositions for b
 
 1. OAP-CORE-1.0, Section 14 (Capabilities Discovery).
 2. RFC 0001 (Coordination Sessions), RFC 0002 (Negotiation Protocol).
+
+## Appendix A: Joint Intention Semantics for OAP Workflows
+
+This appendix is normative for the joint-intention claims it makes and informative for the supporting commentary. It provides the formal semantics of cooperation that determines, for every Workflow whose Steps are executed by two or more Agents, what each participating Agent is committed to do, what each is entitled to expect of the others, and under what conditions the joint enterprise may be unilaterally dissolved. The treatment follows the joint intentions theory of Cohen and Levesque (1990, 1991), the SharedPlans framework of Grosz and Sidner (1990) and Grosz and Kraus (1996), the team-formation analysis of Tambe (1997) STEAM, and the textbook treatment of Wooldridge (2009, chapter 9) and Shoham and Leyton-Brown (2009, chapters 8-9). The epistemic substrate is supplied by Appendix A of RFC 0010.
+
+### A.1 Workflows as Multi-Agent Plans
+
+A Workflow $W = \langle S, D, \rho, \mu \rangle$ consists of:
+
+- $S = \{s_1, \ldots, s_n\}$, the set of Steps,
+- $D \subseteq S \times S$, the directed Step-Dependency relation (acyclic by section 3.2),
+- $\rho: S \to \mathcal{A}$, the role assignment from Steps to Agent DIDs (drawn from the Step's `tool` field after variable resolution),
+- $\mu: S \to S^{\le 1}$, the partial Compensating-Step map of section 3.5.
+
+A **Workflow Instance** $I$ is an execution of $W$ with concrete inputs at a specific time, producing a sequence of Step Receipts. The set of Agents participating in $I$ is $\mathcal{A}_W = \mathrm{range}(\rho)$, the **team**.
+
+### A.2 Individual and Joint Commitment
+
+Following Cohen and Levesque (1990), an Agent $a$ has an **individual commitment** to bring about $\varphi$ when:
+
+$$
+\mathrm{ICom}(a, \varphi) \;\equiv\; \mathrm{Goal}(a, \varphi) \,\land\, \mathrm{Bel}(a, \neg \varphi) \,\land\, \mathrm{Until}\big(\varphi \,\lor\, \mathrm{Bel}(a, \Box \neg \varphi) \,\lor\, \mathrm{Bel}(a, \mathrm{Irrelevant}(\varphi)),\, \mathrm{Goal}(a, \varphi)\big)
+$$
+
+read as "$a$ persists in pursuing $\varphi$ until $\varphi$ holds, until $a$ believes $\varphi$ is unattainable, or until $a$ believes $\varphi$ is no longer relevant". $\mathrm{Bel}$ and $\mathrm{Goal}$ are the standard KD45 modal operators of Appendix A.2 of RFC 0010, and $\mathrm{Until}$ is the temporal operator of linear temporal logic.
+
+A team $\mathcal{A}_W$ has a **joint commitment** to $\varphi$ (the Workflow outcome) when:
+
+$$
+\mathrm{JCom}(\mathcal{A}_W, \varphi) \;\equiv\; C^B_{\mathcal{A}_W}\big(\mathrm{ICom}(a, \varphi) \text{ for every } a \in \mathcal{A}_W\big) \,\land\, \mathrm{JPersist}(\mathcal{A}_W, \varphi),
+$$
+
+where $C^B_{\mathcal{A}_W}$ is common belief among the team (Appendix A.4 of RFC 0010), and $\mathrm{JPersist}$ is the joint-persistence requirement that no team member may unilaterally drop the goal until the team has common belief that one of the three exit conditions of $\mathrm{ICom}$ holds.
+
+### A.3 The Workflow Receipt as Common-Belief Anchor
+
+The Workflow Receipt of section 3.4 is the protocol mechanism by which $C^B_{\mathcal{A}_W}$ is mechanically established. The Receipt is a single document signed by the Workflow Engine, listing all Step Receipt identifiers and the resolved variable bindings. Each team member that observes the Workflow Receipt acquires belief that:
+
+1. Every other team member's Step Receipts are present (verifiable by signature),
+2. Every other team member's commitments under the Workflow definition were operationally executed (verifiable by Step Receipt outcome fields),
+3. The Workflow definition itself was signed by its publisher (section 5.1).
+
+Common belief follows by induction on the depth of the BFS over team members observing the Workflow Receipt, exactly as in the dynamic epistemic logic update of Appendix A.5 of RFC 0010.
+
+### A.4 Theorem 1 (Soundness of Joint Commitment under OAP Workflows)
+
+**Statement.** Let $W$ be a Workflow with team $\mathcal{A}_W$, signed by its publisher and accepted by every team member through the Manifest declaration of section 3.6. Let $\varphi_W$ be the post-condition of $W$ as defined by the `outcome_data_hash` field of the Workflow Receipt. If every team member has signed an individual Step Receipt for its assigned Steps, then at the moment the Workflow Receipt is issued:
+
+$$
+\mathrm{JCom}(\mathcal{A}_W, \varphi_W).
+$$
+
+**Proof.** Each team member's Step Receipt is evidence of $\mathrm{ICom}(a, \varphi_a)$, where $\varphi_a$ is the conjunction of $a$'s assigned Step post-conditions. By the dependency relation $D$, $\bigwedge_{a \in \mathcal{A}_W} \varphi_a \implies \varphi_W$ (the Steps compose to the Workflow outcome). The Workflow Receipt anchors common belief of $\bigwedge_{a \in \mathcal{A}_W} \mathrm{ICom}(a, \varphi_a)$ by Theorem 1 of RFC 0010 Appendix A applied iteratively over the team. Joint persistence is enforced operationally: a team member that withdraws before completion triggers the compensating-step chain of section 3.5, which the protocol treats as a publicly signed retraction. Hence no unilateral drop is silent. $\blacksquare$
+
+### A.5 Theorem 2 (Compensating Steps Implement Joint-Persistence Exit)
+
+**Statement.** Let $a \in \mathcal{A}_W$ believe $\Box \neg \varphi_a$ (the assigned post-condition is unattainable) at some intermediate Step. Then the Workflow Engine, on receiving $a$'s failure Receipt, MUST execute the Compensating Steps of all prior Steps in reverse dependency order.
+
+**Proof.** Section 3.5 makes this normative. The compensating chain is exactly the joint-persistence exit condition of $\mathrm{JCom}$: it produces a publicly signed acknowledgement that the team has reached the second exit condition of $\mathrm{ICom}$, hence common belief that the goal is no longer pursued. Without this mechanism, $a$'s unilateral failure would leave the rest of the team in ungrounded commitment, which is the Cohen-Levesque (1991) failure mode known as "intention zombification". $\blacksquare$
+
+**Corollary A.5.1 (Atomicity).** A Workflow that completes its Compensating chain restores the system to the pre-Workflow state on every Step that declared a Compensating Step. Workflows that omit Compensating Steps for non-idempotent Steps fail Soundness Theorem 1 on the joint-persistence clause and MUST be flagged by the Workflow Registry of section 3.6.
+
+### A.6 SharedPlans, Recipes, and the Workflow Definition
+
+The Workflow Definition of section 3.2 is a **recipe** in the sense of Grosz and Kraus (1996): a publicly known procedure that the team has accepted as the means to achieve the joint goal. Acceptance is recorded by:
+
+1. The Manifest declaration of section 3.6 (each team member published `workflows.supported = true` and listed the Workflow ID in `workflows_published`).
+2. The signature on each Step's input arguments at execution time (each team member ratifies the Step's parameters as part of its individual commitment).
+
+Grosz and Kraus showed that recipe sharing is necessary but not sufficient for joint action; the additional ingredient is mutual belief in the recipe and in each team member's intent to execute its assigned role. The Workflow Receipt of section 3.4 supplies exactly this mutual belief by recording all Step Receipts in a single signed document that all team members can observe.
+
+### A.7 Theorem 3 (STEAM-Style Reactive Replanning)
+
+**Statement.** Let $W$ be a Workflow with a Branch Step (section 3.1) whose conditional output causes the team to re-evaluate the recipe. Then the OAP protocol attains the reactive-replanning property of Tambe (1997) STEAM: the team reaches common belief of the new recipe within a number of message rounds bounded by the depth of the dependency tree below the Branch.
+
+**Proof sketch.** The Branch Step emits a Step Receipt that contains the selected branch. By section 3.5 the Workflow Engine routes subsequent execution along the selected branch only, and the Step Receipts that follow refer to that branch by identifier. Common belief of the new recipe is acquired in the same way as the original recipe acceptance: each team member observes the chain of Step Receipts containing the branch identifier and updates its accessibility relation accordingly (Appendix A.5 of RFC 0010). The bound on rounds follows from the BFS depth over the post-Branch dependency subtree. $\blacksquare$
+
+### A.8 Joint Commitment Versus Mere Choreography
+
+It is important to distinguish OAP Workflows from a mere choreography of independent calls. A choreography requires only that each Agent execute its assigned action when the predecessor signals readiness; it imposes no joint commitment to the outcome. An OAP Workflow, by contrast, imposes the persistence requirement of Cohen-Levesque: a team member that abandons mid-execution without invoking the compensating chain is operationally non-conformant and triggers the Performance Record slashing of RFC 0009 Appendix A. The distinction matters for the regulatory composition described in `papers/safety-and-policy-stack.md` section 6: Multi-Party Review-bearing Workflows MUST be implemented as joint commitments, not as choreographies, to satisfy the human-oversight obligations of the EU AI Act Article 14.
+
+### A.9 Composition with the Policy Stack
+
+Every Step in a Workflow is gated by the four-layer Policy Stack of `papers/safety-and-policy-stack.md`. Joint commitment composes with the Policy Stack as follows: a team member whose individual commitment is voided by a Policy Stack refusal at any Step transitions the entire team to the joint-persistence exit condition (Theorem 2). The Workflow Engine MUST execute the compensating chain in this case, exactly as for the unattainability exit. Common belief that "Agent $a$'s Policy Stack refused Step $s$" is anchored by the Decision Record attached to $a$'s failure Receipt under section 3 of the Safety and Policy Stack paper.
+
+### A.10 Implications for Downstream RFCs
+
+1. **RFC 0001 (Sessions).** Coordination Sessions are the substrate over which Workflow Step Receipts are exchanged. Idempotency of the session ensures that the joint-commitment Soundness Theorem 1 is not undermined by message replay.
+2. **RFC 0002 (Negotiation).** The `negotiate_slot` Step in the worked example of section 3.2 instantiates a Negotiation under RFC 0002 as a Workflow Step. The SPE existence of RFC 0002 Appendix A Theorem 1 holds within the Step.
+3. **RFC 0009 (Reputation).** A team member that abandons commitment without compensation is recorded in its Performance Record per RFC 0009 Appendix A; the manipulation-resistance analysis of that appendix bounds the influence of false abandonment claims.
+4. **RFC 0019 (Conformance).** The conformance probe `behavior/workflow-joint-commitment.test.js` mechanically verifies Theorems 1 and 2 by executing a synthetic Workflow with a deliberately failing intermediate Step and asserting that the compensating chain runs.
+
+### A.11 References to Prior Treatments
+
+- Cohen, P. R., and Levesque, H. J. (1990). Intention is Choice with Commitment. *Artificial Intelligence* 42(2-3).
+- Cohen, P. R., and Levesque, H. J. (1991). Teamwork. *Nous* 25(4).
+- Grosz, B. J., and Sidner, C. L. (1990). Plans for Discourse. In P. R. Cohen, J. Morgan, and M. E. Pollack (eds.), *Intentions in Communication.* MIT Press.
+- Grosz, B. J., and Kraus, S. (1996). Collaborative Plans for Complex Group Action. *Artificial Intelligence* 86(2).
+- Tambe, M. (1997). Towards Flexible Teamwork. *Journal of Artificial Intelligence Research* 7.
+- Wooldridge, M. (2009). *An Introduction to MultiAgent Systems,* 2nd ed. Wiley, chapter 9.
+- Shoham, Y., and Leyton-Brown, K. (2009). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press, chapters 8-9.

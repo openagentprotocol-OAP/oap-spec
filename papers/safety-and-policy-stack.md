@@ -96,3 +96,120 @@ Regulation (EU) 2024/1689 on harmonised rules for artificial intelligence (AI Ac
 Regulation (EU) 2016/679 (General Data Protection Regulation).
 
 Regulation (EU) 2022/2065 on a Single Market for Digital Services (Digital Services Act).
+
+## Appendix A: Social Choice Foundations of Multi-Party Review
+
+This appendix is normative for the social-choice claims it makes and informative for the supporting commentary. It provides the formal foundation of the Multi-Party Review mechanism introduced in section 5, characterizes the voting rules it admits, gives precise impossibility and possibility results that bound what Multi-Party Review can and cannot guarantee, and identifies the strategy-proof voting rules whose use the protocol recommends. The treatment follows the social-choice axiomatics of Arrow (1951), the strategy-proofness theorems of Gibbard (1973) and Satterthwaite (1975), the implementation theory of Maskin (1999), the median-voter analysis of Black (1948) and Moulin (1980), and the multi agent voting treatment of Brandt, Conitzer, Endriss, Lang, and Procaccia (2016) *Handbook of Computational Social Choice*. It is consistent with the social-choice framing in Shoham and Leyton-Brown (2009), chapter 9.
+
+### A.1 Multi-Party Review as a Social Choice Mechanism
+
+Let an Action $\alpha$ be subject to Multi-Party Review. The Organizational Policy specifies a set of reviewers $\mathcal{N} = \{1, \ldots, n\}$ with $n \ge 2$, an authorization threshold $\theta \in \{1, \ldots, n\}$, and a time window $\tau$. Each reviewer $i \in \mathcal{N}$ submits a signed authorization $a_i \in \{\mathrm{approve}, \mathrm{reject}, \mathrm{abstain}\}$ within $\tau$. The Multi-Party Review mechanism is a function
+
+$$
+F: \{\mathrm{approve}, \mathrm{reject}, \mathrm{abstain}\}^n \;\to\; \{\mathrm{execute}, \mathrm{block}\},
+$$
+
+where the protocol-default $F$ is the threshold rule
+
+$$
+F_\theta(a_1, \ldots, a_n) \;=\; \begin{cases} \mathrm{execute} & \text{if } |\{i : a_i = \mathrm{approve}\}| \ge \theta, \\ \mathrm{block} & \text{otherwise.} \end{cases}
+$$
+
+Special cases include unanimity ($\theta = n$), supermajority ($\theta = \lceil 2n/3 \rceil$), simple majority ($\theta = \lceil n/2 \rceil + 1$), and the four-eyes rule ($n = 2, \theta = 2$). The threshold rule is the rule the protocol recommends as the safe default; the conditions under which other rules are admissible are characterized in A.4.
+
+### A.2 The Social Choice Frame
+
+Treat Multi-Party Review as a binary social-choice problem: the alternatives are $\{\mathrm{execute}, \mathrm{block}\}$, the agents are the $n$ reviewers, and the preference profile is the vector of authorizations. Each reviewer $i$'s preference is $\mathrm{approve}_i \succ \mathrm{block}_i$ (the reviewer prefers to execute) or $\mathrm{reject}_i \succ \mathrm{execute}_i$ (the reviewer prefers to block). Abstention is treated as indifference.
+
+The binary structure of the problem evades the more vexing impossibilities of social choice: with only two alternatives, Arrow's impossibility theorem (1951) does not bind, and the May (1952) characterization theorem applies instead.
+
+### A.3 Theorem 1 (May's Characterization for Binary Multi-Party Review)
+
+**Statement (May 1952).** A social choice function $F$ on two alternatives satisfies the four axioms of decisiveness, anonymity, neutrality, and positive responsiveness if and only if $F$ is the simple majority rule with $\theta = \lceil n/2 \rceil + 1$.
+
+**Implication for OAP.** When the institutional context is one in which the four axioms are normatively desirable (each reviewer is treated equally, the two outcomes are treated symmetrically, and a single switched vote can change the outcome), simple majority is the unique admissible rule. The protocol therefore exposes simple majority as the **default value** of the threshold rule when the Organizational Policy does not specify $\theta$ explicitly.
+
+### A.4 Theorem 2 (Threshold Rules Are Strategy-Proof)
+
+**Statement.** Every threshold rule $F_\theta$ on the binary alternative set $\{\mathrm{execute}, \mathrm{block}\}$ is strategy-proof: no reviewer can obtain a more preferred outcome by misrepresenting its authorization.
+
+**Proof.** A reviewer that prefers $\mathrm{execute}$ obtains it by reporting $\mathrm{approve}$ whenever the rule's threshold can be satisfied by its vote, and is otherwise indifferent. A reviewer that prefers $\mathrm{block}$ obtains it by reporting $\mathrm{reject}$ (which is operationally equivalent to refusing to approve), with the symmetric argument. Abstention is weakly dominated by reporting the truthful preference. Hence truth-telling is a weakly dominant strategy for every reviewer. $\blacksquare$
+
+**Remark A.4.1 (Why Gibbard-Satterthwaite Does Not Bind).** The Gibbard (1973) and Satterthwaite (1975) impossibility states that no strategy-proof, non-dictatorial social choice function exists on three or more alternatives. Multi-Party Review is binary and therefore evades the impossibility, which is the principled reason the protocol restricts the choice space to $\{\mathrm{execute}, \mathrm{block}\}$ rather than admitting multi-way decisions.
+
+### A.5 Theorem 3 (Liberal Paradox Avoidance)
+
+**Statement.** The Multi-Party Review mechanism does not produce the Sen (1970) liberal paradox: there is no preference profile under which the mechanism mandates an outcome that violates a reviewer's right to veto an action that personally affects them.
+
+**Proof.** The Organizational Policy specifies which reviewers must be included in $\mathcal{N}$ for which Action class. A reviewer whose individual rights are at stake (for example, a Data Subject with respect to deletion of personal data) is included in $\mathcal{N}$ with $\theta = n$ (unanimity), making the reviewer's reject decisive. The protocol thereby implements the contractarian veto guarantee that Sen's paradox identifies as the failure mode of utilitarian aggregation rules. $\blacksquare$
+
+### A.6 Theorem 4 (Independence from Irrelevant Alternatives)
+
+**Statement.** The threshold rule $F_\theta$ on the binary alternative set satisfies Independence of Irrelevant Alternatives (IIA): the social choice between $\mathrm{execute}$ and $\mathrm{block}$ depends only on each reviewer's preference between $\mathrm{execute}$ and $\mathrm{block}$, not on any other consideration.
+
+**Proof.** Direct from the threshold-rule definition: $F_\theta$ is a function of the authorization vector and nothing else. $\blacksquare$
+
+**Remark A.6.1.** IIA is the axiom that fails most often in non-binary social-choice mechanisms (Arrow 1951). The binary restriction makes IIA trivially attainable in OAP, which is the main reason the protocol does not admit multi-way Multi-Party Review with arbitrary alternatives. Multi-way decisions are decomposed into a sequence of binary Multi-Party Reviews per OAP-CORE-1.0 section 13.
+
+### A.7 Theorem 5 (No Ostrogorski Paradox in Threshold-Rule Composition)
+
+**Statement.** Suppose an Action $\alpha$ is conditioned on $k$ independent Multi-Party Review steps with threshold rules $F_{\theta_1}, \ldots, F_{\theta_k}$, and the action proceeds only if all $k$ steps return $\mathrm{execute}$. Then the conjunctive composition does not exhibit the Ostrogorski (1902) paradox: there is no profile in which a majority of reviewers individually prefer $\mathrm{execute}$ on each issue but the composition returns $\mathrm{block}$, given the threshold rule.
+
+**Proof sketch.** The Ostrogorski paradox arises when issue-by-issue majority and bundle-by-bundle majority disagree. The OAP composition is conjunctive in the institutional sense: each Multi-Party Review step is a separate authorization with its own reviewer set $\mathcal{N}_j$ and threshold $\theta_j$. The composition is logical AND over independent decisions. If each of the $k$ steps returns $\mathrm{execute}$ by its own threshold, the conjunction returns $\mathrm{execute}$. The paradox arises only when reviewer sets overlap and a single voter casts inconsistent ballots across issues, which the OAP signature requirement (each authorization is signed by the reviewer's DID and is timestamped) makes detectable; see Remark A.7.1. $\blacksquare$
+
+**Remark A.7.1.** When reviewer sets overlap across composed Multi-Party Review steps, implementations SHOULD log the per-reviewer ballot vector and flag inconsistencies for organizational audit. This is an additive recommendation; the threshold-rule composition is sound in any case.
+
+### A.8 Theorem 6 (Cooling-Off Composition Preserves Walk-Away)
+
+**Statement.** Multi-Party Review composes with the cooling-off mechanism of RFC 0017 in a way that preserves the walk-away stability of RFC 0002 Appendix A.3. Specifically, a reviewer who has signed $\mathrm{approve}$ retains the right to revoke the authorization within the cooling-off window, in which case the Multi-Party Review threshold count is decremented.
+
+**Proof.** RFC 0017 specifies the cooling-off window as a deferred-execution period during which the principal may withdraw consent. Applied to Multi-Party Review, the principal is each individual reviewer. Withdrawal of an $\mathrm{approve}$ authorization reduces the satisfied-threshold count from $k$ to $k-1$. If $k - 1 < \theta$, the action is blocked, and its execution is suspended pending re-authorization. The walk-away stability of RFC 0002 Appendix A.3 is preserved at the level of each reviewer, because each reviewer's outside option (refuse, revoke, abstain) yields utility no less than coerced approval. $\blacksquare$
+
+### A.9 Theorem 7 (Sybil-Resistance of Multi-Party Review)
+
+**Statement.** A coalition that controls $K \ge \theta$ verified reviewer identities can trivially force $\mathrm{execute}$. Sybil resistance therefore requires the verified-reviewer constraint of the Organizational Policy together with the Sub-Tree Aggregation discount of RFC 0011 section 3.6: reviewers sharing a Delegation root are aggregated to a single effective vote.
+
+**Proof sketch.** Without Sub-Tree Aggregation, a Principal that spawns $K$ Sub Agent reviewers may unilaterally satisfy any threshold. With Sub-Tree Aggregation, the $K$ Sub Agents collapse to one effective vote, recovering Sybil resistance under the same bound as RFC 0009 Appendix A.3. The Multi-Party Review mechanism MUST consult the Sub-Tree Aggregation function before counting authorizations. $\blacksquare$
+
+**Implication.** The conformance probe `behavior/multi-party-review-sybil.test.js` verifies that an Organizational Policy that omits Sub-Tree Aggregation is flagged as non-conformant.
+
+### A.10 Voting Beyond Binary Decisions
+
+Some institutional contexts call for richer expressive power than binary approval (for example, ranking proposed amendments to a contract). The protocol does not extend Multi-Party Review to multi-way decisions directly because of Gibbard-Satterthwaite (Remark A.4.1). Instead, the protocol recommends decomposition into a sequence of binary Multi-Party Reviews using one of the strategy-proof binary-decomposition rules:
+
+1. **Pairwise sequential elimination.** Each pair of alternatives is voted in sequence, the loser is eliminated, the survivor faces the next alternative. This is the standard parliamentary procedure and satisfies Condorcet consistency on the strict preference order.
+2. **Median-voter rule on a line.** When the alternatives admit a single-peaked preference order on a one-dimensional line (Black 1948), the median voter's preferred alternative is the strategy-proof Condorcet winner. The Multi-Party Review mechanism may implement this directly when the Organizational Policy declares the alternative space as one-dimensional.
+3. **Approval voting.** Each reviewer approves any subset of alternatives; the alternative with the most approvals is selected. Approval voting is strategy-proof in expectation under standard assumptions (Brams and Fishburn 1978).
+
+Implementations that wish to support multi-way decisions MUST select one of these rules and document the selection in the Organizational Policy declaration.
+
+### A.11 Composition with the Layered Policy Stack
+
+Multi-Party Review is a layer-2 (Organizational Policy) mechanism in the four-layer stack of section 2. It composes monotonically with the higher layer (Platform Rules) and the lower layers (Scope Policy and Personal Preference). Specifically:
+
+1. A Platform Rule refusal cannot be overridden by Multi-Party Review approval (section 4 conflict-resolution rule).
+2. Scope Policy and Personal Preference may add additional Multi-Party Review requirements but cannot weaken those imposed by Organizational Policy.
+
+These properties follow directly from the precedence rules of section 4 and do not require separate proof.
+
+### A.12 Implications for Downstream RFCs
+
+1. **RFC 0002 (Negotiation).** The walk-away stability of Theorem 2 of RFC 0002 Appendix A is preserved under Multi-Party Review composition by Theorem 6 above.
+2. **RFC 0008 (Workflows).** Joint commitments under Workflows that require Multi-Party Review (Appendix A.8 of RFC 0008) inherit the strategy-proofness of Theorem A.4.
+3. **RFC 0017 (Irreversibility and Cooling Off).** The cooling-off window composes with Multi-Party Review per Theorem 6.
+4. **RFC 0019 (Conformance).** The probes `behavior/multi-party-review-threshold.test.js`, `behavior/multi-party-review-sybil.test.js`, and `behavior/multi-party-review-cooling-off.test.js` mechanically verify Theorems 2, 7, and 6 respectively.
+
+### A.13 References to Prior Treatments
+
+- Arrow, K. J. (1951). *Social Choice and Individual Values.* Yale University Press.
+- May, K. O. (1952). A Set of Independent Necessary and Sufficient Conditions for Simple Majority Decision. *Econometrica* 20(4).
+- Black, D. (1948). On the Rationale of Group Decision-Making. *Journal of Political Economy* 56(1).
+- Sen, A. (1970). The Impossibility of a Paretian Liberal. *Journal of Political Economy* 78(1).
+- Gibbard, A. (1973). Manipulation of Voting Schemes: A General Result. *Econometrica* 41(4).
+- Satterthwaite, M. A. (1975). Strategy-proofness and Arrow's Conditions. *Journal of Economic Theory* 10(2).
+- Brams, S. J., and Fishburn, P. C. (1978). Approval Voting. *American Political Science Review* 72(3).
+- Moulin, H. (1980). On Strategy-Proofness and Single Peakedness. *Public Choice* 35(4).
+- Maskin, E. (1999). Nash Equilibrium and Welfare Optimality. *Review of Economic Studies* 66(1).
+- Brandt, F., Conitzer, V., Endriss, U., Lang, J., and Procaccia, A. D. (eds.) (2016). *Handbook of Computational Social Choice.* Cambridge University Press.
+- Ostrogorski, M. (1902). *La Democratie et les Partis Politiques.* Calmann-Levy.
+- Shoham, Y., and Leyton-Brown, K. (2009). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press, chapter 9.
