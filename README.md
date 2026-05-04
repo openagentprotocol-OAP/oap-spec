@@ -193,7 +193,7 @@ The 10 [whitepapers](papers/) cover accountability, the agent web, confidentiali
 | L2 | Billable | Pricing, Auth, Subscription, Wallet, refund endpoint. |
 | L3 | Trusted | Audit Log, Data Policy, CCC, Verified Publisher, Multi Party Review for high risk Actions. |
 | L4 | Collaborative | Multi Agent Coordination, Conflict Resolution, Coordination Sessions. |
-| L5 | Certified | External SOC 2 Type II or ISO 27001, declared SLA contract, Insurance Tag, OAP community audit. |
+| L5 | Peer-Certified | All L4 requirements plus an external SOC 2 Type II, ISO 27001, ISO 42001, or equivalent third party attestation, and at least three independent peer-witness signatures from implementations that themselves hold a valid L4 or L5 Conformance Receipt and are operated by three distinct organizations, anchored in the OAP Registry. |
 
 Conformance is machine verifiable. The reference [test suite](test-suite/) runs schema, behavior, and charter assertions against any implementation.
 
@@ -214,9 +214,11 @@ All reference code is published under the Apache License 2.0. Implementers may v
 
 ## Governance
 
-The Open Agent Protocol is stewarded by the Open Agent Protocol community, a neutral non profit body. The OAP community maintain the specification, operate the trust anchoring services that the protocol depends on, and adjudicate disputes that participants cannot resolve directly.
+The Open Agent Protocol is community driven. There is no foundation, association, corporation, or other legal entity that owns, controls, or speaks for OAP. There are no membership dues and no licensing fees. The specification is maintained by an open community of contributors through the public RFC process and through CI enforced quality gates in the open source repositories under the openagentprotocol-OAP GitHub organization.
 
-No single corporate participant may hold more than fifteen percent of voting weight. Specification changes follow an open RFC process with publicly archived discussion. The Ethics Board includes practitioners from law, medicine, journalism, accessibility advocacy, and labor representation.
+Protocol changes follow an open RFC process with publicly archived discussion. Decisions are taken by rough consensus on RFCs and confirmed by a Peer Review Quorum of at least three Maintainers from at least three distinct organizations, as defined in `governance/WORKING-GROUPS.md`. Working Group Coordinators have no veto power; their role is to triage, facilitate consensus, and shepherd RFCs through the process.
+
+Services that the protocol depends on, including the OAP Registry (RFC 0026), the Trust Score reference implementation, the Sampling and Outcome Verification probes, and the Revocation Service, are open source software that any community member may deploy. Multiple competing instances are presumed and encouraged.
 
 Working Groups are documented in [governance/WORKING-GROUPS.md](governance/WORKING-GROUPS.md). The RFC process is documented in [governance/RFC-PROCESS.md](governance/RFC-PROCESS.md).
 
