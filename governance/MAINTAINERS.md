@@ -11,7 +11,7 @@ The Maintainer roster at any moment is the union of:
 
 | GitHub handle | Organization (for Quorum diversity) | Term started |
 |---|---|---|
-| `@till-fengler` | BEEP Technologies UG | 2026-05 |
+| _(bootstrap roster, see the `@openagentprotocol-OAP/maintainers` GitHub team)_ | OAP Foundation | 2026-05 |
 
 > The roster is intentionally small at bootstrap. New Maintainers are added by the procedure below.
 

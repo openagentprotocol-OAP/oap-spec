@@ -75,4 +75,4 @@ Falsely claiming a Non-Commercial Profile while charging users is a Manifest non
 
 ## 8. Reference implementation
 
-The first known L1-NC implementation is `assistant-net.vercel.app` (BYOK personal-AI assistant, source at `github.com/till-fengler/assistant-net`). Its Conformance Receipt is published at `https://assistant-net.vercel.app/api/oap/conformance-receipt` and anchored in `openagentprotocol-OAP/oap-registry/implementations/assistant-net.json`.
+The first known L1-NC implementation is `assistant-net.vercel.app` (a BYOK personal-AI assistant reference implementation). Its Conformance Receipt is published at `https://assistant-net.vercel.app/oap-conformance-receipt.json` and anchored in `openagentprotocol-OAP/oap-registry/implementations/assistant-net.json`.

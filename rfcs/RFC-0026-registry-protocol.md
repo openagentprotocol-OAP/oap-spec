@@ -55,7 +55,7 @@ oap-registry/
   "conformance_receipt_sha256": "5bd9...e7c1",
   "issued_at": "2026-05-04T08:00:00Z",
   "expires_at": "2026-08-02T08:00:00Z",
-  "open_source": "https://github.com/till-fengler/assistant-net",
+  "open_source": null,
   "license": "Apache-2.0",
   "non_commercial": true,
   "contact": "oap@assistant-net.vercel.app"
