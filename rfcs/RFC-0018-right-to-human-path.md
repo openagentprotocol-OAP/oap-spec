@@ -12,6 +12,8 @@ This document defines a normative requirement that every Provider whose Actions 
 
 The normative architecture of this RFC aligns with the **Human-Agent Collectives** paradigm of Jennings, Moreau, Nicholson, Ramchurn, Roberts, Rodden, and Rogers (2014) and the ORCHID research programme, which holds that the appropriate frame for advanced agentic systems is not full autonomy but rather a flexible collective of humans and agents in which authority, initiative, and explanation flow in both directions as the situation requires. Where Jennings et al. articulate the scientific and societal case for HAC at the level of system design, this RFC supplies the protocol-level mechanism through which an OAP-conformant Provider operationalizes the human-in-the-loop dimension of that collective. The Escalation Action defined below is therefore not a fallback for failure of automation but a first-class element of the human-agent collective architecture.
 
+For the narrow class of Actions that fall under the Lethal Autonomous Weapon Systems prohibition of OAP-CORE §20.2, the Escalation Action is not a User-invoked right but a System-mandated routing requirement. Any Action whose execution would constitute selection or engagement of a human target by an autonomous system MUST route through `escalate_to_human` before execution, the Human Operator's decision MUST be recorded in the Decision Record with full attribution, and the action MUST NOT execute on the basis of agent inference alone. This implements the doctrine of meaningful human control in the sense of Article 36 of the UN Convention on Certain Conventional Weapons, the open letters organized by Walsh and others (2015, 2017), and Principle 18 of the Asilomar AI Principles (Future of Life Institute, 2017).
+
 ## 2. Terminology
 
 The key words MUST, MUST NOT, REQUIRED, SHOULD, SHOULD NOT, MAY, and OPTIONAL in this document are to be interpreted as described in RFC 2119 and RFC 8174.
@@ -99,6 +101,11 @@ A second consideration is that Human Operators handling Escalation cases may the
 - RFC 0028 Model Risk and Symbiotic Autonomy, which extends the human path of this RFC with the proactive Symbiotic Escalation mechanism of section 3.5 (Rosenthal, Biswas, and Veloso 2010): the Agent recognizes the boundary of its own competence and escalates before acting, rather than after failure or User complaint. The reactive escalation of the present RFC and the proactive escalation of RFC 0028 are complementary; both deliver to the same Human Path interface.
 - Jennings, N. R., Moreau, L., Nicholson, D., Ramchurn, S., Roberts, S., Rodden, T., and Rogers, A. (2014). Human-Agent Collectives. *Communications of the ACM* 57(12).
 - Ramchurn, S. D., Wu, F., Jiang, W., Fischer, J. E., Reece, S., Roberts, S., Rodden, T., Greenhalgh, C., and Jennings, N. R. (2016). Human-Agent Collaboration for Disaster Response. *Autonomous Agents and Multi-Agent Systems* 30(1).
+- Walsh, T. et al. (2015). Autonomous Weapons: an Open Letter from AI and Robotics Researchers. Future of Life Institute.
+- Walsh, T. et al. (2017). An Open Letter to the United Nations Convention on Certain Conventional Weapons. Future of Life Institute.
+- Walsh, T. (2022). *Machines Behaving Badly: The Morality of AI*. La Trobe University Press. The book-length argument that meaningful human control is the operational doctrine through which the moral acceptability of autonomous systems is preserved.
+- Future of Life Institute (2017). Asilomar AI Principles. Principle 18 (AI Arms Race): "An arms race in lethal autonomous weapons should be avoided."
+- United Nations Convention on Certain Conventional Weapons, Article 36, on the legal review of new weapons, means and methods of warfare.
 
 ## 10. Acknowledgments
 

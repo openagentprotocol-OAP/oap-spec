@@ -680,14 +680,14 @@ OAP defines four mandatory policy layers evaluated in order. The first layer tha
 
 | Layer | Source | Examples |
 |-------|--------|----------|
-| L1 Platform | community maintained block list and universal prohibitions. | No assistance with weapons of mass destruction, no sexual content involving minors, no real time mass biometric surveillance. |
+| L1 Platform | community maintained block list and universal prohibitions. | No assistance with weapons of mass destruction, no autonomous selection or engagement of human targets without meaningful human control, no sexual content involving minors, no real time mass biometric surveillance. |
 | L2 Legal and Jurisdictional | Statutes, regulations, and case law applicable to the Principal and the Tool. | EU AI Act, GDPR, HIPAA, MiCA, OFAC sanctions, export controls. |
 | L3 Organization or Profession | Industry codes and organizational rules. | Bar association conduct, medical confidentiality, antitrust safeguards. |
 | L4 Personal | Principal preferences and Scope policies. | Spending limits, embargo lists, never share specific fields. |
 
 ### 20.2 Universal Prohibitions
 
-The L1 list is normative and not subject to local override. It includes: facilitation of child sexual abuse material, real time mass biometric identification in public spaces, social scoring of natural persons, manipulation of vulnerable groups, weapons of mass destruction, and any conduct prohibited by Article 5 of the EU AI Act.
+The L1 list is normative and not subject to local override. It includes: facilitation of child sexual abuse material, real time mass biometric identification in public spaces, social scoring of natural persons, manipulation of vulnerable groups, weapons of mass destruction, the autonomous selection or engagement of human targets in the kinetic domain (Lethal Autonomous Weapon Systems) without verified meaningful human control in the sense of Article 36 of the UN Convention on Certain Conventional Weapons, and any conduct prohibited by Article 5 of the EU AI Act. The doctrine of meaningful human control over the use of force is articulated in the open letters of 2015 and 2017 organized by Walsh and others, and in Principle 18 (AI Arms Race) of the Asilomar AI Principles (Future of Life Institute, 2017). Any Action whose execution would constitute selection or engagement of a human target by an autonomous system MUST be routed through the Escalation Action of RFC 0018 §4 before execution; the human decision is recorded in the Decision Record and the action is not executable on the basis of agent inference alone.
 
 ### 20.3 Policy Sources
 
