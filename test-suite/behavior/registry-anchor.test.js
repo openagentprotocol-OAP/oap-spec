@@ -1,7 +1,7 @@
 /**
  * @oap-test
  * @levels L5
- * @rfcs RFC-0019 (Conformance Receipt), RFC-0027 (Registry Anchor)
+ * @rfcs RFC-0019 (Conformance Receipt), RFC-0026 (Registry Protocol)
  * @category behavior
  * @description Verifies that L5 implementations anchor their Conformance
  *   Receipt in a public Git registry: registry_anchor must include a
@@ -33,7 +33,7 @@ async function run({ target }) {
 
   const anchor = receipt.registry_anchor;
   rec('registry-anchor-block-present', !!anchor && typeof anchor === 'object',
-    anchor ? null : 'receipt.registry_anchor missing (RFC 0027 section 3)');
+    anchor ? null : 'receipt.registry_anchor missing (RFC 0026 section 4)');
   if (!anchor) return RESULTS;
 
   rec('registry-anchor-repo-url-present',
