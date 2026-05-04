@@ -52,6 +52,14 @@ async function run({ target }) {
     ? manifest.endpoints.invoke
     : `${target.replace(/\/$/, '')}${manifest.endpoints.invoke}`;
 
+  // Crockford Base32, 26 chars (ULID shape) per oap-request-envelope.schema.json
+  const ULID_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  function makeUlidLike() {
+    let out = '';
+    for (let i = 0; i < 26; i++) out += ULID_ALPHABET[Math.floor(Math.random() * 32)];
+    return out;
+  }
+
   let invokeRes;
   let invokeBody;
   try {
@@ -59,14 +67,24 @@ async function run({ target }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/oap+json' },
       body: JSON.stringify({
-        envelope_version: '1.0',
-        request_id: `urn:oap:req:test-${Date.now()}`,
-        action_id: freeAction.id,
-        action_version: freeAction.version,
-        principal: { did: 'did:plc:test_principal' },
-        agent: { did: 'did:assistnet:test_agent' },
-        input: {},
+        oap_version: '1.0',
+        request_id: makeUlidLike(),
         timestamp: new Date().toISOString(),
+        principal_did: 'did:plc:test_principal',
+        agent_did: 'did:assistnet:test_agent',
+        action: freeAction.id,
+        input: {},
+        context: {
+          locale: 'en-US',
+          currency: 'EUR',
+          jurisdiction_user: 'DE',
+          jurisdiction_agent: 'DE',
+        },
+        signature: {
+          alg: 'EdDSA',
+          kid: 'test-suite-probe',
+          value: 'probe',
+        },
       }),
     });
     invokeBody = await invokeRes.json().catch(() => null);
