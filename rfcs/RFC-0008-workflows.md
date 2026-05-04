@@ -183,6 +183,7 @@ AssistNet operates a Workflow Engine in production with named compositions for b
 
 1. OAP-CORE-1.0, Section 14 (Capabilities Discovery).
 2. RFC 0001 (Coordination Sessions), RFC 0002 (Negotiation Protocol).
+3. RFC 0027 (Ad Hoc Teamwork and Convention Discovery), for Workflows that admit Participants without prior coordination, including the Late Join Procedure, Capability Announcement, and the bounded convergence guarantees of Theorem A.1 and Theorem A.2 in that RFC. The closed world coordination model of section 3 of the present RFC is the default; ad hoc teamwork is the additive extension.
 
 ## Appendix A: Joint Intention Semantics for OAP Workflows
 

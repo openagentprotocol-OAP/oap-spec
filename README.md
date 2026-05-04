@@ -181,6 +181,7 @@ oap-spec/
 | Schema Negotiation | [RFC-0024](rfcs/RFC-0024-schema-negotiation-and-versioning.md) | Forward and backward compatible evolution. |
 | Non Commercial Profile | [RFC-0025](rfcs/RFC-0025-non-commercial-conformance-profile.md) | BYOK and non commercial conformance variant. |
 | Registry Protocol | [RFC-0026](rfcs/RFC-0026-registry-protocol.md) | Append only listing, validation CI, and renewal. |
+| Ad Hoc Teamwork | [RFC-0027](rfcs/RFC-0027-ad-hoc-teamwork.md) | Capability announcement, late join, convention discovery for unknown teammates. |
 
 The 10 [whitepapers](papers/) cover accountability, the agent web, confidentiality, databases for the agent economy, economics, governance, interoperability, the policy stack, verifiable conformance, and the storefront to manifest transition.
 

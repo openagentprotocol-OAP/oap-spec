@@ -149,3 +149,4 @@ AssistNet operates Coordination Sessions in production for project delegation be
 
 1. OAP-CORE-1.0, Sections 8 (Invocation Protocol) and 19 (Receipts).
 2. RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words.
+3. RFC 0027 (Ad Hoc Teamwork and Convention Discovery), for Sessions that admit Participants on capability match rather than Convener signature. The Convener gated admission model of section 3.6 of the present RFC remains the default; capability match and open admission are the additive extensions defined in section 3.3 of RFC 0027.
