@@ -128,7 +128,7 @@ async function run() {
     // 7. Conformance receipt
     const cr = await (await fetch(`${base}/oap/conformance-receipt`)).json();
     ok('conformance receipt signed', cr.signatures && cr.signatures[0].alg === 'EdDSA');
-    ok('conformance receipt claims L0+L1+L2+L3', JSON.stringify(cr.claimed_levels) === JSON.stringify(['L0', 'L1', 'L2', 'L3']));
+    ok('conformance receipt claims L0+L1', JSON.stringify(cr.claimed_levels) === JSON.stringify(['L0', 'L1']));
 
   } finally {
     server.close();

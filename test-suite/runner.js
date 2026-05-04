@@ -167,6 +167,12 @@ async function runBehaviorSuite() {
   const dir = path.join(ROOT, 'behavior');
   if (!fs.existsSync(dir)) return results;
 
+  // Behavior probes may resolve $refs against any v1.0 schema (e.g. the AQL
+  // probe validates an Intent response against oap-intent-response.schema.json).
+  // Make sure every schema is registered with ajv before any probe runs,
+  // even when the runner is invoked with --only behavior.
+  loadAllSchemas();
+
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.test.js'));
   for (const f of files) {
     const mod = require(path.join(dir, f));
