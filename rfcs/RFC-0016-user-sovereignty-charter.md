@@ -60,13 +60,13 @@ When children grow up with Agents and form their first relationship with the wor
 
 ### 3.10 Principle Ten, Transparency of the Protocol Itself
 
-The protocol that mediates every other relationship MUST NOT itself be opaque. Every change to the Open Agent Protocol MUST be public, reviewable, carried by a pluralistic Stewards, and protected against capture by any single industry or governmental interest. The Request for Comments process, the Working Group structure, the Stewards Charter, and the publication of every step of deliberation are not merely good practice. They are the precondition for the protocol's legitimacy in a world in which it mediates all human action through Agents.
+The protocol that mediates every other relationship MUST NOT itself be opaque. Every change to the Open Agent Protocol MUST be public, reviewable, carried by a pluralistic OAP community, and protected against capture by any single industry or governmental interest. The Request for Comments process, the Working Group structure, the OAP community Charter, and the publication of every step of deliberation are not merely good practice. They are the precondition for the protocol's legitimacy in a world in which it mediates all human action through Agents.
 
 ## 4. The Five Societal Guarantees
 
 ### 4.1 Guarantee One, The Right to an Agent
 
-In a world in which everyday human action is mediated by Agents, access to a functioning Agent is a foundational civic right rather than a commercial luxury. The protocol MUST therefore maintain an open source reference implementation of an Agent Host capable of operating without dependence on any commercial supplier, capable of running on commodity hardware including older devices, and capable of interoperating fully with the conformance ecosystem. The Stewards MUST take affirmative steps to ensure that this reference implementation remains current and reachable to anyone with a network connection.
+In a world in which everyday human action is mediated by Agents, access to a functioning Agent is a foundational civic right rather than a commercial luxury. The protocol MUST therefore maintain an open source reference implementation of an Agent Host capable of operating without dependence on any commercial supplier, capable of running on commodity hardware including older devices, and capable of interoperating fully with the conformance ecosystem. The OAP community MUST take affirmative steps to ensure that this reference implementation remains current and reachable to anyone with a network connection.
 
 ### 4.2 Guarantee Two, The Right to Explanation
 
@@ -126,11 +126,11 @@ A conformance claim under this RFC requires positive demonstration of compliance
 
 ## 7. Enforcement and Governance
 
-The Stewards operate a public Charter Registry in which violations of this RFC may be reported by any User, Provider, or Agent Host. Reports are reviewed by a panel composed of representatives drawn from the Privacy and Governance Working Group, the Trust and Reputation Working Group, and one rotating seat reserved for civil society. Confirmed violations are published in the Registry along with the affected implementation and the action taken, and the implementation loses its conformance claim until remediation. The Stewards MUST publish an annual transparency report listing all reports received, all actions taken, and the aggregate state of conformance across the ecosystem.
+The community operates (as open-source services anyone may run) a public Charter Registry in which violations of this RFC may be reported by any User, Provider, or Agent Host. Reports are reviewed by a panel composed of representatives drawn from the Privacy and Governance Working Group, the Trust and Reputation Working Group, and one rotating seat reserved for civil society. Confirmed violations are published in the Registry along with the affected implementation and the action taken, and the implementation loses its conformance claim until remediation. The OAP community MUST publish an annual transparency report listing all reports received, all actions taken, and the aggregate state of conformance across the ecosystem.
 
 ## 8. Security Considerations
 
-The Charter creates obligations whose enforcement depends on the integrity of the conformance reporting and registry mechanisms. Adversaries may attempt to abuse the Charter Registry through false reports against competitors, through capture of the review panel, or through legal pressure on the Stewards. Mitigations include the rotating civil society seat, public publication of all panel deliberations, the requirement of cryptographic evidence for all reports, and the right of any third party to audit the Stewards's reporting infrastructure.
+The Charter creates obligations whose enforcement depends on the integrity of the conformance reporting and registry mechanisms. Adversaries may attempt to abuse the Charter Registry through false reports against competitors, through capture of the review panel, or through legal pressure on the OAP community. Mitigations include the rotating civil society seat, public publication of all panel deliberations, the requirement of cryptographic evidence for all reports, and the right of any third party to audit the OAP community's reporting infrastructure.
 
 ## 9. References
 

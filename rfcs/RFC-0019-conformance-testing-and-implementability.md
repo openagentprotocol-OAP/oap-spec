@@ -1,10 +1,11 @@
 # RFC 0019: Conformance Testing and Implementability
 
-**Status:** Draft
-**Author(s):** OAP Working Group on Implementation and Conformance
+**Status:** Accepted
+**Author(s):** OAP Community Working Group on Implementation and Conformance
 **Created:** 2026-05-03
+**Revised:** 2026-05-04
 **Working Group:** Implementation and Conformance
-**Targets:** 1.2
+**Targets:** OAP-CORE 1.2
 
 ## 1. Summary
 
@@ -32,15 +33,15 @@ The intent of the Implementability Gate is that no concept may enter the normati
 
 ## 4. The Backward Compatibility Gate
 
-The schemas published under `schemas/v1.0/` are immutable in their semantics. The `$id` field of each schema is a permanent, citable URL. Any change that alters the meaning of an existing field, that removes an existing field, that tightens an existing constraint, or that changes the value range of an existing enumeration MUST be published as a new schema version under `schemas/v1.1/` with a new `$id`, and the previous version MUST remain available at its original location for as long as the Stewards continues to operate. Additive changes that introduce new optional fields are permitted within the existing schema version provided that they do not interact in any way with the meaning of existing fields, and provided that the pull request body explicitly declares the change as `additive only`.
+The schemas published under `schemas/v1.0/` are immutable in their semantics. The `$id` field of each schema is a permanent, citable URL. Any change that alters the meaning of an existing field, that removes an existing field, that tightens an existing constraint, or that changes the value range of an existing enumeration MUST be published as a new schema version under `schemas/v1.1/` with a new `$id`, and the previous version MUST remain available at its original location indefinitely as part of the OAP Registry's append-only history (RFC 0026). Additive changes that introduce new optional fields are permitted within the existing schema version provided that they do not interact in any way with the meaning of existing fields, and provided that the pull request body explicitly declares the change as `additive only`.
 
 The Backward Compatibility Gate is enforced automatically by the `backward-compatibility-gate` job in CI. The job inspects the diff against the base branch and rejects any pull request that modifies a v1.0 schema without an explicit additive only declaration in the pull request body. The intent is that an implementation that was conformant with the protocol on the day it was attested remains forever entitled to claim that level of conformance, and that no future Working Group can retroactively void that entitlement by editing a schema underneath it. This guarantee is essential for the long term economic viability of the agentic ecosystem because the alternative, in which conformance can be revoked through silent schema mutation, would make every Conformance Receipt a perishable promise rather than a durable contract.
 
 ## 5. The Charter Review Gate
 
-A Request for Comments that touches any of the user facing rights established by RFC 0016, including but not limited to identity, memory, reputation, projection, persona, cooling off, escalation, deletion, replaceability, or pluralism of model and provider, MUST receive an explicit signed off review from the Working Group on Privacy and Governance and from at least one User Advocacy Voter recognized by the Stewards under the procedure described in section 7 of RFC 0016. The signed off review takes the form of a comment on the pull request bearing the phrase `Charter Review Gate cleared` and the decentralized identifier of the reviewer. Without two such comments the pull request cannot enter Last Call.
+A Request for Comments that touches any of the user facing rights established by RFC 0016, including but not limited to identity, memory, reputation, projection, persona, cooling off, escalation, deletion, replaceability, or pluralism of model and provider, MUST receive a Peer Review Quorum that is one stricter than the default. The default Quorum (per `governance/RFC-PROCESS.md`) is at least three Maintainer approvals from at least three distinct organizations. For Charter-affecting RFCs the Quorum is at least four Maintainer approvals from at least four distinct organizations, with at least one approval from a Maintainer who has self-identified as a User Advocate in `governance/MAINTAINERS.md`. Each approval comment MUST contain the phrase `Charter Review Gate cleared`.
 
-The Charter Review Gate is enforced procedurally rather than mechanically because the question of whether an RFC respects user sovereignty is irreducible to a syntactic check. Working Group Chairs are responsible for verifying compliance before they record the transition to Last Call. The intent is to ensure that every change to the protocol that touches a user right is reviewed by a party whose institutional incentive is to defend that right, and not solely by parties whose institutional incentive is to ship the change.
+The Charter Review Gate is enforced procedurally by the Coordinator of the affected Working Group and mechanically by the `charter-review-gate` job in CI, which inspects the linked Issues and the PR review state. The intent is to ensure that every change to the protocol that touches a user right is reviewed by parties whose institutional incentive includes defending that right, and not solely by parties whose institutional incentive is to ship the change. There is no central body that grants User Advocate status; it is a self-assertion logged in `MAINTAINERS.md` and subject to the same recall procedure as any other Maintainer designation.
 
 ## 6. Conformance Verification by Consuming Agents
 
@@ -56,9 +57,24 @@ The consuming Agent then produces a Verification Report capturing each step of t
 
 ## 7. Conformance Receipts
 
-A Conformance Receipt is the artifact through which an implementation makes its conformance claim cryptographically auditable. The receipt is generated by `test-suite/attest.js` after a successful run of the test suite against a target deployment. The receipt asserts the identity of the implementation, the identity and version of the suite, the identity of the target, the set of Conformance Levels claimed, the summary of test results, the hash of the fixtures used during the run, the hash of the canonicalized full results, and the validity period during which the receipt is to be considered current. The receipt is signed by the implementation's signing key. Receipts MAY additionally be signed by an independent Attestor who has either witnessed the run or replayed it, in which case the attestor field declares the relationship.
+A Conformance Receipt is the artifact through which an implementation makes its conformance claim cryptographically auditable. The receipt is generated by `test-suite/attest.js` after a successful run of the test suite against a target deployment. The receipt asserts the identity of the implementation, the identity and version of the suite, the identity of the target, the set of Conformance Levels claimed (including the optional Profile suffix from RFC 0025, e.g. `L1-NC`), the summary of test results, the hash of the fixtures used during the run, the hash of the canonicalized full results, and the validity period during which the receipt is to be considered current. The receipt is signed by the implementation's signing key.
 
-A Conformance Receipt has a default validity period of ninety days. An implementation SHOULD re attest at least every ninety days, and MUST re attest after any change to the implementation that touches any code path exercised by the test suite. Attempting to claim a Conformance Level on the basis of an expired receipt is a forfeiture of conformance under section 7 of RFC 0016.
+### 7.1 Peer-witness signatures (L4 and L5)
+
+Receipts that claim Conformance Level L4 or L5 MUST additionally carry peer-witness signatures.
+
+* **L4** requires at least one peer-witness signature. The peer witness MUST be an implementation that itself holds a current, valid L4 or L5 Conformance Receipt anchored in the OAP Registry (RFC 0026).
+* **L5** requires at least three peer-witness signatures from three independent implementations, each holding a current, valid L4 or L5 Conformance Receipt anchored in the OAP Registry. "Independent" means that no two witnesses share a controlling organisation as declared in their Manifest publisher block.
+
+A peer-witness signature attests two things: (a) the witness has fetched the candidate Receipt and verified that its signature, hash chain, and test results are internally consistent, and (b) the witness has executed the published `test-suite/levels/levels.json` checks for the claimed level against the candidate's live deployment and observed conformance. Peer-witness signatures MUST be ed25519 signatures over the canonical-JSON form of the candidate Receipt's `peer_witnesses[]`-stripped body, with the signing key resolvable through the witness's `did:web` document. The procedure is implemented by `reference/agent/conformance-verifier.js#verifyPeerWitnesses`.
+
+### 7.2 Validity period and renewal
+
+A Conformance Receipt has a default validity period of ninety days. An implementation SHOULD re attest at least every ninety days, and MUST re attest after any change to the implementation that touches any code path exercised by the test suite. Attempting to claim a Conformance Level on the basis of an expired receipt is a forfeiture of conformance under section 7 of RFC 0016 and grounds for revocation through the OAP Registry.
+
+### 7.3 Placeholder signatures forbidden
+
+Receipts whose signature has the value reserved for development (`PLACEHOLDER_NOT_FOR_PRODUCTION`, `unsigned-reference`, or any string starting with `placeholder:`) MUST be rejected by every conformant Verifier. The Reference Verifier rejects them. The OAP Registry CI gate (RFC 0026) rejects them. `test-suite/attest.js` MUST refuse to emit them and MUST require an explicit `--signing-key` argument before producing a signed Receipt.
 
 ## 8. Adversarial Testing
 
@@ -80,7 +96,7 @@ The execution of the Conformance Test Suite against a live target produces logs 
 
 ## 12. Conformance Impact
 
-This RFC does not alter the criteria for any existing Conformance Level. It introduces a new artifact, the Conformance Receipt, which becomes the canonical evidence by which any Conformance Level claim is established or contested. From the publication date of this RFC, the Working Group on Implementation and Conformance MAY require a current Conformance Receipt as a precondition for listing in any official OAP registry maintained by the Stewards.
+This RFC does not alter the criteria for any existing Conformance Level. It introduces three artifacts: the Conformance Receipt (canonical evidence for any Conformance Level claim), the peer-witness signature requirement at L4 and L5 (Section 7.1), and the OAP Registry anchor (RFC 0026). From the publication date of this RFC, every Marketplace, Verifier, and consuming Agent SHOULD require a current Conformance Receipt anchored in the OAP Registry as a precondition for treating any conformance claim as valid.
 
 ## 13. Implementation Experience
 
@@ -88,7 +104,7 @@ The Reference Implementation in this repository has been extended in concert wit
 
 ## 14. Alternatives Considered
 
-A purely declarative trust framework in which Providers self attest conformance without any executable verification was considered and rejected because it reduces the protocol to a marketing claim that consuming Agents cannot mechanically check. A mandatory third party certification framework in which only an accredited body could issue Conformance Receipts was considered and rejected because it creates a single point of capture and contradicts the pluralism principle of RFC 0016. The chosen design preserves the right of any implementer to self attest, while preserving the right of any consuming Agent to independently verify, which yields the same audit guarantees as third party certification without the centralization cost.
+A purely declarative trust framework in which Providers self attest conformance without any executable verification was considered and rejected because it reduces the protocol to a marketing claim that consuming Agents cannot mechanically check. A mandatory third party certification framework in which only an accredited body could issue Conformance Receipts was considered and rejected because it creates a single point of capture and contradicts the pluralism principle of RFC 0016. The chosen design preserves the right of any implementer to self attest at L1 through L3, requires peer-witnessing by independent already-conformant implementations at L4 and L5, and anchors all Receipts in a public append-only Registry (RFC 0026). The result is the same audit guarantees as third-party certification without the centralization cost, and a mechanical fallback (the Registry's CI gate) that does not depend on any single party remaining honest.
 
 ## 15. References
 
@@ -96,6 +112,8 @@ A purely declarative trust framework in which Providers self attest conformance 
 * RFC 0016, User Sovereignty Charter.
 * RFC 0017, Irreversibility and Cooling Off Periods.
 * RFC 0018, The Right to a Human Path.
+* RFC 0025, Non-Commercial Conformance Profile.
+* RFC 0026, OAP Registry Protocol.
 * `schemas/v1.0/oap-conformance-receipt.schema.json`.
 * `test-suite/README.md`.
 * `reference/agent/conformance-verifier.js`.

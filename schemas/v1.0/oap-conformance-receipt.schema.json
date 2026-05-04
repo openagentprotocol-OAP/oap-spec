@@ -63,9 +63,15 @@
     },
     "claimed_levels": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^(L[0-5]|W[1-3]|C[1-3])$" },
+      "items": { "type": "string", "pattern": "^(L[0-5](-NC)?|W[1-3]|C[1-3])$" },
       "minItems": 1,
-      "description": "Conformance Levels that the implementation claims to satisfy on the basis of this run."
+      "description": "Conformance Levels that the implementation claims to satisfy on the basis of this run. The optional -NC suffix denotes the Non-Commercial Profile (RFC 0025) and is permitted on L1 and L3 only."
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["standard", "non-commercial"],
+      "default": "standard",
+      "description": "Optional Profile selector. 'non-commercial' MUST be used when any claimed_levels entry carries the -NC suffix (RFC 0025)."
     },
     "results_summary": {
       "type": "object",
@@ -121,8 +127,54 @@
         "properties": {
           "by": { "type": "string" },
           "alg": { "type": "string", "enum": ["EdDSA", "ES256", "ES384", "RS256", "PQ-Dilithium3"] },
-          "value": { "type": "string" }
+          "value": {
+            "type": "string",
+            "not": {
+              "pattern": "^(PLACEHOLDER_NOT_FOR_PRODUCTION|unsigned-reference|placeholder:)"
+            },
+            "description": "Base64-encoded signature. Placeholder values reserved for development MUST be rejected by every conformant Verifier (RFC 0019 section 7.3)."
+          }
         }
+      }
+    },
+    "peer_witnesses": {
+      "type": "array",
+      "description": "Independent peer-witness signatures. Required at L4 (>=1) and L5 (>=3) per RFC 0019 section 7.1. Each witness MUST itself hold a current valid L4+ Conformance Receipt anchored in the OAP Registry (RFC 0026).",
+      "items": {
+        "type": "object",
+        "required": ["witness_did", "witness_receipt_uri", "alg", "signature", "witnessed_at"],
+        "properties": {
+          "witness_did": { "type": "string", "description": "DID of the peer witness implementation." },
+          "witness_receipt_uri": { "type": "string", "format": "uri", "description": "URI of the witness's own Conformance Receipt, used to verify it currently holds L4+." },
+          "alg": { "type": "string", "enum": ["EdDSA", "ES256", "ES384", "RS256", "PQ-Dilithium3"] },
+          "signature": {
+            "type": "string",
+            "not": { "pattern": "^(PLACEHOLDER_NOT_FOR_PRODUCTION|unsigned-reference|placeholder:)" },
+            "description": "Base64-encoded signature over the canonical-JSON form of this Receipt with the peer_witnesses array stripped."
+          },
+          "witnessed_at": { "type": "string", "format": "date-time" },
+          "controller_org": { "type": "string", "description": "Optional declared controlling organisation, used by Verifiers to enforce L5 independence (no two witnesses share a controller)." }
+        }
+      }
+    },
+    "registry_anchor": {
+      "type": "object",
+      "description": "Reference to the OAP Registry commit that anchors this Receipt (RFC 0026). Required for L4 and L5 to be considered current; OPTIONAL but RECOMMENDED for L1 through L3.",
+      "required": ["repo_url", "commit_sha", "file_path"],
+      "properties": {
+        "repo_url": { "type": "string", "format": "uri", "description": "Canonical repository URL, typically https://github.com/openagentprotocol-OAP/oap-registry." },
+        "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$", "description": "Full Git commit SHA of the merge commit that anchors this Receipt." },
+        "file_path": { "type": "string", "description": "Path within the registry repo, typically implementations/<slug>.json." },
+        "merkle_proof": { "type": "string", "description": "Optional Merkle proof for offline verification against a published registry root." }
+      }
+    },
+    "revenue": {
+      "type": "object",
+      "description": "Required when any claimed_levels entry carries the -NC suffix (RFC 0025). Declares the funding model that justifies the Non-Commercial Profile.",
+      "required": ["source"],
+      "properties": {
+        "source": { "type": "string", "enum": ["byok", "self-hosted", "grant", "donation", "sponsorship"] },
+        "note": { "type": "string", "description": "Free-text justification." }
       }
     }
   }

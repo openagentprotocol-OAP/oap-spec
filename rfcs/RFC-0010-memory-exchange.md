@@ -158,7 +158,7 @@ Memory contains intimate personal information. Tools MUST honor deletion request
 
 ## 7. Conformance Impact
 
-Memory Exchange is OPTIONAL at all Conformance Levels. The Stewards will publish reference implementations and a portable export format.
+Memory Exchange is OPTIONAL at all Conformance Levels. The OAP community will publish reference implementations and a portable export format.
 
 ## 8. Implementation Experience
 

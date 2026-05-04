@@ -174,7 +174,7 @@ Aggregation and Restricted Actions. Anti Sybil Proof remains OPTIONAL at all Lev
    Restricted Actions and rate limits.
 3. **Stake Attack on Honest Principals.** Delegation Stake creates a financial liability that
    could be exploited by competitors triggering false misbehavior reports. Stake forfeiture
-   MUST require either a signed Receipt of the misbehavior or a Stewards Dispute Resolution
+   MUST require either a signed Receipt of the misbehavior or a OAP community Dispute Resolution
    ruling.
 
 ## 6. Privacy Considerations

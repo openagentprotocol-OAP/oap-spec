@@ -1,79 +1,49 @@
 # OAP Working Groups
 
+Working Groups are GitHub Discussion categories scoped to a coherent area of the specification. Anyone may participate. Each Working Group has a Coordinator, a self-nominated and rotating role.
+
 ## Standing Working Groups
 
-Each Working Group is responsible for a coherent area of the specification, its schemas, reference implementations, and conformance tests.
+| Working Group | Scope | Discussion Category |
+|---|---|---|
+| Core Protocol | Sections 4 through 9 of OAP-CORE-1.0 (Architecture, Identity, Manifest, Action, Invocation, Streaming, Versioning). | `wg-core` |
+| Confidentiality and Compliance (CCC) | Section 18 (CCC), Section 20 (Policy Engine), professional codes mapping, NDA enforcement, Chinese Wall logic. | `wg-ccc` |
+| Wallet, Subscription, Settlement | Sections 14 through 17 (commerce plane). | `wg-commerce` |
+| Conformance and Testing | Section 31, RFC 0019, the test suite. | `wg-conformance` |
+| Registry | RFC 0026, the `oap-registry` repository. | `wg-registry` |
+| Adapters | MCP, A2A, OpenAI Functions, LangGraph adapters in `reference/adapters`. | `wg-adapters` |
+| Accessibility | WCAG mapping, accessible consent and dispute interfaces. | `wg-accessibility` |
+| Security and Privacy | Sections 28, 29, key rotation, threat modelling. | `wg-security` |
 
-### 1. Core Protocol
+New Working Groups may be created by an RFC that defines the scope and rationale.
 
-**Scope:** Sections 4 through 9 and 27 of OAP-CORE-1.0 (Architecture, Identity, Manifest, Action, Invocation, Streaming, Versioning).
+## Coordinator role
 
-**Chair:** To be elected.
+A Coordinator's responsibilities:
 
-### 2. Confidentiality and Compliance (CCC)
+1. Triage incoming Issues and Discussions in the Working Group's category.
+2. Tag RFCs that fall within the Working Group's scope.
+3. Facilitate consensus, identify blocking objections, and ask the Peer Review Quorum to consider an RFC.
+4. Publish a quarterly status note as a Discussion in the category.
 
-**Scope:** Section 18 (CCC), Section 20 (Policy Engine), professional codes mapping, NDA enforcement, Chinese Wall logic.
+A Coordinator's authority:
 
-**Chair:** To be elected.
+1. None beyond facilitation. Coordinators do not vote with greater weight, do not have veto, and do not approve PRs in their Coordinator capacity.
+2. A Coordinator may also be a Maintainer; in that capacity they vote like any other Maintainer.
 
-### 3. Wallet and Settlement
+## Selection and rotation
 
-**Scope:** Section 11 (Pricing and Wallet), Section 12 (Subscription Lifecycle), MiCA conformance, eIDAS interoperability.
+* Term: 6 months.
+* Self-nomination: Open a Discussion in the Working Group's category titled `Coordinator nomination: <handle> (<period>)`.
+* Confirmation: A Coordinator nomination is confirmed if at least three Maintainers from at least three distinct organizations approve in the Discussion thread within 14 days, with no blocking objection from another Maintainer.
+* Rotation: A Coordinator may not serve more than two consecutive terms in the same Working Group. After a one-term break they may stand again.
+* Recall: A Coordinator may be recalled mid-term by a Public Vote (see `RFC-PROCESS.md`, Section 6).
 
-**Chair:** To be elected.
+## Vacancies
 
-### 4. Trust and Reputation
+If a Working Group has no Coordinator for 30 days, any Maintainer may act as interim Coordinator until a self-nomination is confirmed.
 
-**Scope:** Section 16 (Trust and Verification), Section 19 (Receipts and Transparency Logs), Section 21 (Outcome Verification), Section 22 (Revocation), Sybil resistance.
+## Communication
 
-**Chair:** To be elected.
-
-### 5. Marketplace and Discovery
-
-**Scope:** Section 14 (Capabilities Discovery), Marketplace ranking transparency, tool categorization taxonomy.
-
-**Chair:** To be elected.
-
-### 6. Accessibility
-
-**Scope:** Section 25 (Accessibility), WCAG 2.2 mapping, output adaptation profiles.
-
-**Chair:** To be elected.
-
-### 7. Compliance Mapping
-
-**Scope:** Section 30 (Regulatory Conformance Mapping), maintenance of L2 jurisdictional policy sets, export control tables.
-
-**Chair:** To be elected.
-
-### 8. Reference Implementations
-
-**Scope:** Reference server, reference agent runtime, adapters (MCP, A2A, OpenAI, LangGraph), conformance test suite, developer SDK.
-
-**Chair:** To be elected.
-
-### 9. Web Integration
-
-**Scope:** RFC 0012 (The Agent Native Web), well known surfaces (`/.well-known/oap/*`), Knowledge Node vocabularies, Modality Asset Descriptors with C2PA Content Credentials, federation graphs, `agents.txt` directive language, W1 through W3 web conformance levels.
-
-**Chair:** To be elected.
-
-### 10. Commercial Layer
-
-**Scope:** RFC 0013 (Commerce Models for the Agent Economy), the five commerce models (Per Invocation, Per Outcome, Per Token Knowledge, Per Capability, Per Delegation), Procurement Intent and Offer schemas, Build versus Buy Decision Protocol, Citation Attribution Receipts, Settlement Statements, the OAP Reconciliation Log, and Match Broker disclosure rules. Coordinates with Wallet and Settlement on payment instrument integration and with Trust and Reputation on training data licensing questions.
-
-**Chair:** To be elected.
-
-### 11. Data Plane
-
-**Scope:** RFC 0020 (Agent Query Language), RFC 0021 (Verifiable Indexes and Match Broker Conformance), RFC 0022 (Manifest Subscription Protocol), RFC 0023 (Agent Native Storage Substrate), RFC 0024 (Schema Negotiation and Versioning). Defines the data layer of the protocol, including the canonical query language, the verifiability obligations of indexed surfaces, the push delivery semantics for Manifest changes, the Storage Substrate primitives, and the schema evolution rules. Coordinates with Marketplace and Discovery on Match Broker conformance, with Web Integration on subscription transports, and with Confidentiality and Compliance on the Pre Read Policy Gate.
-
-**Chair:** To be elected.
-
-## Joining a Working Group
-
-Any Individual or organizational member in good standing may join a Working Group by notifying the Chair. Participation requires adherence to the Code of Conduct and disclosure of material conflicts of interest.
-
-## Reporting
-
-Each Working Group provides a written status update to the Board quarterly, covering: active RFCs, conformance issues, open questions, and planned work for the next quarter.
+* Synchronous calls are not part of the decision process. They MAY happen, but no decision binds the community unless it is also made in writing on the relevant GitHub thread.
+* Working Group meeting notes, if any, MUST be posted as a Discussion in the Working Group's category within 48 hours.

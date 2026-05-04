@@ -104,7 +104,7 @@ When `billing = parent`, the Tool MUST issue a Settlement Receipt against the Pa
 
 ### 3.5 Depth Limits
 
-A Tool MUST refuse Delegation Tokens whose `delegation_depth` exceeds `max_delegation_depth`. The Parent Agent SHOULD set `max_delegation_depth` to the smallest value sufficient for the task. The Stewards strongly RECOMMENDS a global ceiling of `max_delegation_depth = 5`.
+A Tool MUST refuse Delegation Tokens whose `delegation_depth` exceeds `max_delegation_depth`. The Parent Agent SHOULD set `max_delegation_depth` to the smallest value sufficient for the task. The OAP community strongly RECOMMENDS a global ceiling of `max_delegation_depth = 5`.
 
 ### 3.6 Manifest Declaration
 

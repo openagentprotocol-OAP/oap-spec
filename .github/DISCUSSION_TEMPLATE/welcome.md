@@ -22,7 +22,7 @@ For security vulnerabilities, please follow [SECURITY.md](https://github.com/ope
 1. The [Code of Conduct](https://github.com/openagentprotocol-OAP/oap-spec/blob/main/CODE_OF_CONDUCT.md) applies to all participation.
 2. Substantive protocol changes follow the [RFC process](https://github.com/openagentprotocol-OAP/oap-spec/blob/main/governance/RFC-PROCESS.md). A discussion is the typical first step.
 3. English is the working language of the Working Groups. Translations are welcome and encouraged in their own threads.
-4. No single participant carries more weight than another. Voting weight inside the Stewards is governed by the [Charter](https://github.com/openagentprotocol-OAP/oap-spec/blob/main/governance/CHARTER.md), not by the volume of comments here.
+4. No single participant carries more weight than another. Voting weight inside the OAP community is governed by the [Charter](https://github.com/openagentprotocol-OAP/oap-spec/blob/main/governance/CHARTER.md), not by the volume of comments here.
 
 ## Getting started
 

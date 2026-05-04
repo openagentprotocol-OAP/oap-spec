@@ -41,7 +41,7 @@ Trust Levels are normative integers from 0 to 4:
 
 ### 3.3 Projection Profile Examples
 
-The the Stewards publish normative Projection Profiles for each Canonical Entity (RFC 0005).
+The the OAP community publish normative Projection Profiles for each Canonical Entity (RFC 0005).
 
 **oap.entity.contact**
 
@@ -150,7 +150,7 @@ Projections operationalize the GDPR principle of data minimization. Tools that i
 
 ## 7. Conformance Impact
 
-Projection support is RECOMMENDED at all Conformance Levels and REQUIRED at L4 (Collaborative). The Stewards will publish a Conformance Test Suite that verifies Projection Profile correctness against the published normative tables.
+Projection support is RECOMMENDED at all Conformance Levels and REQUIRED at L4 (Collaborative). The OAP community will publish a Conformance Test Suite that verifies Projection Profile correctness against the published normative tables.
 
 ## 8. Implementation Experience
 

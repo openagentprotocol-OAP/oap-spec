@@ -168,7 +168,7 @@ Workflow Receipts disclose execution structure. Workflows that handle personal d
 
 ## 7. Conformance Impact
 
-Workflow support is OPTIONAL at all Conformance Levels. The Stewards will operate a Workflow Registry as a Stewards Service.
+Workflow support is OPTIONAL at all Conformance Levels. The OAP community will operate a Workflow Registry as a OAP community Service.
 
 ## 8. Implementation Experience
 

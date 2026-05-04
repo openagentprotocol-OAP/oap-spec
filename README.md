@@ -191,7 +191,7 @@ The 10 [whitepapers](papers/) cover accountability, the agent web, confidentiali
 | L2 | Billable | Pricing, Auth, Subscription, Wallet, refund endpoint. |
 | L3 | Trusted | Audit Log, Data Policy, CCC, Verified Publisher, Multi Party Review for high risk Actions. |
 | L4 | Collaborative | Multi Agent Coordination, Conflict Resolution, Coordination Sessions. |
-| L5 | Certified | External SOC 2 Type II or ISO 27001, declared SLA contract, Insurance Tag, Stewards audit. |
+| L5 | Certified | External SOC 2 Type II or ISO 27001, declared SLA contract, Insurance Tag, OAP community audit. |
 
 Conformance is machine verifiable. The reference [test suite](test-suite/) runs schema, behavior, and charter assertions against any implementation.
 
@@ -212,7 +212,7 @@ All reference code is published under the Apache License 2.0. Implementers may v
 
 ## Governance
 
-The Open Agent Protocol is stewarded by the Open Agent Protocol Stewards, a neutral non profit body. The Stewards maintain the specification, operate the trust anchoring services that the protocol depends on, and adjudicate disputes that participants cannot resolve directly.
+The Open Agent Protocol is stewarded by the Open Agent Protocol community, a neutral non profit body. The OAP community maintain the specification, operate the trust anchoring services that the protocol depends on, and adjudicate disputes that participants cannot resolve directly.
 
 No single corporate participant may hold more than fifteen percent of voting weight. Specification changes follow an open RFC process with publicly archived discussion. The Ethics Board includes practitioners from law, medicine, journalism, accessibility advocacy, and labor representation.
 

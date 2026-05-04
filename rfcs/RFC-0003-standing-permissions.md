@@ -126,7 +126,7 @@ A Tool that does not declare `standing_permissions.supported = true` continues t
 
 ## 5. Security Considerations
 
-1. **Stale Revocation.** A Tool that fails to honor revocation within the declared interval MUST be downgraded by the Stewards to L0 conformance.
+1. **Stale Revocation.** A Tool that fails to honor revocation within the declared interval MUST be downgraded by community-operated services (RFC 0019, RFC 0026) to L0 conformance.
 2. **Forged Grants.** All Grants MUST be cryptographically signed by the Granter DID. Tools MUST verify signatures and DID rotation history before honoring a Grant.
 3. **Cap Bypass.** Tools MUST enforce caps server side. A client side cap is not a cap.
 

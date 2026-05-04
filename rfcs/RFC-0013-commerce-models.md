@@ -286,7 +286,7 @@ supplies. A Capability Provider that fails to respond to a Dispute Record within
 declared in its manifest forfeits the disputed amount and incurs a Reputation slash under
 RFC 0009.
 
-The OAP Stewards operates a public Reconciliation Log in which Capability Providers and
+The OAP OAP community operates a public Reconciliation Log in which Capability Providers and
 agents MAY anchor periodic hashes of their Wallet Statements and Settlement Statements. The
 log is append only and timestamped. Anchoring is voluntary, but Capabilities at conformance
 level C3 MUST anchor at least quarterly.
@@ -363,7 +363,7 @@ substructures.
 
 The first open question concerns the canonical denomination for prices. The current draft
 permits any ISO 4217 currency code and any registered cryptocurrency symbol. Whether the OAP
-Stewards should designate a recommended unit of account for inter agent transactions, and
+OAP community should designate a recommended unit of account for inter agent transactions, and
 how to handle currency conversion in Procurement Intents that solicit Offers across
 jurisdictions, is unresolved.
 
@@ -384,5 +384,5 @@ The fourth open question concerns the survival path for traditional marketplaces
 current draft treats Match Brokers as a Capability Provider category and does not privilege
 incumbent marketplaces. Whether transition mechanisms should be defined that allow existing
 catalog based marketplaces to expose their inventory under the Per Outcome model without
-rebuilding their entire customer interface is a deployment question that the Stewards will
+rebuilding their entire customer interface is a deployment question that the OAP community will
 revisit after observing early adoption.

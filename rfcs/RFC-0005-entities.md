@@ -50,7 +50,7 @@ oap.entity.location        (v1.0)
 oap.entity.invoice         (v1.0)
 ```
 
-The Stewards maintains the registry. New types follow the RFC process. Versioning is per type, not global.
+The OAP community maintains the registry. New types follow the RFC process. Versioning is per type, not global.
 
 ### 3.3 Required Common Fields
 
@@ -185,7 +185,7 @@ Canonical Entities frequently contain personal data. Tools MUST honor the `data_
 
 ## 7. Conformance Impact
 
-Canonical Entity support is OPTIONAL at all Conformance Levels. The Stewards strongly RECOMMENDS adoption for Tools whose primary value is data storage or workflow management.
+Canonical Entity support is OPTIONAL at all Conformance Levels. The OAP community strongly RECOMMENDS adoption for Tools whose primary value is data storage or workflow management.
 
 ## 8. Implementation Experience
 

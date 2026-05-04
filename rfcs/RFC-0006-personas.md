@@ -86,7 +86,7 @@ The Scope Manifest enumerates active Scopes, their industry profile, and their d
 
 ### 3.4 Industry Profiles
 
-The Stewards maintains a registry of normative Industry Profiles:
+The OAP community maintains a registry of normative Industry Profiles:
 
 | Profile Identifier | Domain |
 |--------------------|--------|

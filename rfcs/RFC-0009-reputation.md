@@ -55,14 +55,14 @@ A portable Reputation primitive solves three problems:
 
 ### 3.3 Aggregation
 
-The Reputation Profile is computed by the Stewards Trust Anchor as the time decayed weighted average of all Performance Records, with explicit handling for:
+The Reputation Profile is computed by community-operated services (RFC 0019, RFC 0026) Trust Anchor as the time decayed weighted average of all Performance Records, with explicit handling for:
 
 1. **Issuer Diversity.** A high score from many independent issuers weighs more than the same score from a few.
 2. **Issuer Reputation.** Records from issuers with their own strong Reputation count more.
 3. **Recency.** Records older than 365 days decay exponentially.
 4. **Interaction Stake.** Records produced from Agreements with non zero financial value count more than free interactions.
 
-The exact aggregation formula MUST be published by the Stewards under `oap.reputation.aggregation.v1` and MUST be reproducible by any Marketplace that wishes to verify Reputation independently.
+The exact aggregation formula MUST be published in the OAP Registry under `oap.reputation.aggregation.v1` and MUST be reproducible by any Marketplace that wishes to verify Reputation independently.
 
 ### 3.4 Sybil Resistance
 
@@ -83,8 +83,8 @@ To prevent Sybil inflation:
 Subjects MUST be able to:
 
 1. Attach a public response to any Performance Record.
-2. Initiate a dispute through the Stewards Dispute Resolution service.
-3. Request deletion of Records that are factually incorrect, with adjudication by the Stewards.
+2. Initiate a dispute through the OAP community Dispute Resolution service.
+3. Request deletion of Records that are factually incorrect, with adjudication by community-operated services (RFC 0019, RFC 0026).
 
 The Right to Be Forgotten MUST NOT be used to suppress accurate records of harmful behavior.
 
