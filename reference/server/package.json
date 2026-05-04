@@ -1,15 +1,17 @@
 {
   "name": "@oap/reference-server",
-  "version": "0.1.0",
-  "description": "Reference implementation of an OAP conformant Tool server (Node.js, Express).",
+  "version": "1.0.0",
+  "description": "L4-ready reference implementation of an OAP conformant Tool server with persistent SQLite storage and real Ed25519 signing.",
   "main": "server.js",
   "license": "Apache-2.0",
   "engines": { "node": ">=20" },
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "smoke": "node test/smoke.test.js"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "better-sqlite3": "^11.5.0"
   }
 }

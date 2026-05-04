@@ -1,0 +1,5 @@
+# Local artefacts
+oap-server.db
+oap-server.db-shm
+oap-server.db-wal
+reference-key.pem

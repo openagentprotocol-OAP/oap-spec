@@ -33,6 +33,9 @@ jobs:
       - name: Install server dependencies
         working-directory: reference/server
         run: npm install
+      - name: Run reference server smoke test
+        working-directory: reference/server
+        run: npm run smoke
       - name: Start server and probe manifest
         working-directory: reference/server
         run: |
@@ -40,7 +43,23 @@ jobs:
           SERVER_PID=$!
           sleep 3
           curl -sf http://localhost:3100/.well-known/oap-tool.json > /dev/null
+          curl -sf http://localhost:3100/.well-known/did.json > /dev/null
           kill $SERVER_PID
+
+  adapters-smoke:
+    name: Smoke test all adapters
+    runs-on: ubuntu-latest
+    needs: [reference-server]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install reference server deps
+        working-directory: reference/server
+        run: npm install
+      - name: Run adapter smoke tests (mcp, a2a, openai-functions, langgraph)
+        run: node adapters/__tests__/smoke.test.js
 
   conformance-test-suite:
     name: Run conformance test suite

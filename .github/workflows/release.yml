@@ -1,16 +1,31 @@
-name: Create Release
+name: Release
+
+# Tag-driven release pipeline for the OAP spec.
+#
+# On a tag matching v*:
+#   1. Validate every JSON Schema under schemas/v1.0 with ajv-strict.
+#   2. Run the reference server smoke test (npm run smoke in reference/server).
+#   3. Boot the reference server, run the full conformance test-suite against it.
+#   4. Run the adapter smoke tests against the running reference server.
+#   5. Generate a signed self-Conformance Receipt for the reference server using
+#      attest.js and the repository signing key.
+#   6. Create the GitHub Release with the receipt and CHANGELOG.md attached.
+#
+# Manual trigger (workflow_dispatch) supports the same flow without tagging.
 
 on:
+  push:
+    tags: ['v*']
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g. v1.0.0-pwd.1)'
+        description: 'Tag to release (e.g. v1.0.0). Must already exist.'
         required: true
       title:
         description: 'Release title'
         required: true
       prerelease:
-        description: 'Is this a prerelease?'
+        description: 'Mark as prerelease?'
         type: boolean
         default: true
 
@@ -18,16 +33,191 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  validate-schemas:
+    name: Validate v1.0 schemas
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install validator dependencies
+        working-directory: reference/validator
+        run: npm install
+      - name: Run ajv strict validation
+        working-directory: reference/validator
+        run: node ajv-validate.js
 
-      - name: Create Release
+  reference-server-smoke:
+    name: Reference server smoke test
+    runs-on: ubuntu-latest
+    needs: [validate-schemas]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install reference server deps
+        working-directory: reference/server
+        run: npm install
+      - name: Run npm run smoke
+        working-directory: reference/server
+        run: npm run smoke
+
+  conformance-suite:
+    name: Run full conformance test-suite
+    runs-on: ubuntu-latest
+    needs: [reference-server-smoke]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install reference server deps
+        working-directory: reference/server
+        run: npm install
+      - name: Install test-suite deps
+        working-directory: test-suite
+        run: npm install
+      - name: Start reference server
+        working-directory: reference/server
+        run: |
+          node server.js &
+          echo $! > /tmp/oap-server.pid
+          sleep 3
+      - name: Probe live target
+        run: curl -sf http://localhost:3100/.well-known/oap-tool.json > /dev/null
+      - name: Run schema tests
+        working-directory: test-suite
+        run: node runner.js --only schema
+      - name: Run behavior tests
+        working-directory: test-suite
+        env:
+          OAP_TARGET: http://localhost:3100
+        run: node runner.js --only behavior
+      - name: Run charter tests
+        working-directory: test-suite
+        env:
+          OAP_TARGET: http://localhost:3100
+        run: node runner.js --only charter
+      - name: Stop reference server
+        if: always()
+        run: |
+          if [ -f /tmp/oap-server.pid ]; then
+            kill $(cat /tmp/oap-server.pid) || true
+          fi
+
+  adapters-smoke:
+    name: Adapters smoke test
+    runs-on: ubuntu-latest
+    needs: [reference-server-smoke]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install reference server deps
+        working-directory: reference/server
+        run: npm install
+      - name: Run adapters smoke
+        run: node adapters/__tests__/smoke.test.js
+
+  attest-and-release:
+    name: Generate signed Conformance Receipt and publish Release
+    runs-on: ubuntu-latest
+    needs: [conformance-suite, adapters-smoke]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install reference server deps
+        working-directory: reference/server
+        run: npm install
+
+      - name: Install test-suite deps
+        working-directory: test-suite
+        run: npm install
+
+      - name: Materialise Ed25519 signing key from secret
+        env:
+          OAP_REFERENCE_SIGNING_PEM_B64: ${{ secrets.OAP_REFERENCE_SIGNING_PEM_B64 }}
+        run: |
+          if [ -z "$OAP_REFERENCE_SIGNING_PEM_B64" ]; then
+            echo "::warning::Repository secret OAP_REFERENCE_SIGNING_PEM_B64 not set."
+            echo "::warning::A throwaway Ed25519 key will be generated for this run only."
+            openssl genpkey -algorithm ED25519 -out /tmp/oap-ref-key.pem
+          else
+            echo "$OAP_REFERENCE_SIGNING_PEM_B64" | base64 -d > /tmp/oap-ref-key.pem
+            chmod 600 /tmp/oap-ref-key.pem
+          fi
+          openssl pkey -in /tmp/oap-ref-key.pem -noout
+
+      - name: Boot reference server
+        working-directory: reference/server
+        env:
+          OAP_SIGNING_KEY_PEM: /tmp/oap-ref-key.pem
+        run: |
+          node server.js &
+          echo $! > /tmp/oap-server.pid
+          sleep 3
+          curl -sf http://localhost:3100/.well-known/oap-tool.json > /dev/null
+
+      - name: Generate signed self-Conformance Receipt
+        run: |
+          mkdir -p release-artifacts
+          node test-suite/attest.js \
+            --target http://localhost:3100 \
+            --did did:web:reference.openagentprotocol.eu \
+            --name "OAP Reference Server" \
+            --version "$(node -p "require('./reference/server/package.json').version")" \
+            --signing-key /tmp/oap-ref-key.pem \
+            --profile standard \
+            --out release-artifacts/oap-reference-conformance-receipt.json
+
+      - name: Stop reference server
+        if: always()
+        run: |
+          if [ -f /tmp/oap-server.pid ]; then
+            kill $(cat /tmp/oap-server.pid) || true
+          fi
+
+      - name: Generate release body
+        id: body
+        run: |
+          TAG="${{ github.event_name == 'push' && github.ref_name || github.event.inputs.tag }}"
+          {
+            echo "## OAP Spec Release ${TAG}"
+            echo ""
+            echo "### Verifiable artefacts"
+            echo "- Reference server signed self-Conformance Receipt: \`oap-reference-conformance-receipt.json\`"
+            echo ""
+            echo "### Pipeline gates passed"
+            echo "- ajv-strict validation of every \`schemas/v1.0/*.schema.json\`"
+            echo "- Reference server \`npm run smoke\` (21 checks)"
+            echo "- Full conformance test-suite (schema + behavior + charter)"
+            echo "- Adapter smoke tests (mcp, a2a, openai-functions, langgraph)"
+            echo ""
+            echo "### Changelog"
+            echo ""
+            if [ -f CHANGELOG.md ]; then
+              # Print the section for this tag if present, otherwise the top section.
+              awk -v tag="$TAG" '
+                /^## / { if (found) exit; if (index($0, tag)) { found=1; print; next } }
+                found
+              ' CHANGELOG.md | head -100
+            fi
+          } > release-artifacts/RELEASE_BODY.md
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag }}
-          name: ${{ github.event.inputs.title }}
-          prerelease: ${{ github.event.inputs.prerelease }}
-          body_path: .github/RELEASE_NOTES.md
-          generate_release_notes: false
+          tag_name: ${{ steps.body.outputs.tag }}
+          name: ${{ github.event.inputs.title || steps.body.outputs.tag }}
+          prerelease: ${{ github.event.inputs.prerelease || false }}
+          body_path: release-artifacts/RELEASE_BODY.md
+          files: |
+            release-artifacts/oap-reference-conformance-receipt.json
+            CHANGELOG.md
