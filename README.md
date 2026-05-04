@@ -5,7 +5,7 @@
 **The vendor neutral standard for how autonomous agents discover, invoke, pay for, govern, and audit the tools and services they use.**
 
 [![Spec 1.0 PWD](https://img.shields.io/badge/spec-1.0%20Public%20Working%20Draft-1f6feb)](spec/v1.0/OAP-CORE-1.0.md)
-[![RFCs](https://img.shields.io/badge/RFCs-24-555)](rfcs/)
+[![RFCs](https://img.shields.io/badge/RFCs-26-555)](rfcs/)
 [![Papers](https://img.shields.io/badge/papers-10-555)](papers/)
 [![Schemas](https://img.shields.io/badge/JSON%20Schemas-23-555)](schemas/v1.0/)
 [![Adapters](https://img.shields.io/badge/adapters-MCP%20|%20A2A%20|%20OpenAI%20|%20LangGraph-555)](adapters/)
@@ -179,6 +179,8 @@ oap-spec/
 | Subscription Protocol | [RFC-0022](rfcs/RFC-0022-manifest-subscription-protocol.md) | Push delivery for Manifest changes. |
 | Storage Substrate | [RFC-0023](rfcs/RFC-0023-agent-native-storage-substrate.md) | The data layer queried through AQL. |
 | Schema Negotiation | [RFC-0024](rfcs/RFC-0024-schema-negotiation-and-versioning.md) | Forward and backward compatible evolution. |
+| Non Commercial Profile | [RFC-0025](rfcs/RFC-0025-non-commercial-conformance-profile.md) | BYOK and non commercial conformance variant. |
+| Registry Protocol | [RFC-0026](rfcs/RFC-0026-registry-protocol.md) | Append only listing, validation CI, and renewal. |
 
 The 10 [whitepapers](papers/) cover accountability, the agent web, confidentiality, databases for the agent economy, economics, governance, interoperability, the policy stack, verifiable conformance, and the storefront to manifest transition.
 
