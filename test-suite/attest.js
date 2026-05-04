@@ -42,7 +42,7 @@
  * @license Apache-2.0
  */
 
-const { execFileSync } = require('child_process');
+const { execFileSync, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -154,23 +154,38 @@ if (!target || !name || !version) {
 }
 
 function runSuite() {
+  const tmpFile = path.join(require('os').tmpdir(), `oap-suite-${Date.now()}.json`);
   const env = { ...process.env, OAP_TARGET: target, OAP_REPORT: 'json', OAP_PROFILE: profile };
-  const stdout = execFileSync('node', [path.join(__dirname, 'runner.js')], { env, encoding: 'utf-8' });
-  return JSON.parse(stdout);
+  // Use shell redirection so the runner writes directly to a file. This avoids
+  // pipe-buffer truncation seen with execFileSync on some platforms.
+  execSync(`node "${path.join(__dirname, 'runner.js')}" > "${tmpFile}"`, { env, stdio: ['ignore', 'ignore', 'inherit'] });
+  const text = fs.readFileSync(tmpFile, 'utf-8');
+  fs.unlinkSync(tmpFile);
+  return JSON.parse(text);
 }
 
 function levelsFromResults(results) {
   const levelsConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'levels', 'levels.json'), 'utf-8'));
+  // Index passed artefacts by both full relative path and basename so the
+  // matcher works whether the runner emits 'behavior/lifecycle.test.js' or
+  // just 'lifecycle.test.js'.
   const passedFiles = new Set();
+  const passedBasenames = new Set();
   for (const r of results.results || []) {
-    if (r.passed && r.file) passedFiles.add(r.file);
+    if (!r.passed) continue;
+    const f = r.file || r.name;
+    if (!f) continue;
+    passedFiles.add(f);
+    passedBasenames.add(path.basename(f));
   }
+  const matches = (required) =>
+    passedFiles.has(required) || passedBasenames.has(path.basename(required));
   const claimed = [];
   for (const [level, required] of Object.entries(levelsConfig.levels)) {
     if (!required.length) continue;
     if (profile === 'non-commercial' && !level.endsWith('-NC') && !['L0'].includes(level)) continue;
     if (profile === 'standard' && level.endsWith('-NC')) continue;
-    const allPassed = required.every((f) => passedFiles.has(f));
+    const allPassed = required.every(matches);
     if (allPassed) claimed.push(level);
   }
   if (!claimed.length) {
