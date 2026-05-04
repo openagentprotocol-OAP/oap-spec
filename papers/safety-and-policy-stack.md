@@ -89,6 +89,12 @@ A safety architecture for autonomous agents must respect the layered structure o
 
 [RFC 0018](/rfcs/0018): The Right to a Human Path. Defines the escalation action that the policy stack must always preserve.
 
+[RFC 0030](/rfcs/0030): Agent Organizations, Roles, Scenes, and Norms. Lifts the Org Policy layer of this paper from a flat constraint set to a structured organizational model with deontic norms over role-scene pairs, and formalizes the Responsibility component of the ART principles in the sense of Dignum (2017, 2019).
+
+Dignum, V. (2017). Responsible Autonomy. *IJCAI*. The conceptual basis for treating Accountability, Responsibility, and Transparency (ART) as the irreducible obligations of any deployed agent system. The Org Policy layer of this paper realizes the structural component of Responsible Autonomy at the protocol level; RFC 0030 supplies the role-scene-norm formalism on which it is built.
+
+Dignum, V. (2019). *Responsible Artificial Intelligence: How to Develop and Use AI in a Responsible Way*. Springer. The book-length treatment of the same framework, including the EU High-Level Expert Group's seven requirements for Trustworthy AI, mapped to OAP artifacts in RFC 0028 Annex B.
+
 Related whitepapers: [Confidentiality and Compliance Context](/papers/confidentiality-and-compliance-context), [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy), [Governance of an Ownerless Protocol](/papers/governance-of-an-ownerless-protocol).
 
 Regulation (EU) 2024/1689 on harmonised rules for artificial intelligence (AI Act).

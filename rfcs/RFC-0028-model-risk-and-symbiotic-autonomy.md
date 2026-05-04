@@ -52,6 +52,7 @@ This RFC closes all three gaps in a single document and binds the additions to a
 | Adverse Action | A decision that denies, withdraws, or makes materially less favorable a credit, insurance, employment, housing, or comparable benefit to an affected party. |
 | Disparate Impact | A statistically significant difference in approval, pricing, or service quality across a Protected Class, evaluated against the four fifths rule. |
 | Protected Class | A class enumerated by applicable equal opportunity law (race, sex, age, religion, disability, national origin, pregnancy, sexual orientation, family status, and the equivalent classes under Article 21 of the EU Charter of Fundamental Rights and ECOA Regulation B). |
+| Responsibility | The protocol-level obligation of an Agent to refuse actions outside its published `competence.actions` set or below its applicable `confidence_floor`, to escalate proactively under section 3.6, and to record every such refusal or escalation as a Decision Record under OAP-CORE Section 20. The Agent-side complement to Accountability (RFC 0009) and Transparency (OAP-CORE Section 20), in the sense of the ART principles of Dignum (2017, 2019). Formalized in RFC 0030 section 3.8. |
 
 ### 3.2 Model Inventory and Manifest Declaration
 
@@ -328,6 +329,38 @@ The AssistNet Booking Engine has implemented the Symbiotic Escalation mechanism 
 | `basel_iii_capital` | Capital adequacy under the Basel III framework. |
 | `hipaa` | US Health Insurance Portability and Accountability Act. |
 | `none` | No external reporting regime applies. |
+
+## Annex B. EU AI Act Article-by-Article Mapping
+
+This annex provides the detailed mapping from articles of Regulation (EU) 2024/1689 (the EU Artificial Intelligence Act) to OAP normative artifacts. The mapping is normative for any implementation declaring `eu_ai_act_high_risk` in `reporting_regime` or any Organization (RFC 0030) declaring `EU-AI-ACT-Annex-III-*` in `regulatory_regime`. An implementation that declares either MUST satisfy every row marked REQUIRED.
+
+| AI Act Article | Subject | OAP Realization | Status |
+|---|---|---|---|
+| Art. 9 | Risk management system | RFC 0028 §3.2 (Model Inventory), §3.3 (Drift Detection), §3.4 (Champion-Challenger). | REQUIRED |
+| Art. 10 | Data and data governance | RFC 0028 §3.2 (`training_data_lineage`); OAP-CORE §19 (canonicalization); RFC 0007 (Projections). | REQUIRED |
+| Art. 11 | Technical documentation | OAP-CORE §9 (Manifest); RFC 0028 §3.2; RFC 0030 §3.6 (Organization governance contract). | REQUIRED |
+| Art. 12 | Record-keeping (logs) | OAP-CORE §20 (Decision Records); RFC 0009 receipts. | REQUIRED |
+| Art. 13 | Transparency to deployers | OAP-CORE §9 (Manifest); RFC 0028 §3.5 (`agent_confidence_score`); RFC 0030 §3.8 (Responsibility). | REQUIRED |
+| Art. 14 | Human oversight | RFC 0018 (Right to Human Path); RFC 0028 §3.6 (Proactive Escalation); RFC 0017 (Cooling-off). | REQUIRED |
+| Art. 15 | Accuracy, robustness, cybersecurity | RFC 0028 §3.3 (Drift); §3.4 (Champion-Challenger); OAP-CORE §21 (Reproducibility). | REQUIRED |
+| Art. 16 | Provider obligations | OAP-CORE §9; RFC 0026 (Registry anchoring of provider). | REQUIRED |
+| Art. 26 | Deployer obligations | RFC 0030 §3.6 (`governance_contract`); RFC 0003 (Standing Permissions). | REQUIRED |
+| Art. 27 | Fundamental rights impact assessment | RFC 0028 §3.10 (Disparate Impact Audit, four-fifths rule); RFC 0016 (Sovereignty Charter). | REQUIRED |
+| Art. 50 | Transparency for AI systems interacting with humans | RFC 0028 §3.7 (Counterfactual Explanations); RFC 0028 §3.8 (Adverse Action Notice); OAP-CORE §20. | REQUIRED |
+| Art. 72 | Post-market monitoring | RFC 0028 §3.3 (continuous PSI/KS/SPRT monitoring). | REQUIRED |
+| Art. 86 | Right to explanation of individual decisions | RFC 0028 §3.7 (Counterfactual); §3.8 (Adverse Action). | REQUIRED |
+
+Mapping to the seven requirements of the European Commission High-Level Expert Group on AI *Ethics Guidelines for Trustworthy AI* (2019) is given for completeness:
+
+| HLEG Requirement | OAP Realization |
+|---|---|
+| 1. Human agency and oversight | RFC 0016, RFC 0018, RFC 0028 §3.6. |
+| 2. Technical robustness and safety | RFC 0028 §3.3, §3.4; OAP-CORE §21. |
+| 3. Privacy and data governance | RFC 0007, OAP-CORE §18. |
+| 4. Transparency | OAP-CORE §20, RFC 0028 §3.7. |
+| 5. Diversity, non-discrimination, fairness | RFC 0028 §3.10 (Disparate Impact Audit). |
+| 6. Societal and environmental wellbeing | RFC 0030 §3.6 (`regulatory_regime`); RFC 0009 receipts make externalities auditable. |
+| 7. Accountability | RFC 0009; OAP-CORE §20; RFC 0030 §3.8 (Responsibility, completing the ART triad). |
 
 ## Appendix A: Sample Complexity of Drift Detection
 
