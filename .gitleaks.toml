@@ -5,13 +5,17 @@
 useDefault = true
 
 [allowlist]
-description = "Spec example tokens and idempotency identifiers in OAP-CORE-1.0.md"
+description = "Spec example tokens, idempotency identifiers, and SDK type annotations"
 paths = [
   '''spec/v1\.0/OAP-CORE-1\.0\.md''',
   '''examples/.*''',
   '''rfcs/.*\.md''',
+  '''sdks/.*''',
+  '''reference/.*''',
+  '''test-suite/.*''',
 ]
 regexes = [
   '''oap_sub_(live|test)_[A-Za-z0-9]+''',
   '''01J[0-9A-HJKMNP-TV-Z]{23}''',
+  '''Ed25519(Private|Public)Key''',
 ]
