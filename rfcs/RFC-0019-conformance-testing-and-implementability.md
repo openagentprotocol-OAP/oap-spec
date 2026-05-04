@@ -119,3 +119,70 @@ A purely declarative trust framework in which Providers self attest conformance 
 * `reference/agent/conformance-verifier.js`.
 * `governance/RFC-PROCESS.md`.
 * IETF RFC 2119 and RFC 8174.
+
+## Appendix A: Patrolling Games and Optimal Probe Selection
+
+This appendix is normative for the probe-selection strategy it specifies as the recommended default and informative for the supporting commentary. It models the conformance probe selection problem of section 8 as a Stackelberg Patrolling Game in the sense of Basilico, Gatti, and Amigoni (2009) and the deployed IRIS system of Tsai, Rathi, Kiekintveld, Ordonez, and Tambe (2009), characterizes the Verifier's optimal randomization over probes against bounded-rational adaptive Implementations, and gives the reference algorithm that conformant Verifiers SHOULD implement when selecting which probes to run. The appendix complements Appendix B of `papers/safety-and-policy-stack.md`, which models the Policy Stack itself as a Stackelberg Security Game.
+
+### A.1 The Probe Selection Problem
+
+Let $\mathcal{P} = \{p_1, \ldots, p_n\}$ denote the conformance probe set defined in section 5 of this RFC, partitioned into the categories of section 8: schema probes, behavior probes, level probes, charter probes, and adversarial probes. Let $\mathcal{I}$ denote the Implementation under test, which the Verifier models as a strategic actor that may attempt to exploit predictability in the probe schedule by behaving correctly under expected probes and incorrectly otherwise. Let $b$ denote the Verifier's per-attestation probe budget, namely the maximum number of probes the Verifier can run within the Conformance Receipt validity window of section 7.
+
+The **Verifier's pure strategy** $s_v$ is a subset of $\mathcal{P}$ of size at most $b$. The **Verifier's mixed strategy** $\sigma_v \in \Delta(2^\mathcal{P})$ is a probability distribution over such subsets. The **Implementation's strategy** $s_i$ is the choice of which probes to violate (equivalently, which protocol surfaces to fail). The Verifier observes only the realized $s_v$ but commits publicly to $\sigma_v$ through publication of the Verifier's algorithm under the Registry entry `oap.conformance.verifier.v1`.
+
+The Verifier's utility is the expected detection rate weighted by the severity of the violated surface; the Implementation's utility is the expected payoff from undetected non-compliance minus the cost of compliance on the surfaces it covers. The structure is that of a Stackelberg Patrolling Game with the Verifier as Defender and the Implementation as Attacker.
+
+### A.2 Theorem A.1 (Existence and Computability of the Verifier's Optimal Strategy)
+
+**Statement.** For every finite probe set $\mathcal{P}$ with finite budget $b$, the Verifier's optimal mixed strategy $\sigma_v^*$ exists, is unique up to a measure-zero set of degenerate utility profiles, and is computable in polynomial time in $|\mathcal{P}|$ when the Implementation is single-type and in time $O(|\Theta_i|^b)$ in the Bayesian Implementation-type setting.
+
+**Proof sketch.** The result is the application of Theorem B.1 and Theorem B.2 of `papers/safety-and-policy-stack.md` Appendix B (and their underlying references Conitzer and Sandholm (2006), Paruchuri et al. (2008)) to the conformance Verifier setting. The probe set $\mathcal{P}$ corresponds to the Defender's resources, the protocol surfaces correspond to the targets, and the per-surface utility profile is determined by the severity and the expected cost-of-detection. $\blacksquare$
+
+### A.3 Theorem A.2 (Patrolling Strategy under Adaptive Implementation)
+
+**Statement.** Suppose the Implementation observes the realized probe sequence $\{s_v^{(t)}\}_{t=1}^{T}$ across $T$ past attestation windows and adapts its strategy via fictitious play (Brown 1951; Robinson 1951). Then the Verifier's optimal randomized patrol against the adaptive Implementation is the strategy of Basilico, Gatti, and Amigoni (2009) parametrized by the probe-completion times of $\mathcal{P}$. The Verifier's expected detection rate against the adaptive Implementation is bounded below by
+
+$$
+\mathbb{E}[\mathrm{detect}(\sigma_v^*, s_i^*)] \;\ge\; 1 - \frac{C(\mathcal{P}, b)}{T},
+$$
+
+where $C(\mathcal{P}, b)$ is the patrolling-game characteristic constant of Basilico-Gatti-Amigoni (2009, Theorem 4) that depends only on the probe completion times and the budget.
+
+**Proof sketch.** The proof follows Basilico, Gatti, and Amigoni (2009, Theorem 4) and the IRIS deployment analysis of Tsai et al. (2009). The key insight is that the Verifier's optimal patrol against an adaptive Attacker is not uniform random but rather a computed distribution that maximizes the minimum coverage probability across targets weighted by Attacker payoff. The asymptotic detection bound follows from the convergence of fictitious play under the Stackelberg structure. $\blacksquare$
+
+### A.4 Reference Verifier Algorithm
+
+The reference Verifier `reference/agent/conformance-verifier.js` SHOULD implement the patrolling strategy of A.3 with the following parameters:
+
+1. **Probe completion times.** The Verifier MUST measure and publish the empirical completion time of each probe class against the Reference Implementation, and MUST update the published values monthly under the Registry entry `oap.conformance.probe-times.v1`.
+2. **Adversarial weight.** Probes in the `test-suite/behavior/adversarial/` subdirectory of section 8 receive a multiplicative weight of at least $\eta = 3$ in the patrol distribution, reflecting the higher Defender utility of detecting adversarial violations.
+3. **Recency-weighted history.** The Verifier MUST consult the Implementation's past Conformance Receipts (when available) and SHOULD increase the weight of probes targeting protocol surfaces on which the Implementation has previously failed, with exponential recency decay parameter $\lambda = \ln 2 / 90$ days.
+
+A Verifier that does not implement the patrolling strategy is conformant under this RFC but loses the Tambe-grade adversarial robustness guarantee of A.3. The Verifier MUST declare its choice of strategy in the Conformance Receipt under the field `verifier_strategy` with values among `uniform_random`, `weighted_random`, `stackelberg_patrol`, or `custom`.
+
+### A.5 Theorem A.3 (Robustness under Quantal Response Implementations)
+
+**Statement.** When the Implementation exhibits Quantal Response behavior in choosing which protocol surfaces to violate, the Verifier's optimal patrolling strategy is the Quantal Response variant of A.3 with the QSE solution of Yang, Kiekintveld, Ordonez, Tambe, and John (2011). The reference implementation MAY use this variant and MUST publish its choice under `oap.conformance.verifier-qre.v1`.
+
+**Proof sketch.** Direct application of Theorem B.4 of `papers/safety-and-policy-stack.md` Appendix B to the patrolling-game setting. $\blacksquare$
+
+### A.6 Composition with the Adversarial Test Suite
+
+The adversarial test categories of section 8 (receipt forgery, signature stripping, cooling off bypass, escalation routing, replaceability obfuscation, Sybil identity creation) are the **high-priority targets** in the patrolling game of A.1. The patrolling distribution MUST cover each adversarial target with positive probability at every attestation window, with the probability bounded below by $\eta / |\mathcal{P}|$ where $\eta$ is the adversarial weight of A.4.
+
+### A.7 Implications for Downstream RFCs
+
+1. **Safety/Policy Stack paper.** The composition with the Policy Stack Stackelberg game is given in `papers/safety-and-policy-stack.md` Appendix B.8.
+2. **RFC 0026 (Registry Protocol).** The Registry entries `oap.conformance.verifier.v1`, `oap.conformance.probe-times.v1`, and `oap.conformance.verifier-qre.v1` are the publication anchors for the patrolling parametrizations.
+3. **RFC 0009 (Reputation).** A Verifier's adherence to the patrolling strategy is an input to the Verifier's own reputation under the OAP Reputation aggregation, providing a market signal of Verifier quality.
+
+### A.8 References to Patrolling Games and Adversarial Test Selection
+
+- Basilico, N., Gatti, N., and Amigoni, F. (2009). Leader-Follower Strategies for Robotic Patrolling in Environments with Arbitrary Topologies. *Proceedings of AAMAS-2009.*
+- Tsai, J., Rathi, S., Kiekintveld, C., Ordonez, F., and Tambe, M. (2009). IRIS: A Tool for Strategic Security Allocation in Transportation Networks. *Proceedings of AAMAS-2009 Industry Track.*
+- Brown, G. W. (1951). Iterative Solution of Games by Fictitious Play. *Activity Analysis of Production and Allocation,* Wiley.
+- Robinson, J. (1951). An Iterative Method of Solving a Game. *Annals of Mathematics* 54(2).
+- Yang, R., Kiekintveld, C., Ordonez, F., Tambe, M., and John, R. (2011). Improving Resource Allocation Strategy against Human Adversaries in Security Games. *Proceedings of IJCAI-2011.*
+- Conitzer, V., and Sandholm, T. (2006). Computing the Optimal Strategy to Commit to. *Proceedings of EC-2006.*
+- Paruchuri, P., Pearce, J. P., Marecki, J., Tambe, M., Ordonez, F., and Kraus, S. (2008). Playing Games for Security: An Efficient Exact Algorithm for Solving Bayesian Stackelberg Games. *Proceedings of AAMAS-2008.*
+- Tambe, M. (2011). *Security and Game Theory: Algorithms, Deployed Systems, Lessons Learned.* Cambridge University Press.
