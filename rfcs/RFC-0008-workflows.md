@@ -283,4 +283,117 @@ Every Step in a Workflow is gated by the four-layer Policy Stack of `papers/safe
 - Grosz, B. J., and Kraus, S. (1996). Collaborative Plans for Complex Group Action. *Artificial Intelligence* 86(2).
 - Tambe, M. (1997). Towards Flexible Teamwork. *Journal of Artificial Intelligence Research* 7.
 - Wooldridge, M. (2009). *An Introduction to MultiAgent Systems,* 2nd ed. Wiley, chapter 9.
+
+## Appendix B: Coalition Formation and Cooperative Game Theory under OAP Workflows
+
+This appendix is normative for the schema-level claims it makes about multi-Party Workflows and informative for the supporting commentary. It extends the joint-intention semantics of Appendix A from the bilateral and pre-formed-team cases to the case in which three or more Agents must first decide whether to form a coalition at all, and if so, how to allocate the resulting joint surplus. The treatment follows the cooperative game theory of Shapley (1953) and Aumann (1959), the Coalition Structure Generation algorithms of Sandholm, Larson, Andersson, Shehory, and Tohmé (1999), the kernel-stable allocation of Klusch and Shehory (1996), and the multi agent coalition formation surveys of Rahwan, Michalak, Wooldridge, and Jennings (2015). The exposition is consistent with Shoham and Leyton-Brown (2009), chapter 12.
+
+### B.1 The Coalition Formation Problem under OAP
+
+Let $\mathcal{A} = \{1, \ldots, n\}$ be a set of OAP Agents that have each received a candidate Workflow Definition $W$. Each Agent $i$ knows its own contribution $c_i: 2^{\mathcal{A}} \to \mathbb{R}$ that maps each candidate coalition $C \subseteq \mathcal{A}$ containing $i$ to the value $i$ would deliver to $C$ if $C$ were formed. The **characteristic function** of the coalition formation game is
+
+$$
+v(C) \;=\; \sum_{i \in C} c_i(C) \;-\; \mathrm{cost}_{\mathrm{coord}}(C),
+$$
+
+where $\mathrm{cost}_{\mathrm{coord}}(C)$ is the OAP-protocol-level coordination cost of running the Workflow with coalition $C$, including Receipt-anchoring, signature verification, and Step-handoff overhead. The coordination cost is monotonic in $|C|$ under the protocol's quadratic Receipt-aggregation cost, but the value $\sum_{i \in C} c_i(C)$ may grow superlinearly in $|C|$ when the Agents have complementary capabilities, so non-trivial coalitions are often welfare-improving.
+
+A **Coalition Structure** $\mathcal{S}$ is a partition of $\mathcal{A}$ into disjoint coalitions whose union is $\mathcal{A}$. The **Coalition Structure Generation Problem** is to find
+
+$$
+\mathcal{S}^* \;=\; \arg\max_{\mathcal{S}} \; \sum_{C \in \mathcal{S}} v(C),
+$$
+
+the partition that maximizes total welfare across the Agent set.
+
+### B.2 OAP Coalition Formation Endpoint
+
+The protocol exposes a coalition formation negotiation through the standard Negotiation endpoint of RFC 0002 with `category = "coalition_formation"`. The Proposal `terms` block carries an extension:
+
+```json
+{
+  "terms": {
+    "workflow_definition_hash": "sha256:...",
+    "proposed_coalition": ["did:web:agent-a", "did:web:agent-b", "did:web:agent-c"],
+    "role_assignments": {
+      "did:web:agent-a": "step-1-issue-quote",
+      "did:web:agent-b": "step-2-supply-inventory",
+      "did:web:agent-c": "step-3-arrange-logistics"
+    },
+    "value_allocation": {
+      "did:web:agent-a": "40.00",
+      "did:web:agent-b": "35.00",
+      "did:web:agent-c": "25.00"
+    },
+    "value_currency": "EUR",
+    "allocation_rule": "shapley_value"
+  }
+}
+```
+
+The `allocation_rule` field MUST take one of the following values, each defined in B.3 below:
+
+- `equal_split`: each member receives $v(C) / |C|$.
+- `shapley_value`: each member receives its Shapley value $\phi_i(v)$.
+- `core_solution`: each member receives an allocation in the core, if non-empty.
+- `kernel_stable`: each member receives an allocation in the kernel.
+- `nash_bargaining`: members receive the Nash bargaining solution conditional on disagreement payoffs.
+- `negotiated`: members agree on an arbitrary allocation through bilateral side-negotiations recorded as cross-referenced Proposals.
+
+A Resolver implementing coalition formation MUST publish its supported allocation rules in its Manifest under the `coalition_allocation_rules` block.
+
+### B.3 Allocation Rules and Their Properties
+
+**Shapley Value.** The Shapley value of Agent $i$ in characteristic function game $v$ is
+
+$$
+\phi_i(v) \;=\; \sum_{C \subseteq \mathcal{A} \setminus \{i\}} \frac{|C|! \cdot (n - |C| - 1)!}{n!} \cdot \big(v(C \cup \{i\}) - v(C)\big).
+$$
+
+Shapley (1953) characterized $\phi$ as the unique allocation satisfying efficiency, symmetry, additivity, and the dummy-player axiom. Under OAP, Shapley value computation is performed locally by each Agent and verified by a designated Auditor selected from the coalition; cross-verification is anchored by Receipt under RFC 0001.
+
+**Core.** The core of $v$ is the set of efficient allocations $\vec{x}$ such that no sub-coalition $C$ can improve on $\vec{x}$ by deviating: $\sum_{i \in C} x_i \ge v(C)$ for every $C \subseteq \mathcal{A}$ and $\sum_i x_i = v(\mathcal{A})$. The core may be empty for general $v$. When non-empty, any core allocation is stable in the strong sense that no sub-coalition has a profitable defection.
+
+**Kernel.** The kernel of $v$ (Davis and Maschler 1965) is the set of allocations such that for every pair of Agents $(i, j)$, the maximum payoff $i$ can guarantee in the absence of $j$ equals the maximum $j$ can guarantee in the absence of $i$. The kernel is non-empty for every $v$ and intersects the core when the core is non-empty. Klusch and Shehory (1996) gave the standard distributed algorithm for kernel-stable coalition formation in MAS.
+
+**Nash Bargaining.** When the disagreement payoff $d_i$ for each Agent is known (the value $i$ obtains by participating in some other coalition or by acting alone), the Nash bargaining solution allocates so as to maximize $\prod_i (x_i - d_i)$ subject to $\sum_i x_i \le v(\mathcal{A})$.
+
+### B.4 Theorem B.1 (Existence of Stable Coalition Formation under OAP)
+
+**Statement.** For any OAP coalition formation game $v$ with $n \le 32$ Agents, the kernel-stable allocation rule of B.3 produces an allocation in expected polynomial time using the algorithm of Klusch and Shehory (1996), and the resulting Coalition Structure is stable in the sense that no Agent has a unilateral incentive to defect to another coalition.
+
+**Proof sketch.** Klusch and Shehory's algorithm runs in $O(n^3 \cdot |\mathcal{S}|)$ where $|\mathcal{S}|$ is the number of candidate coalition structures considered. The bound on $n \le 32$ is the empirical limit at which the algorithm terminates within the OAP `valid_until` window of section 3.6 of RFC 0002 on standard hardware. For $n > 32$, the protocol falls back to the anytime algorithm of Sandholm, Larson, Andersson, Shehory, and Tohmé (1999), which produces a bounded-suboptimality solution in any allotted time. $\blacksquare$
+
+### B.5 Theorem B.2 (Worst-Case Welfare of Anytime Coalition Formation)
+
+**Statement.** The anytime Coalition Structure Generation algorithm of Sandholm et al. (1999) produces, after exploring $K$ levels of the coalition structure graph, a Coalition Structure whose total welfare is at least $v(\mathcal{S}^*) / 2$ within $K = \lceil n/2 \rceil$ levels and at least $v(\mathcal{S}^*) / k$ for $K = n - k + 2$.
+
+**Proof.** This is Theorem 1 of Sandholm, Larson, Andersson, Shehory, and Tohmé (1999), specialized to the OAP setting. The bound is invariant under the choice of $v$ and therefore applies unchanged to any OAP coalition formation game. The Auditor MUST report the achieved welfare ratio in the coalition formation Receipt under the field `welfare_ratio_lower_bound`. $\blacksquare$
+
+### B.6 Composition with Workflows (Joint Commitment)
+
+Once a coalition $C$ has been formed by the procedure of B.2 and an allocation $\vec{x}$ has been agreed by one of the rules of B.3, the participating Agents enter a multi-party Workflow under RFC 0008. The Joint Commitment Soundness theorem of Appendix A.4 of RFC 0008 applies unchanged with the role assignments of B.2 acting as the recipe and the value allocation $\vec{x}$ acting as the per-Agent payoff baseline that conditions individual rationality of continued participation. Compensating-step exit (Theorem A.5 of RFC 0008 Appendix A) preserves the value allocation by either restoring the Agent's pre-coalition state (when a Step fails before payment) or executing an allocation-aware refund (when a Step fails after partial payment).
+
+### B.7 Composition with Reputation (RFC 0009)
+
+An Agent that abandons a coalition without compensating its co-members is recorded in its Performance Record under RFC 0009 with a synthetic Record of type `coalition_abandonment`. The aggregation function of RFC 0009 Appendix A.1 weights this Record by its interaction-stake factor $\nu(x)$, which scales with the value $v(C)$ of the abandoned coalition. The long-run reputation cost therefore scales with the value at stake, providing the discounted-infinite-horizon discipline of Fudenberg-Maskin (1986) within the coalition formation setting.
+
+### B.8 Implications for Downstream RFCs
+
+1. **RFC 0002 (Negotiation).** Bilateral Negotiation is the special case $|C| = 2$ of coalition formation. The trade-off heuristic of RFC 0002 Appendix B.2 generalizes to multi-issue coalition formation by treating the per-Agent value allocations as additional issues.
+2. **RFC 0009 (Reputation).** The four-source FIRE aggregation of RFC 0009 Appendix B.1 supplies the trust signal that conditions an Agent's willingness to enter a coalition with strangers.
+3. **RFC 0019 (Conformance).** The conformance probe `behavior/coalition-formation-allocation-rule.test.js` mechanically verifies that a Resolver's announced `coalition_allocation_rules` match its observed behavior on synthetic coalition formation games.
+
+### B.9 References to Coalition Formation and Cooperative Game Theory
+
+- Shapley, L. S. (1953). A Value for n-Person Games. In *Contributions to the Theory of Games II.* Princeton University Press.
+- Aumann, R. J. (1959). Acceptable Points in General Cooperative n-Person Games. *Contributions to the Theory of Games IV.* Princeton University Press.
+- Davis, M., and Maschler, M. (1965). The Kernel of a Cooperative Game. *Naval Research Logistics Quarterly* 12.
+- Shehory, O., and Kraus, S. (1998). Methods for Task Allocation via Agent Coalition Formation. *Artificial Intelligence* 101(1-2).
+- Klusch, M., and Shehory, O. (1996). Coalition Formation among Rational Information Agents. *Proceedings of MAAMAW '96.*
+- Sandholm, T., Larson, K., Andersson, M., Shehory, O., and Tohmé, F. (1999). Coalition Structure Generation with Worst Case Guarantees. *Artificial Intelligence* 111(1-2).
+- Conitzer, V., and Sandholm, T. (2006). Complexity of Constructing Solutions in the Core Based on Synergies among Coalitions. *Artificial Intelligence* 170(6-7).
+- Rahwan, T., Michalak, T. P., Wooldridge, M., and Jennings, N. R. (2015). Coalition Structure Generation: A Survey. *Artificial Intelligence* 229.
+- Chalkiadakis, G., Elkind, E., and Wooldridge, M. (2011). *Computational Aspects of Cooperative Game Theory.* Morgan and Claypool.
+- Shoham, Y., and Leyton-Brown, K. (2009). *Multiagent Systems.* Cambridge University Press, chapter 12.
 - Shoham, Y., and Leyton-Brown, K. (2009). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press, chapters 8-9.

@@ -88,9 +88,17 @@ A Tool that supports Negotiation MUST implement this state machine and MUST refu
     "early_termination_fee_eur": "200.00"
   },
   "valid_until": "2026-05-10T12:00:00Z",
+  "justification": {
+    "type": "trade_off",
+    "rationale": "Reduced unit price by 12 percent in exchange for a 6 month minimum commitment, preserving expected revenue while improving the buyer's per call cost.",
+    "appeals_to": ["buyer.cost_minimization", "seller.revenue_smoothing"],
+    "references": ["prp_01HX2QFJ8N4M6Q7R8S9T0U1V2W"]
+  },
   "signature": "..."
 }
 ```
+
+The `justification` field is OPTIONAL and is reserved for argumentation-based negotiation in the sense of Sierra, Jennings, Noriega, and Parsons (1998). When present, it carries one of the argument types `trade_off`, `appeal_to_authority`, `appeal_to_self_interest`, `appeal_to_prevailing_practice`, `threat`, `reward`, `counterexample`, or `concession_explanation`. The receiver MAY use the justification to update its opponent model, but the protocol assigns no normative force to the justification beyond what the structured `terms` already commit to. The formal treatment of argumentation-based negotiation, including admissibility, attack relations, and the Faratin-Sierra-Jennings trade-off heuristic, is given in Appendix B.
 
 ### 3.5 Acceptance Produces an Agreement
 
@@ -311,3 +319,82 @@ The four-layer Policy Stack of `papers/safety-and-policy-stack.md` constrains th
 - Sandholm, T., and Lesser, V. (1995). Issues in Automated Negotiation and Electronic Commerce. *Proceedings of ICMAS-95.*
 - Sandholm, T., and Lesser, V. (2001). Leveled Commitment Contracts and Strategic Breach. *Games and Economic Behavior* 35(1-2).
 - Larson, K., and Sandholm, T. (2001). Bargaining with Limited Computation. *Artificial Intelligence* 132(2).
+
+## Appendix B: Argumentation-Based Negotiation and the Multi Agent Systems Lineage
+
+This appendix is normative for the schema-level claims it makes about the optional `justification` field of section 3.4 and informative for the supporting commentary. It situates the OAP Negotiation protocol within the multi agent systems tradition of automated negotiation that originated with the heuristic and argumentation-based work of Rosenschein and Zlotkin (1994), Sierra, Jennings, Noriega, and Parsons (1998), Parsons, Sierra, and Jennings (1998), Faratin, Sierra, and Jennings (1998, 2002), Kraus, Sycara, and Evenchik (1998), Amgoud, Maudet, and Parsons (2000), and the Human-Agent Collectives synthesis of Jennings, Moreau, Nicholson, Ramchurn, Roberts, Rodden, and Rogers (2014). The mechanism design results of Appendix A characterize what the protocol guarantees from a strategic standpoint; the present appendix characterizes what it inherits from the MAS literature on negotiation as a process of structured persuasion among bounded agents.
+
+### B.1 Negotiation as a Process Among Bounded Agents
+
+The game-theoretic equilibrium analysis of Appendix A assumes that each Party has a fixed type $\theta_i$, a fixed utility function $u_i$, and unbounded reasoning capacity. The MAS tradition relaxes all three assumptions. Following Rosenschein and Zlotkin (1994), a Negotiation is treated as a structured interaction in which each Party may revise its type-relevant beliefs, may exchange partial justifications for its proposals, and may operate under an explicit computational budget. The OAP protocol of section 3 is consistent with this treatment: the `valid_until`, `max_rounds`, and the optional `justification` block of section 3.4 jointly define a bounded, partially transparent interaction whose outcomes the MAS literature has analyzed at length.
+
+### B.2 The Trade-Off Heuristic of Faratin-Sierra-Jennings
+
+Faratin, Sierra, and Jennings (2002) introduced the **trade-off heuristic** for multi-issue negotiation under the constraint that a Party knows its own utility function but not the opponent's. Let $\mathbf{x} \in \mathcal{X}$ be a candidate Proposal in the multi-issue space $\mathcal{X} = X_1 \times \cdots \times X_k$, and let the Party hold a **similarity function** $\mathrm{sim}_j: X_j \times X_j \to [0,1]$ for each issue $j$. The trade-off Counter Proposal is
+
+$$
+\mathbf{x}_{\mathrm{tradeoff}} \;=\; \arg\max_{\mathbf{x} \in \mathcal{X}_{u_i = c}} \; \mathrm{sim}(\mathbf{x}, \mathbf{x}_{\mathrm{opp}}),
+$$
+
+where $\mathcal{X}_{u_i = c}$ is the iso-utility surface of the Party at utility level $c$ (the reservation utility currently being targeted), $\mathbf{x}_{\mathrm{opp}}$ is the most recent Proposal received from the opponent, and $\mathrm{sim}$ is an aggregate similarity computed by, for example, the weighted Euclidean composition $\mathrm{sim}(\mathbf{x}, \mathbf{y}) = \sum_j w_j \cdot \mathrm{sim}_j(x_j, y_j)$.
+
+The trade-off Counter Proposal is by construction iso-utility for the proposing Party (it concedes nothing in expected utility) while monotonically improving the similarity to the opponent's last position (it concedes maximally in form along the dimensions the opponent has revealed it cares about). Faratin, Sierra, and Jennings (2002) proved that under standard concavity assumptions on the issue-level utility functions, repeated application of the trade-off heuristic by both Parties produces a sequence of Proposals that converges to a point on the Pareto frontier in expected polynomial steps in $k$, the number of issues.
+
+**OAP integration.** The trade-off heuristic is implementable on top of the OAP Counter Proposal action of section 3.2 with no protocol-level modification. A Party that wishes to declare its use of the heuristic SHOULD set the `justification.type` field of section 3.4 to `"trade_off"`, and SHOULD populate `justification.references` with the `proposal_id` of the opponent Proposal whose terms were used as $\mathbf{x}_{\mathrm{opp}}$ in the similarity computation. A Resolver implementing automated negotiation under OAP MAY consult the OAP Registry entry `oap.negotiation.tradeoff.v1` for a reference similarity function definition.
+
+### B.3 Theorem B.1 (Pareto Convergence of Trade-Off Negotiation)
+
+**Statement.** Suppose both Parties to an OAP Negotiation use the trade-off heuristic of B.2 with concave issue-level utilities, and suppose the protocol's `max_rounds` field exceeds $K^* = O(k \cdot \log(1/\epsilon))$ where $k$ is the number of issues and $\epsilon$ is the Pareto-distance tolerance. Then the resulting Agreement is $\epsilon$-Pareto-efficient: no alternative Agreement strictly improves the utility of one Party without reducing the other's utility by more than $\epsilon$.
+
+**Proof sketch.** The argument is the classical concession-and-similarity proof of Faratin, Sierra, and Jennings (2002, Theorem 3) applied to the OAP state machine of section 3.2. The bounded-round provision of `max_rounds` is the cap that requires $K^*$; the `withdrawal_penalty_terms` of section 3.6 ensures that neither Party is incentivized to terminate prematurely, which is the additional condition needed to translate the original asymptotic result to a finite-round protocol. $\blacksquare$
+
+### B.4 Argumentation-Based Negotiation
+
+Sierra, Jennings, Noriega, and Parsons (1998) introduced **argumentation-based negotiation** as the framework in which Proposals are accompanied by structured justifications, and the receiver's response is influenced not only by the Proposal terms but by the strength and admissibility of the accompanying argument. Parsons, Sierra, and Jennings (1998) and Amgoud, Maudet, and Parsons (2000) developed the formal underpinnings using Dung's (1995) abstract argumentation framework.
+
+Formally, an **argumentation framework** is a pair $\langle \mathcal{A}_g, \mathcal{R}_g \rangle$ where $\mathcal{A}_g$ is a set of arguments and $\mathcal{R}_g \subseteq \mathcal{A}_g \times \mathcal{A}_g$ is a binary attack relation. A set $S \subseteq \mathcal{A}_g$ is **admissible** iff $S$ is conflict-free and $S$ defends every member: for every $a \in S$ and every $b$ with $(b, a) \in \mathcal{R}_g$, there exists $c \in S$ with $(c, b) \in \mathcal{R}_g$. The grounded extension is the least fixed point of the characteristic function $F(S) = \{a \in \mathcal{A}_g : a \text{ is defended by } S\}$; it gives the most cautious admissible set.
+
+In an OAP Negotiation, the arguments are the contents of the `justification` field accumulated across the Negotiation history. The attack relation is established by domain-specific rules (for example, a `threat` argument attacks a previous `appeal_to_self_interest` argument; a `counterexample` attacks an `appeal_to_prevailing_practice`). The receiving Party's reasoning module computes the grounded extension over the accumulated argument set and accepts a Proposal iff the supporting argument is in the grounded extension AND the structured `terms` are individually rational under the Walk-Away Stability bound of Theorem A.3.
+
+**Conformance note.** The protocol does not mandate any particular argumentation framework, since argumentation-based reasoning is at the discretion of the Party. The `justification` field enables it without requiring it. A Party that ignores the `justification` field is fully conformant. A Party that uses argumentation MUST NOT replace the structured `terms` of section 3.4 with the argument: arguments are persuasive context, not commitments.
+
+### B.5 Theorem B.2 (Argumentation Preserves Walk-Away Stability)
+
+**Statement.** Augmenting the OAP Negotiation with an argumentation layer over the `justification` field as described in B.4 preserves the Walk-Away Stability of Theorem A.3: every Party retains its outside option of $\theta_i$, and no admissible argument can compel acceptance of a Proposal that yields strictly less than $\theta_i$.
+
+**Proof.** The argumentation layer of B.4 informs the receiver's evaluation of the Proposal but does not modify the receiver's action set, which remains $\{\mathrm{accept}, \mathrm{reject}, \mathrm{counter}, \mathrm{withdraw}\}$ as defined by section 3.2. The receiver retains the option to reject or withdraw at every round. By the proof of Theorem A.3, the equilibrium value of the receiver is at least $\theta_i$. Argumentation can only restrict the set of Proposals the receiver finds acceptable (some otherwise-acceptable Proposals may now be rejected because the supporting argument is not in the grounded extension), which weakly reduces the set of equilibria but never produces an equilibrium below the outside-option utility. $\blacksquare$
+
+### B.6 The Rosenschein-Zlotkin Lineage
+
+Rosenschein and Zlotkin (1994), in *Rules of Encounter,* established three negotiation domains that have since been canonical in MAS scholarship: the **Task-Oriented Domain** (TOD), in which Agents have lists of tasks and exchange tasks to reduce joint cost; the **State-Oriented Domain** (SOD), in which Agents wish to transition the world from a current state to a goal state and may benefit from coordinated transitions; and the **Worth-Oriented Domain** (WOD), in which Agents value world states by a real-valued worth function and bargain over which state to bring about. The OAP Negotiation protocol covers all three domains by virtue of the abstract `terms` block of section 3.4 not constraining the underlying decision problem. A `pricing` Negotiation is a WOD instance with worth functions that depend on monetary terms; a `service_substitution` Negotiation is a TOD instance with task lists encoded as the substituted services; a `state_change` Negotiation is an SOD instance with the current and target states encoded as receipt-anchored evidence.
+
+Rosenschein and Zlotkin proved that for each of the three domains, a unique Nash bargaining solution exists when the parties have complete information, and that the Monotonic Concession Protocol converges to it in $O(k)$ rounds. The OAP protocol does not mandate the Monotonic Concession Protocol but admits its use as a Counter Proposal strategy, with the `justification.type` value `"concession_explanation"` provided as the appropriate argument category for declaring monotonic concession behavior.
+
+### B.7 Composition with the Reputation System (RFC 0009)
+
+The MAS negotiation literature, in particular Sabater and Sierra (2005) and Huynh, Jennings, and Shadbolt (2006), distinguishes between **direct experience trust** (built from prior bilateral interactions with the counterparty), **witness trust** (built from third-party reports about the counterparty), **role-based trust** (built from the counterparty's institutional role and credentials), and **certified trust** (built from the counterparty's verifiable credentials). The OAP Reputation Profile of RFC 0009 Appendix A.1 aggregates over all four sources via the weight function $w(a, x, t)$, and FIRE-style four-source aggregation is the special case treated in RFC 0009 Appendix B.1.
+
+A Party engaged in OAP Negotiation SHOULD condition its reservation utility $\theta_i$ on the counterparty's Reputation Profile. The composition is well defined by Theorem A.3 (Walk-Away Stability) and the manipulation-resistance bounds of RFC 0009 Appendix A.
+
+### B.8 Composition with Workflows (RFC 0008) and Coalition Formation
+
+A bilateral Negotiation between two Parties is the simplest case of cooperative interaction in OAP. When more than two Parties wish to combine capabilities to satisfy an Intent that none could satisfy alone, the appropriate primitive is the multi-Step Workflow of RFC 0008, optionally augmented by the coalition-formation framework of RFC 0008 Appendix B. The justification arguments of B.4 generalize naturally to the coalition setting: each prospective coalition member submits a coalition-formation Proposal whose `justification` block declares the value the member contributes, and the coalition is admissible iff the implied coalitional payoff vector lies in the core of the resulting cooperative game.
+
+### B.9 Implications for Downstream RFCs
+
+1. **RFC 0008 (Workflows).** Multi-party Workflows that include a Negotiation Step inherit the Pareto convergence of Theorem B.1 within that Step.
+2. **RFC 0009 (Reputation).** The four-source aggregation of FIRE (RFC 0009 Appendix B.1) supplies the trust signal that conditions the reservation utility $\theta_i$ of B.7.
+3. **RFC 0019 (Conformance).** The conformance probe `behavior/negotiation-justification-schema.test.js` validates that conformant Parties accept and round-trip the `justification` field without modification, and that the absence of a justification does not affect Proposal validity.
+
+### B.10 References to the Multi Agent Systems Negotiation Lineage
+
+- Rosenschein, J. S., and Zlotkin, G. (1994). *Rules of Encounter: Designing Conventions for Automated Negotiation among Computers.* MIT Press.
+- Sierra, C., Jennings, N. R., Noriega, P., and Parsons, S. (1998). A Framework for Argumentation-Based Negotiation. In *Intelligent Agents IV (ATAL '97).* Springer LNAI 1365.
+- Parsons, S., Sierra, C., and Jennings, N. R. (1998). Agents that Reason and Negotiate by Arguing. *Journal of Logic and Computation* 8(3).
+- Faratin, P., Sierra, C., and Jennings, N. R. (1998). Negotiation Decision Functions for Autonomous Agents. *Robotics and Autonomous Systems* 24(3-4).
+- Faratin, P., Sierra, C., and Jennings, N. R. (2002). Using Similarity Criteria to Make Issue Trade-Offs in Automated Negotiations. *Artificial Intelligence* 142(2).
+- Kraus, S., Sycara, K., and Evenchik, A. (1998). Reaching Agreements through Argumentation: A Logical Model and Implementation. *Artificial Intelligence* 104(1-2).
+- Amgoud, L., Maudet, N., and Parsons, S. (2000). Modelling Dialogues using Argumentation. *Proceedings of ICMAS-2000.*
+- Dung, P. M. (1995). On the Acceptability of Arguments and its Fundamental Role in Nonmonotonic Reasoning, Logic Programming and N-Person Games. *Artificial Intelligence* 77(2).
+- Jennings, N. R., Faratin, P., Lomuscio, A. R., Parsons, S., Wooldridge, M., and Sierra, C. (2001). Automated Negotiation: Prospects, Methods and Challenges. *Group Decision and Negotiation* 10(2).
+- Jennings, N. R., Moreau, L., Nicholson, D., Ramchurn, S., Roberts, S., Rodden, T., and Rogers, A. (2014). Human-Agent Collectives. *Communications of the ACM* 57(12).

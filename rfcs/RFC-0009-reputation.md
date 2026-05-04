@@ -262,3 +262,82 @@ The reputation-weighted pricing function of RFC 0014 (axis $P$ value `reputation
 - Crawford, V. P., and Sobel, J. (1982). Strategic Information Transmission. *Econometrica* 50(6).
 - Lehmann, E. L., and Romano, J. P. (2005). *Testing Statistical Hypotheses,* 3rd ed. Springer.
 - Shoham, Y., and Leyton-Brown, K. (2009). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press, chapters 10 and 12.
+
+## Appendix B: Embedding of FIRE, TRAVOS, and HABIT into the OAP Reputation Aggregation
+
+This appendix is informative. It demonstrates that three of the most influential trust and reputation models from the multi agent systems literature, namely FIRE (Huynh, Jennings, and Shadbolt 2006), TRAVOS (Teacy, Patrick, Jennings, and Luck 2006), and HABIT (Teacy, Chalkiadakis, Farinelli, Rogers, Jennings, McClean, and Parr 2012), are recoverable as parameter specializations of the general aggregation function defined in Appendix A.1. The exposition follows the formalism of Huynh-Jennings-Shadbolt (2006) and the surveys of Pinyol and Sabater-Mir (2013) and Granatyr, Botelho, Lessing, Scalabrin, Barthes, and Enembreck (2015). The reduction shows that an implementation of OAP Reputation that exposes the parameters of A.1 can be configured to behave as a FIRE-class system, a TRAVOS-class system, or a HABIT-class system without modification of the protocol surface. This is the principal interoperability claim of OAP Reputation with respect to the existing MAS trust literature.
+
+### B.1 FIRE as a Parameter Specialization of the OAP Aggregation
+
+FIRE aggregates four trust components into a composite trust value $T(a, b, t)$:
+
+1. Interaction Trust ($IT$): direct prior experience between $a$ and $b$.
+2. Witness Reputation ($WR$): testimonies received from third-party witnesses about $b$.
+3. Role-Based Trust ($RT$): trust derived from the role $b$ plays in a recognized institution.
+4. Certified Reputation ($CR$): trust derived from $b$'s verifiable credentials presented to $a$.
+
+The FIRE composite is
+
+$$
+T_{\mathrm{FIRE}}(a, b, t) \;=\; \frac{\sum_{k \in \{IT, WR, RT, CR\}} W_k(a, b, t) \cdot T_k(a, b, t)}{\sum_k W_k(a, b, t)},
+$$
+
+where each component $T_k$ is itself a weighted average of evidence with recency decay, and each component weight $W_k$ reflects the rater's confidence in the component (Huynh, Jennings, and Shadbolt 2006).
+
+**Embedding.** The OAP aggregation of Appendix A.1 instantiates FIRE by partitioning the Performance Record set $\mathcal{X}_{a \to b}(t)$ into four disjoint subsets according to the source of the rating:
+
+- $\mathcal{X}^{IT}$: Records issued by $a$ itself (interaction).
+- $\mathcal{X}^{WR}$: Records issued by third-party Agents (witness).
+- $\mathcal{X}^{RT}$: Records derived from $b$'s `OAPRoleHolder` credential (role-based, materialized as a synthetic Performance Record signed by the issuing Trust Anchor).
+- $\mathcal{X}^{CR}$: Records derived from $b$'s `OAPPublisherVerified` credential and any other verifiable credential (certified, materialized as synthetic Performance Records signed by the credential issuer).
+
+The component weight $W_k$ of FIRE is recovered from the OAP weight function $w(a, x, t)$ by setting the issuer-reputation factor $\rho(a, t)$ to the FIRE confidence-of-component for $k$, and by setting $\nu(x)$ to the FIRE evidence count for the component. The four-source partition together with this weight assignment yields exactly the FIRE composite up to normalization. A reference embedding is published in the OAP Registry as `oap.reputation.fire.v1`.
+
+**Practical implication.** A Party that wishes to deploy OAP with FIRE-class semantics need only configure its `oap.reputation.aggregation.v1` choice and its synthetic-Record materialization for credentials. No schema change to RFC 0009 is required.
+
+### B.2 TRAVOS as a Confidence-Bounded Discount on Witness Reports
+
+TRAVOS (Teacy, Patrick, Jennings, and Luck 2006) is a Bayesian trust model in which the trustor maintains a Beta posterior over the trustee's behavior, and discounts witness reports by a confidence value derived from the posterior credible interval. Specifically, given $n$ positive and $m$ negative direct observations, the trustor's belief is $\mathrm{Beta}(n + 1, m + 1)$, and the confidence is $1 - 2 \cdot \sqrt{\mathrm{Var}[\mathrm{Beta}(n+1, m+1)]}$, scaled to $[0, 1]$. Witness reports whose past predictions have been inconsistent with the trustor's direct observations are discounted by an additional factor proportional to their posterior inconsistency.
+
+**Embedding.** The TRAVOS confidence-bounded discount on witness reports is recoverable from the OAP aggregation by setting the issuer-reputation factor $\rho(a, t)$ for witness $a$ as follows:
+
+$$
+\rho_{\mathrm{TRAVOS}}(a, t) \;=\; \rho_{\mathrm{base}}(a, t) \cdot \Big(1 - 2 \cdot \sqrt{\mathrm{Var}[\mathrm{Beta}(\alpha_a + 1, \beta_a + 1)]}\Big) \cdot (1 - \pi_{\mathrm{inc}}(a)),
+$$
+
+where $\alpha_a$ and $\beta_a$ are the trustor's direct positive and negative observations of $a$'s past truthfulness as a witness (recoverable from the trustor's local Performance Record store of $a$), and $\pi_{\mathrm{inc}}(a)$ is the posterior inconsistency of $a$'s witness reports against the trustor's direct experience. The reference embedding is published in the OAP Registry as `oap.reputation.travos.v1`.
+
+**Theorem B.2.1 (TRAVOS-Style Coordinated-Defamation Bound).** The Coordinated-Defamation Detection Bound of Appendix A Theorem 3 strengthens under the TRAVOS embedding: when witness reports from a coordinating coalition $\mathcal{B}$ are individually inconsistent with the trustor's direct experience of $b$, the TRAVOS confidence-bounded discount drives $\rho_{\mathrm{TRAVOS}}(a, t) \to 0$ for each $a \in \mathcal{B}$, and the coalition's perturbation of $\vec{R}_b(t)$ vanishes regardless of $|\mathcal{B}|$.
+
+**Proof sketch.** Direct from the embedding: as $\pi_{\mathrm{inc}}(a)$ approaches one, the witness contribution to the numerator and denominator of A.1 vanishes, and the trustor's direct observations dominate. The bound of A.3 is therefore tightened from $1/(1+H)$ to $1/(1 + H + |\mathcal{B}| \cdot \rho_{\mathrm{base}})$ in the limit. $\blacksquare$
+
+### B.3 HABIT and Hierarchical Bayesian Trust
+
+HABIT (Teacy, Chalkiadakis, Farinelli, Rogers, Jennings, McClean, and Parr 2012) extends TRAVOS to a hierarchical Bayesian model in which the trustor maintains a posterior over both the trustee's behavior and the population-level distribution of behaviors of similar trustees. This allows the trustor to make principled inferences about a previously unobserved trustee from the population posterior, addressing the cold-start problem of pure direct-experience models.
+
+**Embedding.** HABIT is recoverable from the OAP aggregation by augmenting the issuer-reputation factor $\rho(a, t)$ with a population-level prior derived from the empirical distribution of $\vec{R}_b(t)$ over a reference class of subjects. Specifically, when no Performance Record exists about subject $b$, the OAP aggregation defaults to the population posterior
+
+$$
+\vec{R}_b^{\mathrm{HABIT}}(t) \;=\; \mathbb{E}_{b' \in \mathrm{ref}(b)}[\vec{R}_{b'}(t)],
+$$
+
+where $\mathrm{ref}(b)$ is the reference class of subjects sharing $b$'s declared role, jurisdiction, and credential set. The reference embedding is published in the OAP Registry as `oap.reputation.habit.v1`.
+
+### B.4 Composition of FIRE, TRAVOS, and HABIT under OAP
+
+Because all three models embed into the same aggregation function, an implementation MAY compose them additively: use HABIT priors when no direct observations exist, switch to FIRE four-source aggregation as direct and witness observations accumulate, and apply TRAVOS confidence-bounded discounts to witness components throughout. The composition is well defined under Theorem A.1 (Boundedness) of RFC 0009 Appendix A and inherits the manipulation-resistance bounds of Theorems A.2 through A.7 unchanged, since the embedding only specializes the parameters $\rho(a, t)$, $\nu(x)$, and the partition of $\mathcal{X}_{a \to b}(t)$, never the aggregation skeleton.
+
+### B.5 Implications for Downstream RFCs
+
+1. **RFC 0002 (Negotiation).** The reservation utility $\theta_i$ of RFC 0002 Appendix A.3 (Walk-Away Stability) MAY be conditioned on the FIRE composite trust score $T_{\mathrm{FIRE}}(a, b, t)$ through the Reputation-conditioned reservation analysis of RFC 0002 Appendix B.7.
+2. **RFC 0011 (Sybil Resistance).** The Sub-Tree Aggregation factor $\sigma(a, b)$ of A.1 composes with the TRAVOS discount $\rho_{\mathrm{TRAVOS}}$ multiplicatively, providing two independent defenses against the Sybil-based witness-spoofing attack analyzed in TRAVOS section 5.
+3. **RFC 0019 (Conformance).** The conformance probe `behavior/reputation-fire-embedding.test.js` mechanically verifies that a Resolver configured with `oap.reputation.fire.v1` produces aggregation outputs within numerical tolerance of the reference FIRE implementation across the synthetic test corpus.
+
+### B.6 References to Trust and Reputation Models
+
+- Huynh, T. D., Jennings, N. R., and Shadbolt, N. R. (2006). An Integrated Trust and Reputation Model for Open Multi-Agent Systems. *Autonomous Agents and Multi-Agent Systems* 13(2). [FIRE]
+- Teacy, W. T. L., Patrick, J., Jennings, N. R., and Luck, M. (2006). TRAVOS: Trust and Reputation in the Context of Inaccurate Information Sources. *Autonomous Agents and Multi-Agent Systems* 12(2).
+- Teacy, W. T. L., Chalkiadakis, G., Farinelli, A., Rogers, A., Jennings, N. R., McClean, S., and Parr, G. (2012). Decentralized Bayesian Reinforcement Learning for Online Agent Collaboration. *Proceedings of AAMAS-2012.* [HABIT]
+- Pinyol, I., and Sabater-Mir, J. (2013). Computational Trust and Reputation Models for Open Multi-Agent Systems: A Review. *Artificial Intelligence Review* 40(1).
+- Granatyr, J., Botelho, V., Lessing, O. R., Scalabrin, E. E., Barthes, J.-P., and Enembreck, F. (2015). Trust and Reputation Models for Multiagent Systems. *ACM Computing Surveys* 48(2).
+- Ramchurn, S. D., Huynh, D., and Jennings, N. R. (2004). Trust in Multi-Agent Systems. *Knowledge Engineering Review* 19(1).

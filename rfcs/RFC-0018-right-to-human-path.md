@@ -10,6 +10,8 @@
 
 This document defines a normative requirement that every Provider whose Actions affect the legal, financial, medical, familial, or otherwise consequential status of a person MUST expose a standardized Action through which the User, or the User's Agent acting on the User's behalf, can reach a competent human being employed or contracted by the Provider. The intent is to recognize that even in a world in which most interaction is mediated by autonomous Agents, certain situations require human judgment, human empathy, or human accountability that no Agent can supply, and that the right of access to a human being in those situations is a precondition for the moral acceptability of an otherwise fully agentic ecosystem.
 
+The normative architecture of this RFC aligns with the **Human-Agent Collectives** paradigm of Jennings, Moreau, Nicholson, Ramchurn, Roberts, Rodden, and Rogers (2014) and the ORCHID research programme, which holds that the appropriate frame for advanced agentic systems is not full autonomy but rather a flexible collective of humans and agents in which authority, initiative, and explanation flow in both directions as the situation requires. Where Jennings et al. articulate the scientific and societal case for HAC at the level of system design, this RFC supplies the protocol-level mechanism through which an OAP-conformant Provider operationalizes the human-in-the-loop dimension of that collective. The Escalation Action defined below is therefore not a fallback for failure of automation but a first-class element of the human-agent collective architecture.
+
 ## 2. Terminology
 
 The key words MUST, MUST NOT, REQUIRED, SHOULD, SHOULD NOT, MAY, and OPTIONAL in this document are to be interpreted as described in RFC 2119 and RFC 8174.
@@ -94,6 +96,8 @@ A second consideration is that Human Operators handling Escalation cases may the
 - RFC 0013 Commerce Models for the Agent Economy
 - RFC 0016 User Sovereignty Charter
 - RFC 0017 Irreversibility and Cooling Off Periods
+- Jennings, N. R., Moreau, L., Nicholson, D., Ramchurn, S., Roberts, S., Rodden, T., and Rogers, A. (2014). Human-Agent Collectives. *Communications of the ACM* 57(12).
+- Ramchurn, S. D., Wu, F., Jiang, W., Fischer, J. E., Reece, S., Roberts, S., Rodden, T., Greenhalgh, C., and Jennings, N. R. (2016). Human-Agent Collaboration for Disaster Response. *Autonomous Agents and Multi-Agent Systems* 30(1).
 
 ## 10. Acknowledgments
 
