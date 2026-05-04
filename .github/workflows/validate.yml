@@ -30,6 +30,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Install AQL workspace dependencies
+        working-directory: reference/aql
+        run: npm install
       - name: Install server dependencies
         working-directory: reference/server
         run: npm install
@@ -55,6 +58,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Install AQL workspace dependencies
+        working-directory: reference/aql
+        run: npm install
       - name: Install reference server deps
         working-directory: reference/server
         run: npm install
@@ -70,6 +76,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Install AQL workspace dependencies
+        working-directory: reference/aql
+        run: npm install
       - name: Install reference server dependencies
         working-directory: reference/server
         run: npm install
