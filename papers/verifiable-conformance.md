@@ -75,9 +75,11 @@ The comparison does not suggest that third party audit is without value. There a
 
 ## 6. The Conformance Levels
 
-The conformance system distinguishes among Conformance Levels rather than treating conformance as a single binary. The levels are L0 through L4, and each level identifies a coherent subset of the specification whose obligations the implementation has accepted.
+The conformance system distinguishes among Conformance Levels rather than treating conformance as a single binary. The levels are L0 through L5, and each level identifies a coherent subset of the specification whose obligations the implementation has accepted.
 
-L0 is base conformance with the discovery, identity, and invocation primitives. L1 adds the accountability layer including Receipts and the per Principal chain, as described in [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy). L2 adds the commercial layer including the Wallet abstraction and Settlement Receipts of [RFC 0014](/rfcs/0014). L3 adds the policy layer including the four layer policy stack and the Decision Records of [The Safety and Policy Stack](/papers/safety-and-policy-stack). L4 adds the privileged mode obligations and the industry profile conformance for the regulated domains the operator declares, as set out in [Confidentiality and Compliance Context](/papers/confidentiality-and-compliance-context).
+...he discovery, identity, and invocation primitives. L1 adds the accountability layer including Receipts and the per Principal chain, as described in [Accountability in the Agent Economy](/papers/accountability-in-the-agent-economy). L2 adds the commercial layer including the Wallet abstraction and Settlement Receipts of [RFC 0014](/rfcs/0014). L3 adds the policy layer including the four layer policy stack and the Decision Records of [The Safety and Policy Stack](/papers/safety-and-policy-stack). L4 adds the privileged mode obligations and the industry profile conformance for the regulated domains the operator declares, as set out in [Confidentiality and Compliance Context](/papers/confidentiality-and-compliance-context). L5 ratifies an L4 implementation through community Quorum: the implementation must publish an independent third-party security audit attestation (SOC 2 Type II, ISO 27001, ISO 42001, or an equivalent assessment in machine-readable form) and must collect at least three peer-witness signatures from implementations that themselves currently hold a valid L4 or L5 Receipt and that are operated by three distinct organizations, as defined in [RFC 0026](/rfcs/0026).
+
+In addition to the cumulative levels, the Non-Commercial Profile defined in [RFC 0025](/rfcs/0025) introduces two variants: L1-NC and L3-NC. These variants apply to implementations that do not collect revenue from their users (bring-your-own-key platforms, self-hosted deployments, public-good services). They satisfy the L1 and L3 obligations respectively with the Wallet, Subscription, and refund requirements waived. A Non-Commercial Receipt is produced by the same test suite under the `--profile non-commercial` flag and is an honest signal that the implementation has chosen not to operate the commercial surface rather than a downgrade of its conformance.
 
 The levels are cumulative in the sense that conformance at a higher level implies conformance at all lower levels. A receipt declares the level at which conformance has been verified, and an agent considering the integration may evaluate the receipt against the level the agent requires for the planned use. An agent that requires only invocation may rely on an L0 receipt. An agent that requires settlement at machine speed must require at least an L2 receipt. An agent that operates on behalf of a regulated principal in a domain whose obligations are encoded in an industry profile must require an L4 receipt.
 
@@ -89,7 +91,7 @@ The conformance question is the load bearing question on which the credibility o
 
 ## References
 
-[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification, including the Conformance Levels L0 through L4.
+[OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification, including the Conformance Levels L0 through L5 and the Non-Commercial Profile L1-NC and L3-NC.
 
 [RFC 0009](/rfcs/0009): Reputation and Performance Records. Defines the reputation surface on which conformance receipts compose.
 

@@ -433,7 +433,7 @@ extensions, which has the advantage of immediate familiarity and the disadvantag
 weak semantic enforcement. The second is a federation of independent vocabularies with cross
 references through linked data, which has the advantage of decentralization and the
 disadvantage of fragmentation. The third is a single canonical graph maintained collectively
-by the protocol's stewards, which has the advantage of consistency and the disadvantage of governance burden.
+by the protocol's community, which has the advantage of consistency and the disadvantage of governance burden.
 The current draft of RFC 0012 permits all three approaches.
 
 The second question concerns the right balance between human readable and machine readable
