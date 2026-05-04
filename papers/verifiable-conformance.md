@@ -106,3 +106,9 @@ Related whitepapers: [Accountability in the Agent Economy](/papers/accountabilit
 Sigstore Project. Rekor Transparency Log Specification.
 
 Certificate Transparency. IETF RFC 9162, 2021.
+
+Bengio, Y., Hinton, G., Russell, S., et al. (2024). Managing AI Risks in an Era of Rapid Progress. *Science*. The argument that frontier AI deployment requires independent third-party audits, dangerous-capability evaluations, and continuous monitoring; the higher conformance levels of this paper, in particular the third-party witness tier, the L5-FINANCE tier of [RFC 0028 §8](/rfcs/0028), and the Frontier Capability Evaluation of [RFC 0028 §3.5.3](/rfcs/0028), are the protocol-level realization of these requirements.
+
+Bengio, Y., et al. (2024 interim, 2025 full). *International AI Safety Report*. Articulates a three-category risk taxonomy of malicious use, malfunction including loss of control, and systemic risk; the Frontier Capability Evaluation methodology of [RFC 0028 §3.5.3](/rfcs/0028) maps directly to the four operational evaluation categories the Report identifies (CBRN uplift, offensive cyber, deception and persuasion, loss of control).
+
+Bengio, Y. (2024). Towards Scientist AI: Considerations for Governance. The non-agentic AI architecture proposal in which a system produces probabilistic predictions and explanations rather than acting on goals; the Advisory-Only Mode of [RFC 0028 §3.5.2](/rfcs/0028) is the protocol-level realization.

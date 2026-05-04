@@ -123,6 +123,12 @@ Hadfield-Menell, D., Russell, S. J., Abbeel, P., Dragan, A. (2016). Cooperative 
 
 Dragan, A., Abbeel, P., Russell, S. J. (2017). The Off-Switch Game. *AIIDE*. The result that an Agent with calibrated uncertainty over the principal's reward has positive incentive to allow itself to be switched off, the formal justification for the corrigibility declaration of RFC 0028 §3.5.1.
 
+Bengio, Y., Hinton, G., Russell, S., et al. (2024). Managing AI Risks in an Era of Rapid Progress. *Science*. Calls for independent audits, red-teaming, dangerous-capability evaluations, and scalable oversight at the level of frontier AI deployment; the four-layer policy stack of this paper composes with the Frontier Capability Evaluation of RFC 0028 §3.5.3 and the Multi-Party Review of section 5 to provide the protocol-level instantiation of the framework.
+
+Bengio, Y., et al. (2024 interim, 2025 full). *International AI Safety Report*. The three-category risk taxonomy (malicious use, malfunction including loss of control, systemic risk) under which Platform Rules instantiate the malicious-use prohibitions, RFC 0028 §3.3 instantiates the malfunction-detection requirement through drift detection and backtesting, and RFC 0028 §3.5.1 instantiates the loss-of-control mitigation through corrigibility under preference uncertainty.
+
+Bengio, Y. (2024). Towards Scientist AI: Considerations for Governance. The non-agentic AI proposal under which an Agent produces probabilistic predictions and explanations rather than executing actions; the Advisory-Only Mode of RFC 0028 §3.5.2 is the protocol-level realization, and is the recommended mode for high-stakes domains in which the principal wishes to retain enactment authority.
+
 Floridi, L. (2018). Soft ethics, the governance of the digital and the General Data Protection Regulation. *Philosophical Transactions of the Royal Society A* 376. Establishes the distinction between hard ethics (compliance with law and categorical prohibitions) and soft ethics (what one ought to do beyond compliance) that grounds the architectural separation in this paper between the four hard policy layers and the optional soft preference advisories.
 
 Floridi, L. (2019). Establishing the rules for building trustworthy AI. *Nature Machine Intelligence* 1(6). The argument that trustworthy AI requires architectural rather than institutional neutrality, mirrored in the precedence rules of section 4 that no implementation may override.
