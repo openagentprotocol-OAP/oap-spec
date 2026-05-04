@@ -183,6 +183,7 @@ oap-spec/
 | Registry Protocol | [RFC-0026](rfcs/RFC-0026-registry-protocol.md) | Append only listing, validation CI, and renewal. |
 | Ad Hoc Teamwork | [RFC-0027](rfcs/RFC-0027-ad-hoc-teamwork.md) | Capability announcement, late join, convention discovery for unknown teammates. |
 | Model Risk and Symbiotic Autonomy | [RFC-0028](rfcs/RFC-0028-model-risk-and-symbiotic-autonomy.md) | SR 11-7 model inventory, drift detection, champion-challenger, proactive escalation, counterfactual explanations, adverse action notice, disparate impact audit, L5-FINANCE conformance tier. |
+| Axiomatic Foundations | [RFC-0029](rfcs/RFC-0029-axiomatic-foundations.md) | Axiomatic characterization of the Reputation aggregation function, formal sybil influence bound, Cheng-Friedman boundary, Manifest as program commitment, $k$-implementation cost analysis for sybil-resistant cooperation. |
 
 The 10 [whitepapers](papers/) cover accountability, the agent web, confidentiality, databases for the agent economy, economics, governance, interoperability, the policy stack, verifiable conformance, and the storefront to manifest transition.
 

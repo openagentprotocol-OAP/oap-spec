@@ -215,4 +215,5 @@ extension defined in this RFC.
 1. RFC 0004 (Sub Agent Delegation).
 2. RFC 0007 (Privacy Preserving Projections).
 3. RFC 0009 (Reputation and Performance Records).
-4. OAP-CORE-1.0, Section 18 (Confidentiality and Compliance Context).
+4. RFC 0029 (Axiomatic Foundations of OAP Reputation, Sybil Resistance, and Mediated Equilibria), which proves the formal sybil influence bound the operational defenses of this RFC jointly achieve, and acknowledges the Cheng and Friedman (2005) impossibility boundary.
+5. OAP-CORE-1.0, Section 18 (Confidentiality and Compliance Context).

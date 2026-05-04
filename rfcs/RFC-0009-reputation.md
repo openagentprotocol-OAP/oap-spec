@@ -131,6 +131,7 @@ AssistNet records interaction performance on connection objects with rating dime
 
 1. OAP-CORE-1.0, Section 16 (Trust, Verification, and Reputation).
 2. EU GDPR Article 17 (Right to Erasure).
+3. RFC 0029 (Axiomatic Foundations of OAP Reputation, Sybil Resistance, and Mediated Equilibria), which supplies the axiomatic uniqueness theorem for the aggregation function of Appendix A.1 in the tradition of Altman and Tennenholtz (2005, 2008).
 
 ## Appendix A: Mechanism Design and Manipulation Resistance of OAP Reputation
 
