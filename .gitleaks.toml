@@ -1,0 +1,17 @@
+# Gitleaks configuration for oap-spec.
+# Extends the default ruleset and adds project-specific allowlists for
+# documentation examples that look like secrets but are illustrative tokens.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Spec example tokens and idempotency identifiers in OAP-CORE-1.0.md"
+paths = [
+  '''spec/v1\.0/OAP-CORE-1\.0\.md''',
+  '''examples/.*''',
+  '''rfcs/.*\.md''',
+]
+regexes = [
+  '''oap_sub_(live|test)_[A-Za-z0-9]+''',
+  '''01J[0-9A-HJKMNP-TV-Z]{23}''',
+]

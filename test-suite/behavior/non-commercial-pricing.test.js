@@ -64,6 +64,20 @@ async function run({ target }) {
   }
   record('nc-conformance-receipt-served', true);
 
+  // The Non-Commercial Profile is opt-in. If the implementation does not claim
+  // any -NC level in its Conformance Receipt, RFC-0025 simply does not apply
+  // and the remaining assertions are reported as not applicable.
+  const claimedLevels = receipt.claimed_levels
+    || (receipt.conformance_level ? [receipt.conformance_level] : []);
+  const claimsNc = Array.isArray(claimedLevels)
+    && claimedLevels.some((l) => typeof l === 'string' && l.endsWith('-NC'));
+
+  if (!claimsNc) {
+    record('nc-not-applicable', true,
+      `Implementation does not claim any -NC level (claimed: ${JSON.stringify(claimedLevels)}). RFC-0025 does not apply.`);
+    return RESULTS.slice();
+  }
+
   const profile = receipt.profile || (receipt.declared && receipt.declared.profile);
   record('nc-receipt-profile-non-commercial', profile === 'non-commercial',
     `expected profile='non-commercial', got '${profile}'`);
@@ -73,12 +87,7 @@ async function run({ target }) {
   record('nc-receipt-revenue-source-valid', ALLOWED_SOURCES.has(source),
     source ? `source '${source}' not in {${[...ALLOWED_SOURCES].join(', ')}}` : 'revenue.source missing');
 
-  // Conformance level claim must include an -NC variant.
-  const claimed = receipt.claimed_levels
-    || (receipt.conformance_level ? [receipt.conformance_level] : []);
-  const ncClaim = Array.isArray(claimed) && claimed.some((l) => typeof l === 'string' && l.endsWith('-NC'));
-  record('nc-receipt-claims-nc-level', ncClaim,
-    ncClaim ? null : `claimed levels do not include any -NC variant: ${JSON.stringify(claimed)}`);
+  record('nc-receipt-claims-nc-level', true);
 
   return RESULTS.slice();
 }
