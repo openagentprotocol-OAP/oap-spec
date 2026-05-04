@@ -518,7 +518,7 @@ Reviews MUST cite a Receipt identifier. Reviews not bound to a Receipt MUST NOT 
 
 ### 16.3 Trust Score Computation
 
-The the OAP community publish the Trust Score formula as open source code in the OAP repository. The formula combines: verified publisher status, audit recency, incident history, latency and uptime conformance, dispute rate, and weighted user reviews. Marketplaces are free to compute additional scores but MUST display the canonical Trust Score with at least equal prominence.
+The OAP community publishes the Trust Score formula as open source code in the OAP repository. The formula combines: verified publisher status, audit recency, incident history, latency and uptime conformance, dispute rate, and weighted user reviews. Marketplaces are free to compute additional scores but MUST display the canonical Trust Score with at least equal prominence.
 
 ## 17. Data Policy and Provenance
 
@@ -1087,7 +1087,7 @@ The community operates (as open-source services anyone may run) the OAP Registry
 
 ### 38.1 MCP Compatibility
 
-A conformant L0 Tool MAY publish both an MCP descriptor and an OAP Manifest. The the OAP community publish a normative mapping that translates MCP `tool` and `resource` definitions to OAP Actions. The OAP Reference Adapter exposes an MCP server and Client interface that transparently routes through OAP.
+A conformant L0 Tool MAY publish both an MCP descriptor and an OAP Manifest. The OAP community publishes a normative mapping that translates MCP `tool` and `resource` definitions to OAP Actions. The OAP Reference Adapter exposes an MCP server and Client interface that transparently routes through OAP.
 
 ### 38.2 A2A Compatibility
 
