@@ -70,7 +70,7 @@ In a world in which everyday human action is mediated by Agents, access to a fun
 
 ### 4.2 Guarantee Two, The Right to Explanation
 
-The User retains at all times the right to understand why their Agent took a particular action, in language the User can comprehend. Decision Records under Open Agent Protocol Core are not solely an audit instrument for regulators. They are the substance through which this right is exercised. Conformant implementations MUST make Decision Records available to the User in their declared natural language, MUST present the policy evaluation chain that produced the decision, and MUST identify the data sources, model versions, and external influences that contributed to the outcome.
+The User retains at all times the right to understand why their Agent took a particular action, in language the User can comprehend. Decision Records under Open Agent Protocol Core are not solely an audit instrument for regulators. They are the substance through which this right is exercised. Conformant implementations MUST make Decision Records available to the User in their declared natural language, MUST present the policy evaluation chain that produced the decision, and MUST identify the data sources, model versions, and external influences that contributed to the outcome. The presentation MAY differ across audiences (regulator, principal, affected third party, peer witness) provided every presentation refers to the same underlying signed trace; this is the OAP realization of Floridi's translucency principle and the Method of Levels of Abstraction (Floridi 2008, 2019), under which intelligibility is achieved by tailoring the level of detail to the audience rather than by exposing the same artifact to all.
 
 ### 4.3 Guarantee Three, The Right Not to Be Optimized
 
@@ -87,6 +87,8 @@ The User retains at all times the right to cause their Agent, their Receipts, th
 ## 5. Technical Mandates
 
 The Charter is enforced through the following technical mandates, which are normative requirements on conformant implementations.
+
+The ten Principles of section 3 and the five Guarantees of section 4 jointly realize the AI4People framework of Floridi, Cowls, Beltrametti, Chatila, Chazerand, Dignum, Luetge, Madelin, Pagallo, Rossi, Schafer, Valcke, and Vayena (2018) at the protocol level. Non-maleficence is realized by the Platform Rules layer of the Safety and Policy Stack and by Principles Eight and Nine. Autonomy is realized by Principle One (User Sovereignty Is Inalienable), Guarantee Three (The Right Not to Be Optimized), and Guarantee Four (The Right to a Human Path). Justice is realized by Principle Eight (Equal Treatment Regardless of Identity) and by the Disparate Impact Audit of RFC 0028 §3.10. Explicability is realized by Principle Two (Auditability of Every Action), Guarantee Two (The Right to Explanation), and the Decision Records of OAP-CORE Section 20. Beneficence, the positive obligation to enable good outcomes, lies beyond the reach of any hard policy layer; the protocol provides the substrate (Reputation under RFC 0009, Organizational Norms under RFC 0030, soft preferences under RFC 0003 §3.2) on which Beneficence is enacted at the soft ethics layer in the sense of Floridi (2018, 2019), and refrains from imposing it as a hard normative requirement.
 
 ### 5.1 End to End Encryption by Default
 
