@@ -60,10 +60,20 @@ A general purpose grant model is required that:
     "days_of_week": ["mon", "tue", "wed", "thu", "fri"],
     "requires_business_purpose_tag": true
   },
+  "soft_preferences": {
+    "enabled": true,
+    "ranking_method": "weighted",
+    "preferences": [
+      { "target": "tool", "selector": "did:web:vendor-a.example", "weight": 0.8, "rationale": "privacy-certified" },
+      { "target": "tool", "selector": "did:web:vendor-b.example", "weight": 0.5 }
+    ]
+  },
   "revocation_endpoint": "https://user.example/.well-known/oap-revocation",
   "signature": "..."
 }
 ```
+
+**Soft Preferences (optional, advisory).** The `soft_preferences` block is OPTIONAL and carries no enforcement power. When the Policy Stack of the Safety and Policy Stack paper permits more than one execution path, an Agent MAY rank the permitted candidates by their alignment with the declared weights. The semantics follow the soft constraint and CP-net tradition of Bistarelli, Montanari, and Rossi (1997) and Rossi, Venable, and Walsh (2011): preferences are weighted advisories that improve user value alignment without overriding any layer above Personal Preference. An Agent MUST NOT use soft_preferences to admit any candidate that the Policy Stack would otherwise refuse, and MUST record the soft preference contribution in the Decision Record under OAP-CORE Section 20 so that the principal can later audit how preferences influenced selection.
 
 ### 3.3 Layered Composition
 
