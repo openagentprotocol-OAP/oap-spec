@@ -5,7 +5,7 @@
 **Created:** 2026-05-03
 **Revised:** 2026-05-04
 **Working Group:** Implementation and Conformance
-**Targets:** OAP-CORE 1.2
+**Targets:** 1.2
 
 ## 1. Summary
 

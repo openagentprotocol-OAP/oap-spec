@@ -1,8 +1,10 @@
 # RFC 0026: OAP Registry Protocol
 
 **Status:** Accepted
-**Date:** 2026-05-04
-**Author:** OAP Community
+**Author(s):** OAP Community Working Group on Implementation and Conformance
+**Created:** 2026-05-04
+**Working Group:** Implementation and Conformance
+**Targets:** 1.2
 **Affects:** OAP-CORE-1.0 Section 31 (Conformance Levels), Section 32 (Community Governance), RFC 0019 (Conformance Testing).
 
 ## 1. Summary

@@ -135,7 +135,7 @@ The adapter emits a Level 0 Compatible Manifest. Add pricing, policy, and audit 
 oap-spec/
   spec/v1.0/                 Normative specification: OAP-CORE-1.0.md
   schemas/v1.0/              23 normative JSON Schemas (2020-12)
-  rfcs/                      24 RFCs covering sessions, commerce, policy, AQL, indexes
+  rfcs/                      26 RFCs covering sessions, commerce, policy, AQL, indexes, NC profile, registry
   papers/                    10 whitepapers on theory, economics, governance
   reference/
     agent/                   Reference Agent runtime
