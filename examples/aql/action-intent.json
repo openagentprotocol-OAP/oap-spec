@@ -1,0 +1,23 @@
+{
+  "intent_id": "urn:oap:intent:demo-action-1",
+  "issuer_did": "did:web:agent.example",
+  "category": "action",
+  "constraints": {
+    "all_of": [
+      { "path": "/action_id", "operator": "eq", "value": "send_email" },
+      { "path": "/risk_class", "operator": "in", "value": ["minimal", "low"] },
+      { "path": "/side_effects", "operator": "ne", "value": "irreversible" }
+    ]
+  },
+  "projection": {
+    "include": ["/action_id", "/summary", "/input_schema", "/risk_class", "/cost"],
+    "exclude": ["/internal_metadata"]
+  },
+  "quality_floor": {
+    "conformance_level": "L1",
+    "performance_score": 0.8
+  },
+  "validity": { "from": "2026-05-04T00:00:00Z", "to": "2026-05-05T00:00:00Z" },
+  "resolution_policy": "single_best",
+  "signature": { "alg": "EdDSA", "value": "demo-signature" }
+}

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "express": "^5.1.0",
-    "better-sqlite3": "^11.5.0"
+    "better-sqlite3": "^11.5.0",
+    "@oap/aql": "file:../aql"
   }
 }

@@ -3,8 +3,9 @@
 **Status:** Draft
 **Author(s):** OAP Working Group on Data Plane
 **Created:** 2026-05-03
+**Updated:** 2026-05-04
 **Working Group:** Data Plane
-**Targets:** 1.2
+**Targets:** 1.3
 
 ## 1. Summary
 
@@ -88,7 +89,7 @@ A Resolver claiming conformance with this RFC at level Q1 MUST accept Intents in
 
 ## 8. Implementation Experience
 
-The Reference Server in `reference/server/` has been extended with the Intent endpoint and the Decision Record machinery described in this document. The Conformance Test Suite includes a `behavior/intent/` subdirectory exercising each category against a representative Manifest set. The AssistNet platform operates an internal Resolver that accepts Intents in the `discovery`, `commercial`, and `subscription` categories at production volumes.
+The Reference Server in `reference/server/` exposes the Intent endpoint at `POST /oap/intent` and emits responses signed with the server's Ed25519 key. Each candidate is shaped from the server's Action manifest enriched with the manifest envelope, so probes may constrain on `/oap_version`, `/tool_did`, `/risk_class`, `/side_effects`, and the standard Action fields. The Conformance Test Suite exercises the discovery category through `test-suite/behavior/aql.test.js`, which validates the response against `oap-intent-response.schema.json` and asserts that every candidate carries a `decision_record.constraint_evaluations` array. The probe is skipped automatically for any Manifest that does not declare an `intent` endpoint, preserving backward compatibility for L0 and L1 implementations. The AssistNet platform operates an internal Resolver that accepts Intents in the `discovery`, `commercial`, and `subscription` categories at production volumes.
 
 ## 9. Alternatives Considered
 

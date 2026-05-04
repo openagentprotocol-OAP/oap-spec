@@ -11,7 +11,8 @@
  *   - GET  /oap/audit           (filterable receipt feed)
  *   - POST /oap/data/delete     (signed Deletion Receipt)
  *   - POST /oap/incident        (write-side; GET reads existing incidents)
- *   - POST /oap/discover        (intent matching)
+ *   - POST /oap/discover        (intent matching, legacy keyword discovery)
+ *   - POST /oap/intent          (RFC 0020 AQL Intent endpoint, signed Decision Records)
  *   - GET  /oap/billing
  *   - POST /oap/subscribe, DELETE /oap/subscribe/:id
  *   - GET  /oap/conformance-receipt
@@ -40,6 +41,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
+const { parseIntent, resolveIntent } = require('@oap/aql');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Configuration
@@ -232,6 +234,7 @@ const manifest = {
     data_delete:          '/oap/data/delete',
     incident:             '/oap/incident',
     discover:             '/oap/discover',
+    intent:               '/oap/intent',
     billing:              '/oap/billing',
     subscribe:            '/oap/subscribe',
     conformance_receipt:  '/oap/conformance-receipt',
@@ -489,7 +492,7 @@ app.post('/oap/incident', (req, res) => {
   res.status(201).json(body);
 });
 
-// Discover
+// Discover (legacy keyword interface, kept for backward compatibility)
 app.post('/oap/discover', (req, res) => {
   const intent = String((req.body && req.body.intent) || '').toLowerCase();
   const matches = ACTIONS.map((a) => ({
@@ -499,6 +502,57 @@ app.post('/oap/discover', (req, res) => {
     estimated_cost_eur: '0',
   }));
   res.json({ matching_actions: matches });
+});
+
+// Intent (RFC 0020 AQL endpoint). Accepts a signed Intent, evaluates it against
+// this server's Action set as the candidate corpus, returns a signed
+// IntentResponse with per candidate Decision Records.
+app.post('/oap/intent', (req, res) => {
+  const parsed = parseIntent(req.body || {});
+  if (!parsed.ok) {
+    return res.status(400).json({
+      error: 'invalid_intent',
+      errors: parsed.errors,
+    });
+  }
+  const intent = parsed.intent;
+
+  // Each Action is exposed as a candidate record. Manifest envelope fields are
+  // merged in so probes can constrain on /oap_version, /tool_did, etc.
+  const candidates = ACTIONS.map((a) => ({
+    id: `${TOOL_DID}#${a.id}`,
+    record: {
+      oap_version: manifest.oap_version,
+      tool_did: TOOL_DID,
+      manifest_id: `${TOOL_DID}#${a.id}`,
+      action_id: a.id,
+      summary: a.summary,
+      description_for_agents: a.description_for_agents,
+      side_effects: a.side_effects,
+      idempotent: a.idempotent,
+      risk_class: a.risk_class,
+      cost: a.cost,
+      categories: manifest.tool.categories,
+    },
+    cost: '0',
+    quality: { conformance_level: 'L3', performance_score: 0.95 },
+  }));
+
+  const response = resolveIntent({
+    intent,
+    candidates,
+    resolverDid: TOOL_DID,
+    resolverRole: 'provider',
+  });
+
+  // Sign the response body with this server's Ed25519 key, replacing the
+  // unsigned-test-fixture marker that resolveIntent emits for in process use.
+  const { signature: _placeholder, ...body } = response;
+  const sigValue = signEd25519(body);
+  res.set('Content-Type', 'application/oap+json').json({
+    ...body,
+    signature: { alg: 'EdDSA', kid: 'oap-signing', value: sigValue },
+  });
 });
 
 // Billing + subscribe
