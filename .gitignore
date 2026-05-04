@@ -31,3 +31,17 @@ coverage/
 
 # OS
 Thumbs.db
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+.venv/
+build/
+dist/
+
+# Node.js build artifacts
+sdks/typescript/node_modules/
+sdks/typescript/dist/
