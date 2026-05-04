@@ -584,9 +584,15 @@ app.delete('/oap/subscribe/:id', (req, res) => {
   res.json({ subscription_id: req.params.id, status: 'canceled', canceled_at: new Date().toISOString() });
 });
 
-// Conformance receipt (runtime self-attestation; for audited use attest.js in CI)
+// Conformance receipt (runtime self-attestation; for an audited Receipt run
+// oap-spec/test-suite/attest.js in CI). The reference server intentionally
+// claims only L0 and L1 here. L2 commerce primitives are implemented as
+// reference code, but L2..L5 require corroborating evidence (peer witnesses,
+// external audit attestations, registry anchors) that a generic local demo
+// cannot produce. Implementations that genuinely satisfy higher levels SHOULD
+// claim them and prove them via the full conformance test suite.
 app.get('/oap/conformance-receipt', (_req, res) => {
-  const claimed = ['L0', 'L1', 'L2', 'L3'];
+  const claimed = ['L0', 'L1'];
   const core = {
     receipt_id: `urn:oap:conformance:${crypto.randomBytes(12).toString('hex')}`,
     type: 'conformance',

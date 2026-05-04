@@ -169,10 +169,16 @@ function levelsFromResults(results) {
   // Index passed artefacts by both full relative path and basename so the
   // matcher works whether the runner emits 'behavior/lifecycle.test.js' or
   // just 'lifecycle.test.js'.
+  // A `*-not-applicable` result is a documented PASS that signals the probe
+  // could not run (the implementation does not claim the relevant level or
+  // does not declare the relevant capability). Such passes MUST NOT be
+  // treated as evidence that the level is satisfied; otherwise an L1
+  // implementation would silently inherit L2..L5 credit.
   const passedFiles = new Set();
   const passedBasenames = new Set();
   for (const r of results.results || []) {
     if (!r.passed) continue;
+    if (typeof r.name === 'string' && r.name.endsWith('-not-applicable')) continue;
     const f = r.file || r.name;
     if (!f) continue;
     passedFiles.add(f);
