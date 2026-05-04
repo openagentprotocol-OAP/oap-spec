@@ -96,6 +96,7 @@ A second consideration is that Human Operators handling Escalation cases may the
 - RFC 0013 Commerce Models for the Agent Economy
 - RFC 0016 User Sovereignty Charter
 - RFC 0017 Irreversibility and Cooling Off Periods
+- RFC 0028 Model Risk and Symbiotic Autonomy, which extends the human path of this RFC with the proactive Symbiotic Escalation mechanism of section 3.5 (Rosenthal, Biswas, and Veloso 2010): the Agent recognizes the boundary of its own competence and escalates before acting, rather than after failure or User complaint. The reactive escalation of the present RFC and the proactive escalation of RFC 0028 are complementary; both deliver to the same Human Path interface.
 - Jennings, N. R., Moreau, L., Nicholson, D., Ramchurn, S., Roberts, S., Rodden, T., and Rogers, A. (2014). Human-Agent Collectives. *Communications of the ACM* 57(12).
 - Ramchurn, S. D., Wu, F., Jiang, W., Fischer, J. E., Reece, S., Roberts, S., Rodden, T., Greenhalgh, C., and Jennings, N. R. (2016). Human-Agent Collaboration for Disaster Response. *Autonomous Agents and Multi-Agent Systems* 30(1).
 

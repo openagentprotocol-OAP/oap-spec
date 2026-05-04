@@ -182,6 +182,7 @@ oap-spec/
 | Non Commercial Profile | [RFC-0025](rfcs/RFC-0025-non-commercial-conformance-profile.md) | BYOK and non commercial conformance variant. |
 | Registry Protocol | [RFC-0026](rfcs/RFC-0026-registry-protocol.md) | Append only listing, validation CI, and renewal. |
 | Ad Hoc Teamwork | [RFC-0027](rfcs/RFC-0027-ad-hoc-teamwork.md) | Capability announcement, late join, convention discovery for unknown teammates. |
+| Model Risk and Symbiotic Autonomy | [RFC-0028](rfcs/RFC-0028-model-risk-and-symbiotic-autonomy.md) | SR 11-7 model inventory, drift detection, champion-challenger, proactive escalation, counterfactual explanations, adverse action notice, disparate impact audit, L5-FINANCE conformance tier. |
 
 The 10 [whitepapers](papers/) cover accountability, the agent web, confidentiality, databases for the agent economy, economics, governance, interoperability, the policy stack, verifiable conformance, and the storefront to manifest transition.
 

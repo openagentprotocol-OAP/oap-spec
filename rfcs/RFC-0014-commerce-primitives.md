@@ -344,6 +344,7 @@ Theorems 1, 2, and 3 jointly imply the following invariants that downstream RFCs
 3. **RFC 0009 (Reputation).** Reputation updates may be conditioned on the `risk_allocation` axis without ambiguity, because that axis is independent of the other four.
 4. **RFC 0011 (Sybil Resistance).** The stake-based sybil defense requires the `stake` value of the $Y$ axis to be uniquely identifiable, which is guaranteed by Theorem 4.
 5. **RFC 0019 (Conformance Testing).** The conformance suite enumerates probes per axis value, which is well posed because the axis cardinalities are finite, normatively fixed, and independent.
+6. **RFC 0028 (Model Risk and Symbiotic Autonomy).** Commerce Primitives that involve any machine learned Model in the `pricing_function` or `settlement_trigger` axis inherit the Model Inventory, drift detection, and counterfactual explanation requirements of RFC 0028. The L5-FINANCE Conformance Tier of RFC 0028 section 8 binds Commerce Primitives to the canonical `reporting_regime` values of RFC 0028 Annex A, which is how MiFID II, MiFIR, PSD2, EMIR, and SR 11-7 obligations attach to OAP commerce.
 
 ### A.9 References to Prior Mathematical Treatments
 

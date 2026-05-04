@@ -143,6 +143,7 @@ The Charter creates obligations whose enforcement depends on the integrity of th
 - RFC 0015 Composable Software Primitives
 - RFC 0017 Irreversibility and Cooling Off Periods
 - RFC 0018 The Right to a Human Path
+- RFC 0028 Model Risk and Symbiotic Autonomy, which operationalizes the right to explanation of this Charter through mandatory counterfactual explanations on consequential decisions and the right to know one's own limits through the Symbiotic Escalation mechanism (Rosenthal, Biswas, and Veloso 2010).
 
 ## 10. Acknowledgments
 

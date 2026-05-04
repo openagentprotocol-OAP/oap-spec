@@ -109,6 +109,7 @@ The cooling off mechanism creates a window during which an attacker who has comp
 - RFC 0013 Commerce Models for the Agent Economy
 - RFC 0016 User Sovereignty Charter
 - RFC 0018 The Right to a Human Path
+- RFC 0028 Model Risk and Symbiotic Autonomy, which adds Adverse Action and settlement finality semantics to the irreversibility taxonomy of this RFC. Decisions classified as Adverse Action under RFC 0028 section 3.8 inherit the cooling off windows of section 4 of this RFC.
 
 ## 9. Acknowledgments
 
