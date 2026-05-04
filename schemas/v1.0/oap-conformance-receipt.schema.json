@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-conformance-receipt.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-conformance-receipt.schema.json",
   "title": "OAP Conformance Receipt",
   "description": "A signed attestation that a specific implementation, identified by its DID, has executed the OAP Conformance Test Suite at a pinned version against a pinned target and has demonstrated conformance with the listed Conformance Levels. Conformance Receipts are referenced from a Manifest through the conformance.receipt_uri field and are verifiable independently by any consuming Agent through the procedure described in RFC 0019 section 6.",
   "type": "object",

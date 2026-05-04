@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-deletion-receipt.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-deletion-receipt.schema.json",
   "title": "OAP Deletion Receipt",
   "type": "object",
   "required": ["receipt_id", "tool_did", "principal_did", "request_received_at", "completed_at", "method", "scope", "signature"],

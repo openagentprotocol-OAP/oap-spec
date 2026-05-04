@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-decision-record.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-decision-record.schema.json",
   "title": "OAP Policy Decision Record",
   "type": "object",
   "required": ["decision_id", "evaluated_at", "layers_evaluated", "applied_rules", "outcome", "explanation"],

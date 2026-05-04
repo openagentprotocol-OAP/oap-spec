@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-customization-receipt.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-customization-receipt.schema.json",
   "title": "OAP User Customization Receipt",
   "description": "Receipt emitted whenever a user, or a coding agent acting under the user's authority, creates or modifies a Composition. Per RFC 0015 section 7.",
   "type": "object",

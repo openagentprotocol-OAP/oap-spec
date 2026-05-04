@@ -69,7 +69,7 @@ The protocol does not require that all Providers support the same Schema Version
 ```json
 {
   "schema_compatibility": {
-    "https://schemas.openagentprotocol.org/v1.0/oap-action.schema.json": {
+    "https://schemas.openagentprotocol.eu/v1.0/oap-action.schema.json": {
       "accepts": ["1.0", "1.1", "1.2"],
       "produces": ["1.2"],
       "default": "1.2",

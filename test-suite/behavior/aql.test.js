@@ -69,7 +69,7 @@ async function run({ target, ajv }) {
 
   record('aql-intent-accepted', true);
 
-  const validate = ajv.getSchema('https://openagentprotocol.org/schemas/v1.0/oap-intent-response.schema.json');
+  const validate = ajv.getSchema('https://openagentprotocol.eu/schemas/v1.0/oap-intent-response.schema.json');
   if (!validate) {
     record('aql-response-schema-loaded', false, 'oap-intent-response.schema.json not registered with ajv.');
     return RESULTS.slice();

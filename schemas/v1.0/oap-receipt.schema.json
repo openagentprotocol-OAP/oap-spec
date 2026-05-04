@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-receipt.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-receipt.schema.json",
   "title": "OAP Receipt",
   "type": "object",
   "required": ["receipt_id", "type", "timestamp", "principal_did", "agent_did", "previous_receipt_hash", "signatures"],
@@ -66,7 +66,7 @@
         }
       }
     },
-    "commerce_primitive": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-commerce-primitive.schema.json", "description": "Self describing record of which Commerce Primitive applied at settlement, per RFC 0014 \u00a7 5.4." },    "irreversibility": {
+    "commerce_primitive": { "$ref": "https://openagentprotocol.eu/schemas/v1.0/oap-commerce-primitive.schema.json", "description": "Self describing record of which Commerce Primitive applied at settlement, per RFC 0014 \u00a7 5.4." },    "irreversibility": {
       "type": "object",
       "description": "Per RFC 0017. Present on irreversible_pending, irreversible_withdrawn, and on final receipts that follow a Pending Receipt.",
       "properties": {

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-request-envelope.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-request-envelope.schema.json",
   "title": "OAP Request Envelope",
   "type": "object",
   "required": ["oap_version", "request_id", "timestamp", "principal_did", "agent_did", "action", "input", "context", "signature"],

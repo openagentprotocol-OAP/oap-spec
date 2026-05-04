@@ -4,8 +4,8 @@
 
 Responsible disclosure is essential to the integrity of the Open Agent Protocol ecosystem. If you discover a vulnerability in the specification, the reference implementations, or any Foundation operated service, please report it through one of the following channels.
 
-1. **Email.** `security@openagentprotocol.org` (PGP key published at `https://openagentprotocol.org/.well-known/pgp-key.asc`).
-2. **Foundation portal.** `https://openagentprotocol.org/security/report` with optional anonymous submission.
+1. **Email.** `security@openagentprotocol.eu` (PGP key published at `https://openagentprotocol.eu/.well-known/pgp-key.asc`).
+2. **Foundation portal.** `https://openagentprotocol.eu/security/report` with optional anonymous submission.
 3. **In person.** At Foundation working group meetings, to any Board member.
 
 ## What to include
@@ -26,7 +26,7 @@ Responsible disclosure is essential to the integrity of the Open Agent Protocol 
 
 ## Bounties
 
-The Foundation operates a Vulnerability Bounty Program funded from Foundation reserves. Bounty levels are published at `https://openagentprotocol.org/security/bounty`.
+The Foundation operates a Vulnerability Bounty Program funded from Foundation reserves. Bounty levels are published at `https://openagentprotocol.eu/security/bounty`.
 
 ## Out of scope
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-aql-decision.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-aql-decision.schema.json",
   "title": "OAP AQL Decision Record",
   "description": "Per candidate AQL Decision Record produced by a Resolver under RFC 0020 section 3.7 and by Match Brokers under RFC 0021 section 4.2. Distinct from oap-decision-record.schema.json which records four layer Policy Stack outcomes.",
   "type": "object",

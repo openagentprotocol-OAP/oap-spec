@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-composition-manifest.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-composition-manifest.schema.json",
   "title": "OAP Composition Manifest",
   "description": "User owned Composition of primitives drawn from one or more providers, per RFC 0015 section 5.",
   "type": "object",

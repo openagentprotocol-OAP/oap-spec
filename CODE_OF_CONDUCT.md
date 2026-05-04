@@ -18,7 +18,7 @@ The Open Agent Protocol community is committed to providing a harassment free, i
 
 ## Reporting
 
-Concerns may be reported to the Foundation Conduct Committee at `conduct@openagentprotocol.org`. Reports are handled confidentially. Reporters are protected under the Foundation Whistleblower Program from retaliation.
+Concerns may be reported to the Foundation Conduct Committee at `conduct@openagentprotocol.eu`. Reports are handled confidentially. Reporters are protected under the Foundation Whistleblower Program from retaliation.
 
 ## Enforcement
 

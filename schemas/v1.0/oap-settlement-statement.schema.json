@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-settlement-statement.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-settlement-statement.schema.json",
   "title": "OAP Settlement Statement",
   "description": "Normative schema for a Settlement Statement issued by a Capability Provider at the close of a billing window under RFC 0013 Section 3.5 and Section 3.10. Aggregates Consumption Proofs and per invocation Receipts into a single signed total.",
   "type": "object",

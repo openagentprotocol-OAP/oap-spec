@@ -11,9 +11,9 @@
 [![Adapters](https://img.shields.io/badge/adapters-MCP%20|%20A2A%20|%20OpenAI%20|%20LangGraph-555)](adapters/)
 [![Code License](https://img.shields.io/badge/code-Apache%202.0-2ea44f)](LICENSE-CODE)
 [![Spec License](https://img.shields.io/badge/spec-CC--BY%204.0-2ea44f)](LICENSE-SPEC)
-[![Website](https://img.shields.io/badge/openagentprotocol.org-black)](https://openagentprotocol.org)
+[![Website](https://img.shields.io/badge/openagentprotocol.eu-black)](https://openagentprotocol.eu)
 
-[Specification](spec/v1.0/OAP-CORE-1.0.md) · [RFCs](rfcs/) · [Papers](papers/) · [Reference](reference/) · [Conformance](test-suite/) · [Website](https://openagentprotocol.org) · [Discussions](https://github.com/openagentprotocol-OAP/oap-spec/discussions)
+[Specification](spec/v1.0/OAP-CORE-1.0.md) · [RFCs](rfcs/) · [Papers](papers/) · [Reference](reference/) · [Conformance](test-suite/) · [Website](https://openagentprotocol.eu) · [Discussions](https://github.com/openagentprotocol-OAP/oap-spec/discussions)
 
 </div>
 
@@ -108,7 +108,7 @@ node bin/oap-aql.js resolve \
   ../../examples/aql/candidates.json
 ```
 
-Returns a signed Intent Response with ranked candidates and a per candidate Decision Record. The same evaluator runs in the browser at [openagentprotocol.org/aql](https://openagentprotocol.org/aql).
+Returns a signed Intent Response with ranked candidates and a per candidate Decision Record. The same evaluator runs in the browser at [openagentprotocol.eu/aql](https://openagentprotocol.eu/aql).
 
 ### Run the full conformance suite
 
@@ -243,7 +243,7 @@ Reference implementations, schemas, adapters, and tooling in this repository are
 
 A machine readable citation file is provided at [CITATION.cff](CITATION.cff). The recommended human readable form is:
 
-> Open Agent Protocol Working Groups. *Open Agent Protocol, Version 1.0 Public Working Draft*. OAP-CORE-1.0. 2026. https://openagentprotocol.org
+> Open Agent Protocol Working Groups. *Open Agent Protocol, Version 1.0 Public Working Draft*. OAP-CORE-1.0. 2026. https://openagentprotocol.eu
 
 ## Status
 

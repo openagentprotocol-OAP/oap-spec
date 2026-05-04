@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-incident.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-incident.schema.json",
   "title": "OAP Incident Report",
   "type": "object",
   "required": ["incident_id", "tool_did", "detected_at", "disclosed_at", "severity", "scope", "root_cause", "mitigation", "status"],

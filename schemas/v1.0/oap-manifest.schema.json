@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-manifest.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-manifest.schema.json",
   "title": "OAP Tool Manifest",
   "description": "Normative schema for an Open Agent Protocol Tool Manifest, version 1.0.",
   "type": "object",
@@ -93,7 +93,7 @@
     "actions": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-action.schema.json" }
+      "items": { "$ref": "https://openagentprotocol.eu/schemas/v1.0/oap-action.schema.json" }
     },
     "consequential_provider": {
       "type": "boolean",
@@ -187,7 +187,7 @@
         "primitives": {
           "type": "array",
           "description": "Commerce Primitives per RFC 0014. Each entry is a five axis description of an offered commerce model. Providers MAY mix any number of primitives.",
-          "items": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-commerce-primitive.schema.json" }        }
+          "items": { "$ref": "https://openagentprotocol.eu/schemas/v1.0/oap-commerce-primitive.schema.json" }        }
       }
     },
     "pricing": {

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-ccc.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-ccc.schema.json",
   "title": "OAP Confidentiality and Compliance Context (CCC)",
   "type": "object",
   "required": ["ccc_version", "scope_id"],

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-wallet-statement.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-wallet-statement.schema.json",
   "title": "OAP Wallet Statement",
   "type": "object",
   "required": ["statement_id", "wallet_did", "principal_did", "period_start", "period_end", "currency", "opening_balance", "closing_balance", "entries", "signature"],

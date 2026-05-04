@@ -29,7 +29,7 @@ For security vulnerabilities, please follow [SECURITY.md](https://github.com/ope
 - Read the [README](https://github.com/openagentprotocol-OAP/oap-spec/blob/main/README.md) for the full architecture.
 - Read the [OAP-CORE-1.0 specification](https://github.com/openagentprotocol-OAP/oap-spec/blob/main/spec/v1.0/OAP-CORE-1.0.md).
 - Skim the [24 RFCs](https://github.com/openagentprotocol-OAP/oap-spec/tree/main/rfcs) and the [10 whitepapers](https://github.com/openagentprotocol-OAP/oap-spec/tree/main/papers).
-- Try the AQL playground at [openagentprotocol.org/aql](https://openagentprotocol.org/aql).
+- Try the AQL playground at [openagentprotocol.eu/aql](https://openagentprotocol.eu/aql).
 - Run the conformance suite locally: `cd test-suite && npm install && node runner.js`.
 
 ## Working Groups

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-intent-response.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-intent-response.schema.json",
   "title": "OAP Intent Response",
   "description": "Normative schema for an Intent Response returned by a Resolver under RFC 0020 section 3.7. Carries the matching candidates, per candidate AQL Decision Records, and a Resolver Signature over the response body.",
   "type": "object",
@@ -56,7 +56,7 @@
           "type": "object",
           "description": "Projected fields under the Intent's projection block. Fields outside the projection MUST NOT appear here."
         },
-        "decision_record": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-aql-decision.schema.json" },
+        "decision_record": { "$ref": "https://openagentprotocol.eu/schemas/v1.0/oap-aql-decision.schema.json" },
         "inclusion_proof": {
           "type": "object",
           "description": "Required when resolver_role is match_broker and the broker claims RFC 0021 conformance.",
@@ -75,7 +75,7 @@
       "required": ["candidate_id", "decision_record"],
       "properties": {
         "candidate_id": { "type": "string" },
-        "decision_record": { "$ref": "https://openagentprotocol.org/schemas/v1.0/oap-aql-decision.schema.json" }
+        "decision_record": { "$ref": "https://openagentprotocol.eu/schemas/v1.0/oap-aql-decision.schema.json" }
       }
     }
   }

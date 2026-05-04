@@ -13,7 +13,7 @@ date-released: 2026-05-01
 license:
   - Apache-2.0
   - CC-BY-4.0
-url: "https://openagentprotocol.org"
+url: "https://openagentprotocol.eu"
 repository-code: "https://github.com/openagentprotocol-OAP/oap-spec"
 repository-artifact: "https://github.com/openagentprotocol-OAP/oap-spec/releases"
 keywords:
@@ -30,7 +30,7 @@ keywords:
   - tamper evident audit
 identifiers:
   - type: url
-    value: "https://openagentprotocol.org"
+    value: "https://openagentprotocol.eu"
     description: Project website
   - type: url
     value: "https://github.com/openagentprotocol-OAP/oap-spec"
@@ -40,7 +40,7 @@ identifiers:
     description: Document identifier of the core specification
 authors:
   - name: "Open Agent Protocol Working Groups"
-    website: "https://openagentprotocol.org/governance"
+    website: "https://openagentprotocol.eu/governance"
 preferred-citation:
   type: report
   title: "Open Agent Protocol, Version 1.0 Public Working Draft"
@@ -51,7 +51,7 @@ preferred-citation:
   institution:
     name: "Open Agent Protocol Stewards"
   number: "OAP-CORE-1.0"
-  url: "https://openagentprotocol.org/spec"
+  url: "https://openagentprotocol.eu/spec"
   abstract: >-
     The normative specification of the Open Agent Protocol, including the
     Manifest, Request Envelope, Response Envelope, Receipt, Decision Record,
@@ -64,40 +64,40 @@ references:
     authors:
       - name: "OAP Working Group on the Agent Query Language"
     year: 2026
-    url: "https://openagentprotocol.org/rfcs/0020"
+    url: "https://openagentprotocol.eu/rfcs/0020"
   - type: report
     title: "RFC 0021: Verifiable Indexes"
     authors:
       - name: "OAP Working Group on Verifiable Indexes"
     year: 2026
-    url: "https://openagentprotocol.org/rfcs/0021"
+    url: "https://openagentprotocol.eu/rfcs/0021"
   - type: report
     title: "RFC 0022: Manifest Subscription Protocol"
     authors:
       - name: "OAP Working Group on the Manifest Subscription Protocol"
     year: 2026
-    url: "https://openagentprotocol.org/rfcs/0022"
+    url: "https://openagentprotocol.eu/rfcs/0022"
   - type: report
     title: "RFC 0023: Agent Native Storage Substrate"
     authors:
       - name: "OAP Working Group on the Agent Native Storage Substrate"
     year: 2026
-    url: "https://openagentprotocol.org/rfcs/0023"
+    url: "https://openagentprotocol.eu/rfcs/0023"
   - type: report
     title: "RFC 0024: Schema Negotiation and Versioning"
     authors:
       - name: "OAP Working Group on Schema Negotiation and Versioning"
     year: 2026
-    url: "https://openagentprotocol.org/rfcs/0024"
+    url: "https://openagentprotocol.eu/rfcs/0024"
   - type: article
     title: "Databases for the Agent Economy"
     authors:
       - name: "OAP Data Working Group"
     year: 2026
-    url: "https://openagentprotocol.org/papers/databases-for-the-agent-economy"
+    url: "https://openagentprotocol.eu/papers/databases-for-the-agent-economy"
   - type: article
     title: "From Storefront to Manifest"
     authors:
       - name: "OAP Commerce Working Group"
     year: 2026
-    url: "https://openagentprotocol.org/papers/from-storefront-to-manifest"
+    url: "https://openagentprotocol.eu/papers/from-storefront-to-manifest"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-procurement-intent.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-procurement-intent.schema.json",
   "title": "OAP Procurement Intent",
   "description": "Normative schema for a Procurement Intent issued by an agent under RFC 0013 Section 3.4. Expresses a user's desired outcome together with the constraints under which it is acceptable.",
   "type": "object",

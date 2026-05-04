@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-offer.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-offer.schema.json",
   "title": "OAP Offer",
   "description": "Normative schema for an Offer returned by a Capability Provider in response to a Procurement Intent under RFC 0013 Section 3.4.",
   "type": "object",

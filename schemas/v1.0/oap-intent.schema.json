@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-intent.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-intent.schema.json",
   "title": "OAP Intent",
   "description": "Normative schema for an Intent expressed in the Agent Query Language under RFC 0020. An Intent is a signed structured document expressing a desired outcome together with the constraints under which the outcome is acceptable. The Procurement Intent of RFC 0013 is a specialization of this schema with category set to commercial.",
   "type": "object",

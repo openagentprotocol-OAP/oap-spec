@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprotocol.org/schemas/v1.0/oap-attestation.schema.json",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-attestation.schema.json",
   "title": "OAP Outcome Attestation",
   "description": "Cryptographically verifiable evidence that a claimed effect occurred as a result of an Action.",
   "type": "object",
