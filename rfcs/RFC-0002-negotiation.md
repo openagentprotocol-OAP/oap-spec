@@ -308,6 +308,7 @@ The four-layer Policy Stack of `papers/safety-and-policy-stack.md` constrains th
 - Selten, R. (1965). Spieltheoretische Behandlung eines Oligopolmodells mit Nachfragetragheit. *Zeitschrift fur die gesamte Staatswissenschaft* 121.
 - Kuhn, H. W. (1953). Extensive Games and the Problem of Information. In *Contributions to the Theory of Games II.* Princeton University Press.
 - Vickrey, W. (1961). Counterspeculation, Auctions, and Competitive Sealed Tenders. *Journal of Finance* 16(1).
+- Milgrom, P., and Weber, R. J. (1982). A Theory of Auctions and Competitive Bidding. *Econometrica* 50(5). The affiliated values framework that distinguishes first-price from second-price equilibria and grounds the format-documentation requirement of Theorem 3 case 3.
 - Clarke, E. H. (1971). Multipart Pricing of Public Goods. *Public Choice* 11.
 - Groves, T. (1973). Incentives in Teams. *Econometrica* 41(4).
 - Myerson, R. B. (1981). Optimal Auction Design. *Mathematics of Operations Research* 6(1).

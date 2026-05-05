@@ -349,7 +349,11 @@ Theorems 1, 2, and 3 jointly imply the following invariants that downstream RFCs
 ### A.9 References to Prior Mathematical Treatments
 
 - Maskin, E. (1999). Nash Equilibrium and Welfare Optimality. *Review of Economic Studies* 66(1).
-- Milgrom, P. (2004). *Putting Auction Theory to Work.* Cambridge University Press.
+- Milgrom, P. (2004). *Putting Auction Theory to Work.* Cambridge University Press. The canonical treatment of the auction designs admitted by the `pricing_function = auction` value of axis $P$ and of the substitutes condition that grounds the orthogonality argument of Theorem 1.
+- Milgrom, P., and Weber, R. J. (1982). A Theory of Auctions and Competitive Bidding. *Econometrica* 50(5). The affiliated values framework and the linkage principle that motivate the documentation requirement on auction format under axis $P$ and the revenue equivalence boundary that explains why first price and second price `auction` values are not interchangeable for DSIC purposes (RFC 0002 Appendix A.4).
+- Milgrom, P., and Stokey, N. (1982). Information, Trade and Common Knowledge. *Journal of Economic Theory* 26(1). The no-trade theorem under common knowledge of rationality that grounds the design choice of the `negotiated` value of axis $P$ to be a structurally weaker incentive class than the auction values, in the sense made precise by RFC 0002 Theorem 3.
+- Milgrom, P., and Roberts, J. (1990). Rationalizability, Learning, and Equilibrium in Games with Strategic Complementarities. *Econometrica* 58(6). The supermodular games framework that grounds the convergence of the negotiation dynamics of RFC 0002 section 3 when the `pricing_function` axis admits monotone best replies.
+- Milgrom, P., and Wilson, R. (2020). Improving the Design of Multi-Item Auctions. Nobel Memorial Prize Lecture, Royal Swedish Academy of Sciences. The simultaneous multiple round auction (SMRA) design and its package-bidding extensions, the formats whose protocol-level realization requires the `multi_lot` extension of axis $T$ documented in RFC 0014 section 3.4.
 - Sandholm, T. (1999). Distributed Rational Decision Making. In G. Weiss (ed.), *Multiagent Systems.* MIT Press.
 - Sandholm, T. (2003). Automated Mechanism Design. *Artificial Intelligence* 148(1-2).
 - Tennenholtz, M., and Zohar, A. (2009). The Axiomatic Approach and the Internet. In *Handbook of Computational Social Choice.* Cambridge University Press.
