@@ -96,6 +96,10 @@ The model in which the Substrate is left implementation defined and only the Man
 
 ## 11. References
 
+The Per Principal Tenant boundary of section 3.1, the Pre Read Policy Gate of section 7, and the Portable Export and Right to Erasure obligations of section 3.6 are the agent native realization of the personal data store architecture introduced by the Solid Project (Mansour, Sambra, Hawke, Zereba, Capadisli, Ghanem, Aboulnaga, Berners-Lee 2016), in which a Principal's data lives in a Principal controlled pod, applications are interchangeable clients against it, and access is mediated by an explicit policy layer (Web Access Control). OAP extends this model by binding every read and every write into the Receipt chain of the Accountability paper, so that the Principal's data store is not only Principal owned and application portable but also forensically reconstructible.
+
+- Mansour, E., Sambra, A. V., Hawke, S., Zereba, M., Capadisli, S., Ghanem, A., Aboulnaga, A., Berners-Lee, T. (2016). A Demonstration of the Solid Platform for Social Web Applications. Proceedings of the 25th International Conference Companion on World Wide Web.
+- W3C Solid Community Group (2024). Solid Protocol, Version 0.11.0.
 * OAP-CORE-1.0, the normative Open Agent Protocol Core Specification.
 * RFC 0003, Standing Permissions.
 * RFC 0006, Persona and Scope Layer.

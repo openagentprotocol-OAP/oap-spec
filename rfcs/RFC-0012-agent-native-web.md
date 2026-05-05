@@ -261,6 +261,12 @@ This RFC depends normatively on RFC 2119, RFC 6454, RFC 8174, RFC 8615, W3C DID 
 W3C Verifiable Credentials Data Model 2.0, the C2PA Content Credentials specification,
 OAP Core 1.0, RFC 0004, RFC 0007, RFC 0009, and RFC 0011.
 
+The Knowledge Node design of section 3 is a direct realization of the Linked Data Principles articulated by Berners-Lee (2006), namely that things are named by URIs, that those URIs are dereferenceable over HTTP, that dereferencing returns useful machine readable descriptions in a published vocabulary, and that descriptions link to other URIs. The mandate of section 3.2 that descriptors be served at the same Origin under HTTPS is the protocol level expression of the One Web principle of Web architecture (Berners-Lee, Fielding, Jacobs 2004, *Architecture of the World Wide Web Volume One*, W3C Recommendation). The W3C Linked Data Platform 1.0 Recommendation (2015) provides the read write resource conventions whose agent native counterpart is specified here.
+
+- Berners-Lee, T. (2006). Linked Data. Design Issues note, World Wide Web Consortium.
+- Berners-Lee, T., Fielding, R., Jacobs, I. (2004). Architecture of the World Wide Web, Volume One. W3C Recommendation.
+- W3C (2015). Linked Data Platform 1.0. W3C Recommendation.
+
 ## 8. Open Questions
 
 The following questions remain open and are tracked as discussion items in the Working Group.

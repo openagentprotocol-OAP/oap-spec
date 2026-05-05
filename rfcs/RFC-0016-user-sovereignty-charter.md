@@ -136,6 +136,10 @@ The Charter creates obligations whose enforcement depends on the integrity of th
 
 ## 9. References
 
+The ten Principles of section 3 and the five Guarantees of section 4 are the protocol level realization of the principles articulated in the Contract for the Web (World Wide Web Foundation, 2019), in particular the citizen rights to access, to control of personal data, and to be free from surveillance and behavioral manipulation. The Right to Disappear of section 4.5 and the portability mandate of section 5 are aligned with the data ownership and application portability model of the Solid Project (Mansour, Sambra, Hawke, Zereba, Capadisli, Ghanem, Aboulnaga, Berners-Lee 2016), in which user data lives in a Principal owned store and applications are interchangeable clients against it.
+
+- Berners-Lee, T. and the World Wide Web Foundation (2019). Contract for the Web. https://contractfortheweb.org
+- Mansour, E., Sambra, A. V., Hawke, S., Zereba, M., Capadisli, S., Ghanem, A., Aboulnaga, A., Berners-Lee, T. (2016). A Demonstration of the Solid Platform for Social Web Applications. Proceedings of the 25th International Conference Companion on World Wide Web.
 - Open Agent Protocol Core 1.0
 - RFC 0003 Standing Permissions
 - RFC 0007 Privacy Preserving Projections
