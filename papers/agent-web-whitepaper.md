@@ -506,6 +506,8 @@ C2PA Technical Specification. Coalition for Content Provenance and Authenticity,
 
 IETF RFC 8615: Well Known Uniform Resource Identifiers. Internet Engineering Task Force, 2019.
 
+Berners-Lee, T., Hall, W., Hendler, J., Shadbolt, N., Weitzner, D. (2006). Creating a Science of the Web. *Science* 313(5788), 769-771. The foundational case that the Web is a socio-technical system whose study requires the integration of computing, sociology, law, economics, and governance is the methodological frame of this whitepaper. The transition from a Web of human-readable documents to a Web of agent-mediated transactions is a Web Science transition in this sense, and the design choices recorded here (manifests, well-known endpoints, signed receipts, ownerless governance) are simultaneously technical and institutional commitments.
+
 ## License
 
 This whitepaper is published under the Creative Commons Attribution 4.0 International

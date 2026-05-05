@@ -90,3 +90,5 @@ Related whitepapers: [From the Document Web to the Agent Web](/papers/agent-web-
 Model Context Protocol Specification, Anthropic, 2024.
 
 Agent to Agent Protocol, version 0.x, Linux Foundation Joint Development Foundation Project.
+
+Hall, W. and O'Hara, K. (2018, expanded 2021). *Four Internets: Data, Geopolitics, and the Governance of Cyberspace*. Oxford University Press. The thesis that the global Internet is fragmenting into competing regulatory visions (Silicon Valley platform capitalism, Beijing surveillance, Brussels regulation, Washington DC bourgeois reaction) frames the position of this paper. The Open Agent Protocol is the protocol-level realization of the Brussels-aligned interoperability model: agent-to-agent coordination governed by data minimization (RFC 0007), per-Principal sovereignty (RFC 0016), portable identity (W3C DIDs/VCs), and ownerless governance, deliberately structured to be incompatible with platform capture in the Silicon Valley sense and incompatible with central state mediation in the Beijing sense.
