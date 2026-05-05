@@ -1,6 +1,6 @@
 {
-  "suite_version": "1.2.0",
-  "generated_at": "2026-05-05T00:00:00Z",
+  "suite_version": "1.3.0",
+  "generated_at": "2026-05-05T01:29:15Z",
   "note": "Mapping from Conformance Level to required test artefacts. Runner reads this file at startup and walks behavior/ recursively (so behavior/adversarial/* probes are picked up automatically). -NC profiles (RFC 0025) reuse the same tests as their base level minus commerce-plane requirements; the runner enforces the profile filter via the --profile flag. L5-ORG profile (RFC 0030) extends L5 with organization, deontic-consistency, and role-scene-enforcement probes. Adversarial probes under behavior/adversarial/ (RFC 0019 section 8) apply to every level whose claimed_level appears in the probe's @levels block.",
   "levels": {
     "L0": [
@@ -48,7 +48,8 @@
       "behavior/escalation.test.js",
       "behavior/multi-agent-coordination.test.js",
       "behavior/conflict-resolution.test.js",
-      "behavior/peer-witness-min-1.test.js"
+      "behavior/peer-witness-min-1.test.js",
+      "behavior/receipt-chain-integrity.test.js"
     ],
     "L5": [
       "behavior/cooling-off.test.js",
@@ -58,7 +59,9 @@
       "behavior/external-audit-attestation.test.js",
       "behavior/peer-witness-min-3.test.js",
       "behavior/peer-witness-independence.test.js",
-      "behavior/registry-anchor.test.js"
+      "behavior/registry-anchor.test.js",
+      "behavior/receipt-chain-integrity.test.js",
+      "behavior/multi-region-anchoring.test.js"
     ],
     "L5-FINANCE": [
       "behavior/cooling-off.test.js",
@@ -81,7 +84,9 @@
       "behavior/adversarial/cooling-off-bypass.test.js",
       "behavior/adversarial/escalation-routing.test.js",
       "behavior/adversarial/replaceability-obfuscation.test.js",
-      "behavior/adversarial/sybil-creation.test.js"
+      "behavior/adversarial/sybil-creation.test.js",
+      "behavior/receipt-chain-integrity.test.js",
+      "behavior/multi-region-anchoring.test.js"
     ],
     "L5-ORG": [
       "behavior/cooling-off.test.js",
@@ -98,7 +103,9 @@
       "behavior/adversarial/receipt-forgery.test.js",
       "behavior/adversarial/signature-stripping.test.js",
       "behavior/adversarial/escalation-routing.test.js",
-      "behavior/adversarial/sybil-creation.test.js"
+      "behavior/adversarial/sybil-creation.test.js",
+      "behavior/receipt-chain-integrity.test.js",
+      "behavior/multi-region-anchoring.test.js"
     ],
     "W1": [],
     "W2": [],

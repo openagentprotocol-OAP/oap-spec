@@ -1,6 +1,6 @@
 {
   "name": "@openagentprotocol/sdk",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "Official TypeScript SDK for the Open Agent Protocol (OAP). Build OAP servers and clients with manifest publishing, signed invocation, hash-chained receipts, and conformance attestation.",
   "license": "Apache-2.0",
   "homepage": "https://openagentprotocol.eu/sdks",

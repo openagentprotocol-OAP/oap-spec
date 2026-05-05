@@ -1,0 +1,10 @@
+{
+  "name": "@oap/receipt-chain",
+  "version": "1.0.0",
+  "description": "OAP Receipt Chain disaster-recovery and verification CLI",
+  "bin": {
+    "oap-receipt-chain": "./cli.js"
+  },
+  "license": "Apache-2.0",
+  "engines": { "node": ">=20" }
+}

@@ -30,8 +30,38 @@ from .types import (
     SideEffect,
     VALID_LEVELS,
 )
+from .memory import (
+    MemoryGrant,
+    MemoryFilter,
+    build_customization_receipt,
+    is_grant_expired,
+)
+from .subscription import (
+    ManifestSubscription,
+    ManifestUpdateNotification,
+    verify_manifest_update,
+)
+from .model_risk import (
+    ModelInventoryEntry,
+    SymbioticEscalation,
+    CounterfactualExplanation,
+    CounterfactualFactor,
+    CounterfactualChange,
+    AdverseActionNotice,
+    should_escalate,
+    build_adverse_action_notice,
+)
+from .organization import (
+    Role,
+    Scene,
+    Norm,
+    OrganizationManifest,
+    DeonticDecision,
+    evaluate as evaluate_deontic,
+    check_consistency as check_org_consistency,
+)
 
-__version__ = "0.1.0"
+__version__ = "1.0.0rc2"
 OAP_SPEC_VERSION = "1.0"
 
 __all__ = [
@@ -56,6 +86,28 @@ __all__ = [
     "load_signing_key",
     "export_private_key_pem",
     "generate_ulid",
+    "MemoryGrant",
+    "MemoryFilter",
+    "build_customization_receipt",
+    "is_grant_expired",
+    "ManifestSubscription",
+    "ManifestUpdateNotification",
+    "verify_manifest_update",
+    "ModelInventoryEntry",
+    "SymbioticEscalation",
+    "CounterfactualExplanation",
+    "CounterfactualFactor",
+    "CounterfactualChange",
+    "AdverseActionNotice",
+    "should_escalate",
+    "build_adverse_action_notice",
+    "Role",
+    "Scene",
+    "Norm",
+    "OrganizationManifest",
+    "DeonticDecision",
+    "evaluate_deontic",
+    "check_org_consistency",
     "__version__",
     "OAP_SPEC_VERSION",
 ]

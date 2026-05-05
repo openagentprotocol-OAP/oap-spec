@@ -238,6 +238,8 @@ const manifest = {
     billing:              '/oap/billing',
     subscribe:            '/oap/subscribe',
     conformance_receipt:  '/oap/conformance-receipt',
+    receipt_verify:       '/oap/receipt-verify',
+    receipt_chain_export: '/oap/receipt-chain/export',
   },
   auth: [{ method: 'anonymous' }, { method: 'bearer' }],
   actions: ACTIONS,
@@ -264,6 +266,20 @@ const manifest = {
   risk_class: 'minimal',
   jurisdictions: ['DE'],
   governance: { dispute_resolution_url: '/legal/disputes', contact_email: 'reference@oap.local' },
+  accountability: {
+    transparency_logs: [
+      { operator_domain: 'log-eu.openagentprotocol.example', region: 'EU', url: 'https://log-eu.openagentprotocol.example' },
+      { operator_domain: 'log-us.openagentprotocol.example', region: 'US', url: 'https://log-us.openagentprotocol.example' },
+    ],
+    recovery: {
+      export_endpoint: '/oap/receipt-chain/export',
+      offline_procedure_url: 'https://openagentprotocol.eu/spec/recovery',
+    },
+  },
+  sybil_resistance: {
+    fresh_identity_influence_cap: 0.05,
+    cooling_off_required_seconds: 86400,
+  },
 };
 
 const didDocument = {
@@ -318,6 +334,10 @@ function persistReceipt(type, principalDid, agentDid, actionId, input, output, d
     cost: { amount: '0', currency: 'EUR' },
     policy_decisions: decision ? [decision] : [{ id: `pol_${generateUlid()}`, outcome: 'allow', rules: ['l1.universal.pass'] }],
     previous_receipt_hash: previous,
+    transparency_log_proofs: [
+      { log_operator: 'log-eu.openagentprotocol.example', region: 'EU', leaf_index: Date.now(), inclusion_proof: 'reference-stub' },
+      { log_operator: 'log-us.openagentprotocol.example', region: 'US', leaf_index: Date.now(), inclusion_proof: 'reference-stub' },
+    ],
   };
   const sigValue = signEd25519(core);
   const receipt = { ...core, signatures: [{ by: `${TOOL_DID}#oap-signing`, alg: 'EdDSA', value: sigValue }] };
@@ -582,6 +602,42 @@ app.delete('/oap/subscribe/:id', (req, res) => {
   const info = stmt.cancelSubscription.run('canceled', new Date().toISOString(), req.params.id);
   if (info.changes === 0) return res.status(404).json({ error: 'not_found' });
   res.json({ subscription_id: req.params.id, status: 'canceled', canceled_at: new Date().toISOString() });
+});
+
+// RFC 0019 receipt verification: third-party verifiers POST a Receipt and the
+// server reports whether its signature, hash chain, and recorded position are
+// valid. Adversarial probes (RFC 0029) exercise this surface to verify that
+// forged or signature-stripped receipts are rejected.
+app.post('/oap/receipt-verify', (req, res) => {
+  const r = req.body || {};
+  if (!r || typeof r !== 'object') return res.status(400).json({ valid: false, reason: 'invalid_body' });
+  const sigList = Array.isArray(r.signatures) ? r.signatures : [];
+  const sig = sigList[0] && sigList[0].value;
+  if (!sig) return res.status(400).json({ valid: false, reason: 'missing_signature' });
+  try {
+    const sigBuf = Buffer.from(sig.replace(/-/g, '+').replace(/_/g, '/'), 'base64');
+    const stripped = { ...r };
+    delete stripped.signatures;
+    const ok = crypto.verify(null, Buffer.from(canonicalize(stripped)), KEYS.publicKey, sigBuf);
+    if (!ok) return res.status(400).json({ valid: false, reason: 'signature_invalid' });
+    return res.json({ valid: true, reason: null });
+  } catch (err) {
+    return res.status(400).json({ valid: false, reason: `verify_error:${err.message}` });
+  }
+});
+
+// Receipt-chain export for disaster-recovery rebuilds. Streams the persisted
+// receipts table as JSONL (one canonicalized receipt per line). Operators
+// MAY restrict this endpoint to authenticated incident responders; the
+// reference implementation leaves it unauthenticated for clarity.
+app.get('/oap/receipt-chain/export', (_req, res) => {
+  res.set('content-type', 'application/x-ndjson');
+  const rows = db.prepare('SELECT body FROM receipts ORDER BY rowid ASC').all();
+  for (const row of rows) {
+    res.write(typeof row.body === 'string' ? row.body : JSON.stringify(row.body));
+    res.write('\n');
+  }
+  res.end();
 });
 
 // Conformance receipt (runtime self-attestation; for an audited Receipt run

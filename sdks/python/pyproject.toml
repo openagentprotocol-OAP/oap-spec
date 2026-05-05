@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "oap-sdk"
-version = "1.0.0rc1"
+version = "1.0.0rc2"
 description = "Official Python SDK for the Open Agent Protocol (OAP). Build OAP-conformant tool servers with manifest publishing, signed invocation, hash-chained receipts, and conformance attestation."
 readme = "README.md"
 requires-python = ">=3.10"

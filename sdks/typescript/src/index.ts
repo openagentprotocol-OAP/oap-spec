@@ -41,5 +41,41 @@ export type {
   Subscription,
 } from './types.js';
 
-export const SDK_VERSION = '0.1.0';
+export {
+  buildCustomizationReceipt,
+  isGrantExpired,
+  type MemoryGrant,
+  type MemoryFilter,
+} from './memory.js';
+
+export {
+  subscribeToManifest,
+  verifyManifestUpdate,
+  type ManifestSubscription,
+  type ManifestUpdateNotification,
+} from './subscription.js';
+
+export {
+  shouldEscalate,
+  buildCounterfactual,
+  buildAdverseActionNotice,
+  type ModelInventoryEntry,
+  type ModelRiskTier,
+  type SymbioticEscalation,
+  type CounterfactualExplanation,
+  type AdverseActionNotice,
+} from './modelRisk.js';
+
+export {
+  evaluate as evaluateDeontic,
+  checkConsistency as checkOrgConsistency,
+  type Role,
+  type Scene,
+  type Norm,
+  type DeonticOperator,
+  type DeonticDecision,
+  type OrganizationManifest,
+} from './organization.js';
+
+export const SDK_VERSION = '1.0.0-rc.2';
 export const OAP_SPEC_VERSION = '1.0';
