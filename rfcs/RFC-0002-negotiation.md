@@ -313,6 +313,8 @@ The four-layer Policy Stack of `papers/safety-and-policy-stack.md` constrains th
 - Myerson, R. B. (1981). Optimal Auction Design. *Mathematics of Operations Research* 6(1).
 - Myerson, R. B., and Satterthwaite, M. A. (1983). Efficient Mechanisms for Bilateral Trading. *Journal of Economic Theory* 29(2).
 - Maskin, E. (1999). Nash Equilibrium and Welfare Optimality. *Review of Economic Studies* 66(1).
+- Moore, J., and Repullo, R. (1988). Subgame Perfect Implementation. *Econometrica* 56(5). The extension of Maskin's Nash Implementation theorem to subgame perfect equilibrium of extensive form games, which is the solution concept the protocol of section 3 actually plays under because Proposals are exchanged in a defined order with public histories.
+- Maskin, E., and Tirole, J. (1999). Unforeseen Contingencies and Incomplete Contracts. *Review of Economic Studies* 66(1). The treatment of incomplete contracts that grounds the design choice of section 3.4 to record a structured `justification` field rather than to enumerate every contingency in the Proposal schema.
 - Fudenberg, D., and Maskin, E. (1986). The Folk Theorem in Repeated Games with Discounting or with Incomplete Information. *Econometrica* 54(3).
 - Fudenberg, D., and Tirole, J. (1991). *Game Theory.* MIT Press.
 - Cho, I.-K., and Kreps, D. M. (1987). Signaling Games and Stable Equilibria. *Quarterly Journal of Economics* 102(2).
