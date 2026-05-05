@@ -1,0 +1,65 @@
+name: Publish SDKs
+
+on:
+  push:
+    tags:
+      - 'sdk-py-v*'
+      - 'sdk-ts-v*'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Which SDK to publish'
+        required: true
+        type: choice
+        options:
+          - python
+          - typescript
+          - both
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish-python:
+    if: startsWith(github.ref, 'refs/tags/sdk-py-v') || github.event.inputs.target == 'python' || github.event.inputs.target == 'both'
+    runs-on: ubuntu-latest
+    environment: pypi
+    defaults:
+      run:
+        working-directory: sdks/python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build tooling
+        run: python -m pip install --upgrade pip build
+      - name: Build sdist + wheel
+        run: python -m build
+      - name: Publish to PyPI via Trusted Publishers
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: sdks/python/dist
+          print-hash: true
+
+  publish-typescript:
+    if: startsWith(github.ref, 'refs/tags/sdk-ts-v') || github.event.inputs.target == 'typescript' || github.event.inputs.target == 'both'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sdks/typescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install
+        run: npm ci || npm install
+      - name: Build
+        run: npm run build
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public

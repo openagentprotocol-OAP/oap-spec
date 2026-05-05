@@ -173,15 +173,29 @@ async function runBehaviorSuite() {
   // even when the runner is invoked with --only behavior.
   loadAllSchemas();
 
-  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.test.js'));
+  // Recursively collect *.test.js under behavior/ so subcategories such as
+  // behavior/adversarial/ (RFC 0019 section 8) are picked up automatically.
+  function collect(d) {
+    const out = [];
+    for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+      if (entry.name.startsWith('_')) continue;
+      const full = path.join(d, entry.name);
+      if (entry.isDirectory()) out.push(...collect(full));
+      else if (entry.isFile() && entry.name.endsWith('.test.js')) out.push(full);
+    }
+    return out;
+  }
+
+  const files = collect(dir);
   for (const f of files) {
-    const mod = require(path.join(dir, f));
+    const mod = require(f);
     if (typeof mod.run !== 'function') continue;
+    const rel = path.relative(dir, f);
     try {
       const partial = await mod.run({ target: TARGET, ajv });
-      for (const r of partial) results.push({ ...r, file: f });
+      for (const r of partial) results.push({ ...r, file: rel });
     } catch (err) {
-      results.push({ name: f, category: 'behavior', passed: false, reason: err.message });
+      results.push({ name: rel, category: 'behavior', passed: false, reason: err.message });
     }
   }
   return results;

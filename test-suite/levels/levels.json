@@ -1,7 +1,7 @@
 {
-  "suite_version": "1.1.0",
-  "generated_at": "2026-05-04T00:00:00Z",
-  "note": "Mapping from Conformance Level to required test artefacts. Runner reads this file at startup. -NC profiles (RFC 0025) reuse the same tests as their base level minus commerce-plane requirements; the runner enforces the profile filter via the --profile flag. Tests listed here that do not yet exist are planned and tracked in test-suite/PLAN.md.",
+  "suite_version": "1.2.0",
+  "generated_at": "2026-05-05T00:00:00Z",
+  "note": "Mapping from Conformance Level to required test artefacts. Runner reads this file at startup and walks behavior/ recursively (so behavior/adversarial/* probes are picked up automatically). -NC profiles (RFC 0025) reuse the same tests as their base level minus commerce-plane requirements; the runner enforces the profile filter via the --profile flag. L5-ORG profile (RFC 0030) extends L5 with organization, deontic-consistency, and role-scene-enforcement probes. Adversarial probes under behavior/adversarial/ (RFC 0019 section 8) apply to every level whose claimed_level appears in the probe's @levels block.",
   "levels": {
     "L0": [
       "schema/valid/manifest-minimal.json",
@@ -75,7 +75,30 @@
       "behavior/adverse-action-notice.test.js",
       "behavior/champion-challenger.test.js",
       "behavior/counterfactual-explanation.test.js",
-      "behavior/regulated-peer-witness.test.js"
+      "behavior/regulated-peer-witness.test.js",
+      "behavior/adversarial/receipt-forgery.test.js",
+      "behavior/adversarial/signature-stripping.test.js",
+      "behavior/adversarial/cooling-off-bypass.test.js",
+      "behavior/adversarial/escalation-routing.test.js",
+      "behavior/adversarial/replaceability-obfuscation.test.js",
+      "behavior/adversarial/sybil-creation.test.js"
+    ],
+    "L5-ORG": [
+      "behavior/cooling-off.test.js",
+      "behavior/escalation.test.js",
+      "behavior/multi-agent-coordination.test.js",
+      "behavior/conflict-resolution.test.js",
+      "behavior/external-audit-attestation.test.js",
+      "behavior/peer-witness-min-3.test.js",
+      "behavior/peer-witness-independence.test.js",
+      "behavior/registry-anchor.test.js",
+      "behavior/organization-manifest.test.js",
+      "behavior/deontic-consistency.test.js",
+      "behavior/role-scene-enforcement.test.js",
+      "behavior/adversarial/receipt-forgery.test.js",
+      "behavior/adversarial/signature-stripping.test.js",
+      "behavior/adversarial/escalation-routing.test.js",
+      "behavior/adversarial/sybil-creation.test.js"
     ],
     "W1": [],
     "W2": [],

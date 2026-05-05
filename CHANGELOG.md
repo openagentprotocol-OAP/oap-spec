@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/) at the specif
 ## [Unreleased]
 
 ### Added
+- **Test suite 1.2.0:** L5-FINANCE adversarial probe set fully implemented (RFC 0028): `behavior/model-inventory.test.js`, `behavior/symbiotic-escalation.test.js`, `behavior/disparate-impact.test.js`, `behavior/adverse-action-notice.test.js`, `behavior/champion-challenger.test.js`, `behavior/counterfactual-explanation.test.js`, `behavior/regulated-peer-witness.test.js`.
+- **Test suite 1.2.0:** L5-ORG profile (RFC 0030) introduced with `behavior/organization-manifest.test.js`, `behavior/deontic-consistency.test.js`, `behavior/role-scene-enforcement.test.js`. Registry `implementation.schema.json` `conformance_level` pattern extended to accept `-ORG` suffix.
+- **Test suite 1.2.0:** Adversarial subdirectory `test-suite/behavior/adversarial/` populated per RFC 0019 section 8: `receipt-forgery.test.js`, `signature-stripping.test.js`, `cooling-off-bypass.test.js`, `escalation-routing.test.js`, `replaceability-obfuscation.test.js`, `sybil-creation.test.js`. Runner now walks `behavior/` recursively so subcategories are picked up automatically.
+- **SDKs 1.0.0-rc.1:** Python SDK (`oap-sdk` on PyPI) and TypeScript SDK (`@openagentprotocol/sdk` on npm) bumped from 0.1.0 (Beta) to 1.0.0-rc.1 (Production/Stable). New CI workflow `.github/workflows/publish-sdks.yml` publishes on tags `sdk-py-v*` (PyPI Trusted Publishers) and `sdk-ts-v*` (npm with provenance).
 - RFC 0011 Sybil Resistance and Sub Agent Anti Abuse (Trust and Reputation, targets 1.1).
 - RFC 0012 The Agent Native Web (Web Integration, targets 1.2).
 - RFC 0013 Commerce Models for the Agent Economy (Commercial Layer, targets 1.2).
