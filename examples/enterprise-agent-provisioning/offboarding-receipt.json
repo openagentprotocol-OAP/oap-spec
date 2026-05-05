@@ -1,0 +1,36 @@
+{
+  "receipt_id": "urn:oap:offboarding:off_01ALICE20260901",
+  "schema": "oap.offboarding-receipt.v1",
+  "organization": "did:web:acme.example",
+  "principal": "did:web:alice.example",
+  "offboarding_initiated_at": "2026-09-01T00:00:00Z",
+  "offboarding_completed_at": "2026-09-01T00:05:23Z",
+  "revocations": {
+    "scope_revoked": "did:web:alice.example#acme-engineer",
+    "standing_permissions_revoked": [
+      "grn_ALICE_CALENDAR_RW",
+      "grn_ALICE_TASK_CRUD",
+      "grn_ALICE_MSG_INTERNAL",
+      "grn_ALICE_DOC_READ"
+    ],
+    "role_enactments_revoked": ["software-engineer", "code-reviewer"],
+    "byoa_attestation_revoked": "byoa_01ACME2026Q2ALICE001",
+    "context_bridges_revoked": ["brg_ALICE_PERSONAL_TO_ACME_CALENDAR"]
+  },
+  "data_disposition": {
+    "org_data_retained_until": "2026-12-01T00:00:00Z",
+    "principal_data_exported": true,
+    "principal_data_export_receipt_id": "urn:oap:export:exp_ALICE_20260901",
+    "memory_wiped": true,
+    "memory_wipe_method": "cryptographic_erasure",
+    "audit_trail_preserved": true,
+    "audit_trail_retention_days": 3650
+  },
+  "transition_handoff": {
+    "performed": true,
+    "successor_scope": "did:web:alice.example#personal",
+    "categories_transferred": ["task_titles", "calendar_commitments", "project_names"],
+    "categories_withheld": ["company_internal", "source_code", "trade_secrets", "client_data", "financial_projections"]
+  },
+  "signature": "EdDSA:placeholder_for_example_only"
+}

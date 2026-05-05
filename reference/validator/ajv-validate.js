@@ -34,7 +34,13 @@ for (const f of schemaFiles) {
 }
 
 // Routing: filename suffix -> schema $id
+// RFC 0031 schemas are matched first so that provisioning-manifest.json does not
+// fall through to the generic oap-manifest route.
 function pickSchema(filename, data) {
+  if (filename.includes('provisioning-manifest')) return schemas['oap-provisioning-manifest.schema.json'] || null;
+  if (filename.includes('context-switch')) return schemas['oap-context-switch.schema.json'] || null;
+  if (filename.includes('byoa-attestation')) return schemas['oap-byoa-attestation.schema.json'] || null;
+  if (filename.includes('offboarding-receipt')) return schemas['oap-offboarding-receipt.schema.json'] || null;
   if (filename.endsWith('manifest.json')) return schemas['oap-manifest.schema.json'];
   if (filename.endsWith('receipt.json')) return schemas['oap-receipt.schema.json'];
   if (filename.endsWith('decision-record.json')) return schemas['oap-decision-record.schema.json'];

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-byoa-attestation.schema.json",
+  "title": "OAP BYOA Attestation",
+  "description": "Normative schema for a Bring Your Own Agent Attestation per RFC 0031 section 3.5.",
+  "type": "object",
+  "required": ["attestation_id", "schema", "organization", "principal", "personal_agent", "compliance_evaluation", "scope_binding", "issued_at", "valid_until"],
+  "additionalProperties": false,
+  "properties": {
+    "attestation_id": { "type": "string", "pattern": "^byoa_" },
+    "schema": { "type": "string", "const": "oap.byoa-attestation.v1" },
+    "organization": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+    "principal": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+    "personal_agent": {
+      "type": "object",
+      "required": ["did", "model_family"],
+      "properties": {
+        "did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+        "model_family": { "type": "string" },
+        "model_version": { "type": "string" },
+        "provider_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" }
+      }
+    },
+    "compliance_evaluation": {
+      "type": "object",
+      "required": ["data_residency_verified", "audit_log_capability_verified", "training_on_org_data_verified"],
+      "properties": {
+        "data_residency_verified": { "type": "boolean" },
+        "data_residency_regions": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z]{2}$" } },
+        "audit_log_capability_verified": { "type": "boolean" },
+        "audit_log_endpoint": { "type": "string", "format": "uri" },
+        "training_on_org_data_policy": { "enum": ["never", "with_consent", "by_default"] },
+        "training_on_org_data_verified": { "type": "boolean" },
+        "certifications_verified": { "type": "array", "items": { "type": "string" } },
+        "model_evaluation_passed": { "type": "boolean" },
+        "model_evaluation_report_uri": { "type": "string", "format": "uri" }
+      }
+    },
+    "scope_binding": { "type": "string" },
+    "org_policy_enforced": { "type": "boolean" },
+    "restrictions": {
+      "type": "object",
+      "properties": {
+        "model_output_logged": { "type": "boolean" },
+        "memory_wipe_on_offboarding": { "type": "boolean" },
+        "no_cross_scope_memory_persistence": { "type": "boolean" },
+        "max_context_window_tokens": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "valid_until": { "type": "string", "format": "date-time" },
+    "re_attestation_due": { "type": "string", "format": "date-time" },
+    "revocable": { "type": "boolean" },
+    "revocation_endpoint": { "type": "string", "format": "uri" },
+    "signature": { "type": "string" }
+  }
+}

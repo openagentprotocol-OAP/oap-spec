@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-context-switch.schema.json",
+  "title": "OAP Context Mobility Envelope",
+  "description": "Normative schema for a Context Mobility Envelope per RFC 0031 section 3.4.",
+  "type": "object",
+  "required": ["envelope_id", "schema", "principal", "timestamp", "from_scope", "to_scope", "policy_evaluation"],
+  "additionalProperties": false,
+  "properties": {
+    "envelope_id": { "type": "string", "pattern": "^ctx_" },
+    "schema": { "type": "string", "const": "oap.context-switch.v1" },
+    "principal": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "from_scope": { "type": "string" },
+    "to_scope": { "type": "string" },
+    "from_agent": {
+      "type": "object",
+      "properties": {
+        "did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+        "model_family": { "type": "string" },
+        "controller": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" }
+      }
+    },
+    "to_agent": {
+      "type": "object",
+      "properties": {
+        "did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+        "model_family": { "type": "string" },
+        "controller": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" }
+      }
+    },
+    "context_transfer": {
+      "type": "object",
+      "properties": {
+        "categories_transferred": { "type": "array", "items": { "type": "string" } },
+        "categories_prohibited": { "type": "array", "items": { "type": "string" } },
+        "transfer_receipt_id": { "type": "string" },
+        "redaction_profile": { "type": "string" }
+      }
+    },
+    "active_bridges": { "type": "array", "items": { "type": "string" } },
+    "policy_evaluation": {
+      "type": "object",
+      "required": ["platform_rules", "org_policy", "scope_policy", "personal_preference"],
+      "properties": {
+        "platform_rules": { "enum": ["pass", "fail", "not_applicable"] },
+        "org_policy": { "enum": ["pass", "fail", "not_applicable"] },
+        "scope_policy": { "enum": ["pass", "fail", "not_applicable"] },
+        "personal_preference": { "enum": ["pass", "fail", "not_applicable"] }
+      }
+    },
+    "decision_record_id": { "type": "string" },
+    "signature": { "type": "string" }
+  }
+}

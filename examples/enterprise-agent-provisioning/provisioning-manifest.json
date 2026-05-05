@@ -1,0 +1,87 @@
+{
+  "id": "did:web:acme.example#provisioning",
+  "schema": "oap.provisioning.v1",
+  "organization": "did:web:acme.example",
+  "label": {
+    "en": "Acme Corp Employee Agent Provisioning",
+    "de": "Acme Mitarbeiter Agent Bereitstellung"
+  },
+  "published_at": "2026-05-05T00:00:00Z",
+  "valid_until": "2027-05-05T00:00:00Z",
+  "model_policy": {
+    "required_provider": "azure-openai",
+    "required_model_family": "gpt-4o",
+    "minimum_capability_level": "L3",
+    "approved_alternatives": ["anthropic-claude-sonnet-4", "google-gemini-2.5-pro"],
+    "prohibited_models": [],
+    "model_evaluation_required": true,
+    "evaluation_framework": "oap.eval.v1"
+  },
+  "byoa_policy": {
+    "permitted": true,
+    "conditions": {
+      "required_certifications": ["SOC2-Type-II"],
+      "data_residency": ["EU"],
+      "audit_log_required": true,
+      "training_on_org_data": "never",
+      "model_evaluation_required": true,
+      "attestation_validity_days": 90,
+      "re_attestation_cadence": "quarterly"
+    }
+  },
+  "scope_template": {
+    "id_pattern": "{principal_fragment}#acme-{role_id}",
+    "industry_profile": "oap.profile.default",
+    "data_categories_accessible": ["company_internal", "project_data", "hr_self_service"],
+    "data_categories_prohibited": ["competitor_intelligence_raw", "board_minutes", "m_and_a"],
+    "approval_required_for": ["data_export", "external_sharing", "model_fine_tuning"],
+    "default_standing_permissions": [
+      {
+        "actions": ["calendar.read", "calendar.write", "task.create", "task.update", "task.read", "message.internal.send", "message.internal.read"],
+        "max_invocations_per_day": 500
+      },
+      {
+        "actions": ["document.read", "document.search"],
+        "max_invocations_per_day": 1000
+      }
+    ]
+  },
+  "context_bridges": {
+    "permitted_inbound": [
+      {
+        "from_scope_pattern": "#personal",
+        "data_categories": ["calendar_busy_only", "preferred_language", "accessibility_requirements", "timezone"],
+        "direction": "read_only"
+      }
+    ],
+    "permitted_outbound": [
+      {
+        "to_scope_pattern": "#personal",
+        "data_categories": ["meeting_reminders", "deadline_notifications"],
+        "direction": "read_only"
+      }
+    ],
+    "bridge_requires_principal_consent": true
+  },
+  "billing": {
+    "owner": "organization",
+    "budget_per_principal_eur_month": "500.00",
+    "overage_policy": "block_and_notify",
+    "personal_use_policy": "prohibited"
+  },
+  "offboarding": {
+    "data_retention_days": 90,
+    "principal_data_export_allowed": true,
+    "principal_memory_export_allowed": false,
+    "credential_revocation_timing": "immediate",
+    "standing_permission_revocation_timing": "immediate",
+    "role_enactment_revocation_timing": "immediate",
+    "transition_handoff_supported": true,
+    "transition_data_categories": ["task_titles", "calendar_commitments", "project_names"]
+  },
+  "discovery": {
+    "well_known_endpoint": "https://acme.example/.well-known/oap-provisioning.json",
+    "organization_did_service_type": "OAPProvisioning"
+  },
+  "signature": "EdDSA:placeholder_for_example_only"
+}

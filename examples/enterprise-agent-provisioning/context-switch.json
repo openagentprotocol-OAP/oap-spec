@@ -1,0 +1,33 @@
+{
+  "envelope_id": "ctx_01ALICE20260505MORNING",
+  "schema": "oap.context-switch.v1",
+  "principal": "did:web:alice.example",
+  "timestamp": "2026-05-05T09:00:00Z",
+  "from_scope": "did:web:alice.example#personal",
+  "to_scope": "did:web:alice.example#acme-engineer",
+  "from_agent": {
+    "did": "did:key:z6MkAlicePersonalAgent2026",
+    "model_family": "anthropic-claude-opus",
+    "controller": "did:web:alice.example"
+  },
+  "to_agent": {
+    "did": "did:key:z6MkAlicePersonalAgent2026",
+    "model_family": "anthropic-claude-opus",
+    "controller": "did:web:alice.example"
+  },
+  "context_transfer": {
+    "categories_transferred": ["calendar_busy_only", "preferred_language", "timezone"],
+    "categories_prohibited": ["personal_messages", "health_data", "financial_data", "family_contacts"],
+    "transfer_receipt_id": "urn:oap:receipt:ctx_transfer_alice_20260505_0900",
+    "redaction_profile": "oap.profile.projection.organizational_minimal"
+  },
+  "active_bridges": ["brg_ALICE_PERSONAL_TO_ACME_CALENDAR"],
+  "policy_evaluation": {
+    "platform_rules": "pass",
+    "org_policy": "pass",
+    "scope_policy": "pass",
+    "personal_preference": "pass"
+  },
+  "decision_record_id": "dec_01ALICE20260505MORNING",
+  "signature": "EdDSA:placeholder_for_example_only"
+}

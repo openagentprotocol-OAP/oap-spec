@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-provisioning-manifest.schema.json",
+  "title": "OAP Provisioning Manifest",
+  "description": "Normative schema for an Organization's Agent Provisioning Manifest per RFC 0031.",
+  "type": "object",
+  "required": ["id", "schema", "organization", "label", "published_at", "model_policy", "byoa_policy", "scope_template", "billing", "offboarding", "discovery"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+    "schema": { "type": "string", "const": "oap.provisioning.v1" },
+    "organization": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+    "label": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string" }
+    },
+    "published_at": { "type": "string", "format": "date-time" },
+    "valid_until": { "type": "string", "format": "date-time" },
+    "model_policy": {
+      "type": "object",
+      "required": ["minimum_capability_level"],
+      "properties": {
+        "required_provider": { "type": "string" },
+        "required_model_family": { "type": "string" },
+        "minimum_capability_level": { "type": "string", "pattern": "^L[0-5]$" },
+        "approved_alternatives": { "type": "array", "items": { "type": "string" } },
+        "prohibited_models": { "type": "array", "items": { "type": "string" } },
+        "model_evaluation_required": { "type": "boolean" },
+        "evaluation_framework": { "type": "string" }
+      }
+    },
+    "byoa_policy": {
+      "type": "object",
+      "required": ["permitted"],
+      "properties": {
+        "permitted": { "type": "boolean" },
+        "conditions": {
+          "type": "object",
+          "properties": {
+            "required_certifications": { "type": "array", "items": { "type": "string" } },
+            "data_residency": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z]{2}$" } },
+            "audit_log_required": { "type": "boolean" },
+            "training_on_org_data": { "enum": ["never", "with_consent", "by_default"] },
+            "model_evaluation_required": { "type": "boolean" },
+            "attestation_validity_days": { "type": "integer", "minimum": 1, "maximum": 365 },
+            "re_attestation_cadence": { "enum": ["monthly", "quarterly", "semi_annually", "annually"] }
+          }
+        }
+      }
+    },
+    "scope_template": {
+      "type": "object",
+      "required": ["id_pattern"],
+      "properties": {
+        "id_pattern": { "type": "string" },
+        "industry_profile": { "type": "string" },
+        "data_categories_accessible": { "type": "array", "items": { "type": "string" } },
+        "data_categories_prohibited": { "type": "array", "items": { "type": "string" } },
+        "approval_required_for": { "type": "array", "items": { "type": "string" } },
+        "default_standing_permissions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["actions"],
+            "properties": {
+              "actions": { "type": "array", "items": { "type": "string" } },
+              "max_invocations_per_day": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "context_bridges": {
+      "type": "object",
+      "properties": {
+        "permitted_inbound": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from_scope_pattern", "data_categories", "direction"],
+            "properties": {
+              "from_scope_pattern": { "type": "string" },
+              "data_categories": { "type": "array", "items": { "type": "string" } },
+              "direction": { "enum": ["read_only", "read_write", "write_only"] }
+            }
+          }
+        },
+        "permitted_outbound": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["to_scope_pattern", "data_categories", "direction"],
+            "properties": {
+              "to_scope_pattern": { "type": "string" },
+              "data_categories": { "type": "array", "items": { "type": "string" } },
+              "direction": { "enum": ["read_only", "read_write", "write_only"] }
+            }
+          }
+        },
+        "bridge_requires_principal_consent": { "type": "boolean" }
+      }
+    },
+    "billing": {
+      "type": "object",
+      "required": ["owner"],
+      "properties": {
+        "owner": { "enum": ["organization", "principal", "shared"] },
+        "budget_per_principal_eur_month": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+        "overage_policy": { "enum": ["block_and_notify", "allow_and_bill", "throttle"] },
+        "personal_use_policy": { "enum": ["prohibited", "permitted_within_budget", "separate_billing"] }
+      }
+    },
+    "offboarding": {
+      "type": "object",
+      "required": ["data_retention_days", "credential_revocation_timing"],
+      "properties": {
+        "data_retention_days": { "type": "integer", "minimum": 0, "maximum": 36500 },
+        "principal_data_export_allowed": { "type": "boolean" },
+        "principal_memory_export_allowed": { "type": "boolean" },
+        "credential_revocation_timing": { "enum": ["immediate", "end_of_day", "end_of_notice_period"] },
+        "standing_permission_revocation_timing": { "enum": ["immediate", "end_of_day", "end_of_notice_period"] },
+        "role_enactment_revocation_timing": { "enum": ["immediate", "end_of_day", "end_of_notice_period"] },
+        "transition_handoff_supported": { "type": "boolean" },
+        "transition_data_categories": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "discovery": {
+      "type": "object",
+      "required": ["well_known_endpoint"],
+      "properties": {
+        "well_known_endpoint": { "type": "string", "format": "uri" },
+        "organization_did_service_type": { "type": "string" }
+      }
+    },
+    "signature": { "type": "string" }
+  }
+}

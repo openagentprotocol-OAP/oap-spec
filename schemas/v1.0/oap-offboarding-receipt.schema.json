@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-offboarding-receipt.schema.json",
+  "title": "OAP Offboarding Receipt",
+  "description": "Normative schema for an Offboarding Receipt per RFC 0031 section 3.6.",
+  "type": "object",
+  "required": ["receipt_id", "schema", "organization", "principal", "offboarding_initiated_at", "offboarding_completed_at", "revocations", "data_disposition"],
+  "additionalProperties": false,
+  "properties": {
+    "receipt_id": { "type": "string", "pattern": "^urn:oap:offboarding:" },
+    "schema": { "type": "string", "const": "oap.offboarding-receipt.v1" },
+    "organization": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+    "principal": { "type": "string", "pattern": "^did:[a-z0-9]+:.+" },
+    "offboarding_initiated_at": { "type": "string", "format": "date-time" },
+    "offboarding_completed_at": { "type": "string", "format": "date-time" },
+    "revocations": {
+      "type": "object",
+      "required": ["scope_revoked"],
+      "properties": {
+        "scope_revoked": { "type": "string" },
+        "standing_permissions_revoked": { "type": "array", "items": { "type": "string" } },
+        "role_enactments_revoked": { "type": "array", "items": { "type": "string" } },
+        "byoa_attestation_revoked": { "type": "string" },
+        "context_bridges_revoked": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "data_disposition": {
+      "type": "object",
+      "required": ["org_data_retained_until"],
+      "properties": {
+        "org_data_retained_until": { "type": "string", "format": "date-time" },
+        "principal_data_exported": { "type": "boolean" },
+        "principal_data_export_receipt_id": { "type": "string" },
+        "memory_wiped": { "type": "boolean" },
+        "memory_wipe_method": { "enum": ["cryptographic_erasure", "overwrite", "physical_destruction"] },
+        "audit_trail_preserved": { "type": "boolean" },
+        "audit_trail_retention_days": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "transition_handoff": {
+      "type": "object",
+      "properties": {
+        "performed": { "type": "boolean" },
+        "successor_scope": { "type": "string" },
+        "categories_transferred": { "type": "array", "items": { "type": "string" } },
+        "categories_withheld": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "signature": { "type": "string" }
+  }
+}

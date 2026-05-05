@@ -1,0 +1,37 @@
+{
+  "attestation_id": "byoa_01ACME2026Q2ALICE001",
+  "schema": "oap.byoa-attestation.v1",
+  "organization": "did:web:acme.example",
+  "principal": "did:web:alice.example",
+  "personal_agent": {
+    "did": "did:key:z6MkAlicePersonalAgent2026",
+    "model_family": "anthropic-claude-opus",
+    "model_version": "4.6",
+    "provider_did": "did:web:anthropic.com"
+  },
+  "compliance_evaluation": {
+    "data_residency_verified": true,
+    "data_residency_regions": ["EU"],
+    "audit_log_capability_verified": true,
+    "audit_log_endpoint": "https://alice.example/.well-known/oap-audit",
+    "training_on_org_data_policy": "never",
+    "training_on_org_data_verified": true,
+    "certifications_verified": ["SOC2-Type-II"],
+    "model_evaluation_passed": true,
+    "model_evaluation_report_uri": "https://acme.example/evaluations/alice-claude-opus-2026-05.json"
+  },
+  "scope_binding": "did:web:alice.example#acme-engineer",
+  "org_policy_enforced": true,
+  "restrictions": {
+    "model_output_logged": true,
+    "memory_wipe_on_offboarding": true,
+    "no_cross_scope_memory_persistence": true,
+    "max_context_window_tokens": 200000
+  },
+  "issued_at": "2026-05-05T10:00:00Z",
+  "valid_until": "2026-08-05T10:00:00Z",
+  "re_attestation_due": "2026-08-01T00:00:00Z",
+  "revocable": true,
+  "revocation_endpoint": "https://acme.example/.well-known/oap-revocation",
+  "signature": "EdDSA:placeholder_for_example_only"
+}
