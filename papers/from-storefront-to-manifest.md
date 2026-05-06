@@ -96,3 +96,83 @@ The Open Agent Protocol is the migration's standard. The standard is open, the s
 * [Economics of the Agent Economy](/papers/economics-of-the-agent-economy).
 * [Interoperability versus Platforms](/papers/interoperability-versus-platforms).
 * [The Agent Web](/papers/agent-web-whitepaper).
+
+---
+
+## Appendix: The Match Broker as Information Retrieval System
+
+This appendix is normative where it references accepted RFCs and informative elsewhere. It provides the technical depth behind section 5 and the retrieval claims of section 2 that the main paper states but does not derive.
+
+### A.1 The Scale Problem in Verifiable Tool Discovery
+
+The Verifiable Index described in section 2 and specified in RFC 0021 solves the tamper-evidence problem: no candidate can be silently suppressed and every ranking is auditable. It does not solve the retrieval quality problem. A Verifiable Index of 10,000 provider Manifests is cryptographically sound regardless of whether the ranking function it exposes returns the correct tools for a given Intent. The anti-capture properties of RFC 0021 are necessary but not sufficient for a high-quality Match Broker.
+
+The retrieval quality problem has been studied extensively in the context of large-scale API and tool discovery for language model agents. Qin et al. (2023, ICLR 2024) evaluated tool retrieval at corpus sizes up to 16,000 APIs using the ToolBench benchmark. Their principal empirical finding is that pure keyword matching produces F1 below 0.40 at corpus sizes above 1,000 tools, while retrieval-augmented approaches maintain F1 above 0.70 across the full range. Patil et al. (2023, Gorilla, UC Berkeley) demonstrated that retrieval-augmented API selection outperforms LLM-only selection by 20 to 40 percentage points on API-call accuracy. The implication for OAP is that a Match Broker which relies on keyword matching alone will fail to surface the correct tool in the majority of queries once the index grows beyond a few hundred providers.
+
+### A.2 The Three-Layer Retrieval Pipeline
+
+A conformant Match Broker implements retrieval in three sequential layers, each necessary for a different reason.
+
+**Layer 1: Constraint Filter.** The AQL Intent of RFC 0020 carries structured predicates that are exact requirements rather than preferences. A provider that operates only in the European Union cannot satisfy an Intent that requires United States jurisdiction. A provider at conformance level L1 cannot satisfy an Intent that requires L3. A provider whose average unit cost exceeds the Intent's budget cannot be selected regardless of its textual relevance. The constraint filter evaluates these predicates and removes ineligible providers from the candidate set before any retrieval computation. The filter is O(n) in the index size but is the least expensive operation per candidate because it requires no text processing.
+
+**Layer 2: BM25 Sparse Retrieval.** The surviving candidates are ranked by BM25 (Robertson and Zaragoza 2009) over the text of each Manifest. BM25 is the dominant sparse retrieval function in the information retrieval literature. Its derivation proceeds from the probabilistic relevance model of Robertson and Sparck Jones (1976) via the binary independence model to the two-stage normalization of Robertson and Zaragoza (2009). The BM25 score of a query q against a document d is:
+
+```
+BM25(q, d) = sum_{t in q} IDF(t) * (f(t,d) * (k1 + 1)) / (f(t,d) + k1 * (1 - b + b * |d| / avgdl))
+```
+
+where f(t,d) is the within-document term frequency, |d| is the document token count, avgdl is the corpus average document length, IDF(t) = log((N - n(t) + 0.5) / (n(t) + 0.5) + 1) with N the corpus size and n(t) the number of documents containing term t. The hyperparameters k1 controls term frequency saturation and b controls length normalization. Robertson and Zaragoza (2009) report that k1 = 1.5 and b = 0.75 are optimal across a wide range of retrieval collections, and these are the normative values for OAP Reference Match Brokers per RFC 0021 Appendix A.
+
+The text corpus for BM25 is the concatenation of the Manifest description, category tags, action names, and action descriptions. This corpus is richer than a webpage snippet and narrower than a full document, placing the retrieval task in the short-document regime where BM25 performance is well characterized by the TREC short-document track evaluations.
+
+**Layer 3: Multi-Factor Re-Ranking.** BM25 measures textual relevance. A Match Broker that ranks on textual relevance alone would return the tool most similar to the query description, which is not the same as the tool most likely to satisfy the Principal's Intent. The re-ranking stage combines BM25 with four additional signals that are specific to the agent commerce context:
+
+Reputation score, drawn from the RFC 0009 Performance Record aggregate, captures the provider's historical fulfillment quality across all prior interactions. A provider with a reputation score of 0.95 has delivered what it promised in 95 percent of measured interactions. Ranking on textual relevance alone would ignore this signal entirely.
+
+Conformance score captures the provider's verified compliance with the OAP protocol requirements. A provider at L4 has passed the full conformance test suite of RFC 0019 including security probes, transparency log audits, and end-to-end settlement verification. Conformance is a quality signal orthogonal to textual relevance.
+
+Cost score captures the provider's pricing relative to the other candidates in the filtered set. For Principals with binding budget constraints declared in the AQL Intent, a cheaper provider is strictly preferable to a more expensive one at equal quality.
+
+Freshness score captures the recency of the Manifest. A Manifest updated 30 days ago is more likely to reflect current pricing and availability than one updated 18 months ago.
+
+The linear combination of these five signals produces a final score that reflects the true multi-dimensional quality of a candidate for a given Intent. The weights must be disclosed in the Ranked Function declaration of RFC 0021 section 4.1 and must not change without a version increment.
+
+### A.3 The Advertising Market Reconsidered
+
+Section 5 describes the advertising market's dissolution when the buyer is an Agent. This appendix provides the mechanism-design analysis that grounds that claim.
+
+The contemporary search advertising market is a generalized second-price auction (Edelman, Ostrovsky, and Schwarz 2007; Varian 2007) over ad slots. Advertisers bid a maximum cost-per-click, the platform allocates slots in descending bid order, and each advertiser pays the bid of the next-ranked advertiser plus a minimum increment. The equilibrium outcome under truthful bidding is Pareto-efficient for the platform and the top advertisers, but the user receives the ranked set of advertisers most willing to pay, not the ranked set of providers most likely to satisfy the user's actual need. The wedge between willingness to pay and relevance to the user is the central inefficiency of the contemporary advertising market.
+
+When the buyer is an Agent with a formally stated Intent, the willingness-to-pay signal is irrelevant. The Agent is not susceptible to advertising. The Agent evaluates candidates on the merits declared in their Manifests: price, conformance, reputation, and capability match. The generalized second-price auction over ad slots has no analogue in the Agent economy because there are no ad slots and no clicks.
+
+The market that replaces it is a conformance competition. Match Brokers compete to return the most useful candidate set for a given Intent. The competition metric is the RFC 0009 Performance Record of the Match Broker itself: how often did the top-ranked candidate from this broker satisfy the consuming Agent's Intent, at what quality level, and at what cost? A consuming Agent that maintains a Performance Record for each Match Broker it has used will route subsequent Intents to the broker with the best historical satisfaction rate, creating a competitive market in retrieval quality rather than a competitive market in advertising spend.
+
+The revenue model for Match Brokers in this environment is per-match settlement under the commerce model of RFC 0014. The Match Broker receives a small commission on each successful Intent resolution, where success is defined by the Settlement Confirmation produced by RFC 0032. This aligns the broker's revenue with actual utility delivered rather than with clicks generated, which is the alignment that the Vickrey-Clarke-Groves mechanism achieves in theory (Vickrey 1961, Clarke 1971, Groves 1973) and that the OAP settlement infrastructure makes operationally verifiable.
+
+### A.4 Formal Properties of the Verifiable Index
+
+The three anti-capture properties stated in section 2 have precise formal characterizations.
+
+**Property 1: Suppression Detectability.** Let I be the Verifiable Index at root r, and let P be a provider whose Manifest is in I. A Match Broker that returns a candidate set C from I and omits P can be detected by any consuming Agent that requests a Negative Inclusion Proof for P. The Negative Inclusion Proof either asserts that P is not in the index, which is false and produces an inconsistency verifiable against r, or asserts that P is in the index but did not satisfy the Intent constraints, in which case the Agent can verify the constraint evaluation against the Intent's AQL predicates. A Match Broker that produces a false Negative Inclusion Proof has forged a signed document, which requires compromising the broker's signing key.
+
+**Property 2: Demotion Detectability.** Let f be the Disclosed Ranking Function and let d_P be the Decision Record for provider P in response to Intent q. A consuming Agent that recomputes f(P, q) from the inputs declared in d_P and obtains a score differing from the declared final score by more than the floating-point tolerance epsilon has detected a deviation from f. The deviation is evidence that the broker applied a different ranking function to P than the one it discloses. The signed Decision Record makes the deviation attributable and reportable under RFC 0009.
+
+**Property 3: Change Observability.** A change to the Disclosed Ranking Function without a version increment is detectable by any Agent that has cached the previous function version. The function version is declared in the broker's Manifest, which is subscribed by consuming Agents under RFC 0022. A Manifest update that increments the function version triggers a notification to all subscribers within the subscription window declared in the Manifest. An unversioned function change produces a discrepancy between the cached function and the applied function that is detectable via Property 2.
+
+The three properties together make the Match Broker's behavior fully accountable in the same sense that the Receipt chain of RFC 0023 makes provider behavior accountable: every action is either verifiable or attributably deceptive.
+
+### A.5 References for Appendix
+
+- Clarke, E. H. (1971). Multipart Pricing of Public Goods. Public Choice 11.
+- Edelman, B., Ostrovsky, M., and Schwarz, M. (2007). Internet Advertising and the Generalized Second-Price Auction: Selling Billions of Dollars Worth of Keywords. American Economic Review 97(1).
+- Groves, T. (1973). Incentives in Teams. Econometrica 41(4).
+- Johnson, J., Douze, M., and Jegou, H. (2021). Billion-scale Similarity Search with GPUs. IEEE Transactions on Big Data 7(3). The FAISS vector index for dense retrieval extensions.
+- Malkov, Y. A., and Yashunin, D. A. (2020). Efficient and Robust Approximate Nearest Neighbor Search Using HNSW Graphs. IEEE TPAMI 42(4).
+- Patil, S., Zhang, T., Wang, X., and Gonzalez, J. (2023). Gorilla: Large Language Model Connected with Massive APIs. arXiv:2305.15334. UC Berkeley RISE Lab. The empirical demonstration of 20 to 40 percentage point retrieval gains for tool selection.
+- Qin, Y., Liang, S., Ye, Y., et al. (2023). ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs. ICLR 2024. The foundational ToolBench evaluation establishing retrieval necessity at scale.
+- Robertson, S. E., and Sparck Jones, K. (1976). Relevance Weighting of Search Terms. Journal of the American Society for Information Science 27(3). The probabilistic relevance model from which BM25 is derived.
+- Robertson, S., and Zaragoza, H. (2009). The Probabilistic Relevance Framework: BM25 and Beyond. Foundations and Trends in Information Retrieval 3(4). The canonical BM25 derivation with hyperparameter analysis.
+- Varian, H. (2007). Position Auctions. International Journal of Industrial Organization 25(6).
+- Vickrey, W. (1961). Counterspeculation, Auctions, and Competitive Sealed Tenders. Journal of Finance 16(1).
+
+*This appendix accompanies RFC 0021 (Verifiable Indexes and Disclosed Ranking Functions) and the Reference Match Broker implementation in reference/match-broker/. The three-layer retrieval pipeline described in section A.2 is normatively specified in RFC 0021 Appendix A and implemented in reference/match-broker/broker.js.*
