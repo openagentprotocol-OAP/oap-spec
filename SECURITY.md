@@ -7,7 +7,7 @@ Responsible disclosure is essential to the integrity of the Open Agent Protocol 
 If you discover a vulnerability in the specification, in the reference implementations, in the SDKs, in the OAP Registry, or in any open source service shipped from this organization, please report it through one of the following channels.
 
 1. **GitHub Security Advisory (preferred).** Open a private advisory at `https://github.com/openagentprotocol-OAP/oap-spec/security/advisories/new` (or the equivalent URL for the affected repository under the `openagentprotocol-OAP` GitHub organization). This routes the report to the Maintainers of that repository and keeps the discussion confidential until a fix is published.
-2. **Email.** `security@openagentprotocol.eu`. The mailbox is monitored by the Maintainers listed in `MAINTAINERS.md`.
+2. **GitHub Security Advisories.** Please use the "Report a vulnerability" feature on the GitHub repository's Security tab. The report is monitored by the Maintainers listed in `MAINTAINERS.md`.
 
 Do not file a public Issue or Pull Request that describes an unpatched vulnerability.
 

@@ -18,7 +18,7 @@ The Open Agent Protocol community is committed to providing a harassment free, i
 
 ## Reporting
 
-Concerns may be reported to `conduct@openagentprotocol.eu`. Reports are handled confidentially by a rotating panel of three Maintainers that excludes any Maintainer involved in the report. Reporters are protected from retaliation.
+Concerns may be reported by reaching out to a maintainer privately on GitHub or Discord. Reports are handled confidentially by a rotating panel of three Maintainers that excludes any Maintainer involved in the report. Reporters are protected from retaliation.
 
 ## Enforcement
 
