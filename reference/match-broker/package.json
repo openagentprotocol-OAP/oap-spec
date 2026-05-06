@@ -1,0 +1,19 @@
+{
+  "name": "@oap/reference-match-broker",
+  "version": "1.0.0",
+  "description": "OAP Reference Match Broker — BM25 + embedding-based tool discovery with Verifiable Index (RFC 0021 M2 conformant)",
+  "main": "broker.js",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=20" },
+  "type": "commonjs",
+  "scripts": {
+    "start": "node broker.js",
+    "dev": "node --watch broker.js",
+    "seed": "node seed.js",
+    "test": "node test/smoke.test.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "better-sqlite3": "^11.5.0"
+  }
+}

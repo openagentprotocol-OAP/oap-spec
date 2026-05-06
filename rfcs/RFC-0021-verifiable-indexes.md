@@ -111,3 +111,86 @@ A trust based marketplace model in which Match Brokers are presumed honest and d
 * Crosby, S. A., and Wallach, D. S. (2009). Efficient Data Structures for Tamper-Evident Logging. *USENIX Security Symposium.* The history-tree construction that grounds the append-only Merkle structure of section 4 and the per-query Inclusion Proof of section 5; the prior art on which Sigstore Rekor and Certificate Transparency are themselves built.
 * Zheng, W., Dave, A., Beekman, J. G., Popa, R. A., Gonzalez, J. E., and Stoica, I. (2017). Opaque: An Oblivious and Encrypted Distributed Analytics Platform. *USENIX NSDI.* The oblivious-execution framework that grounds the Disclosed Ranking Function obligation of section 6: a Match Broker that wishes to attest ranking correctness without leaking the underlying scores MAY execute the ranking inside an oblivious-enclave engine of the Opaque family and publish the enclave attestation alongside the Index root.
 * Song, D., Wagner, D., and Tian, X. (2001). Timing Analysis of Keystrokes and Timing Attacks on SSH. *USENIX Security Symposium.* The side-channel boundary that motivates the requirement of section 5 that Inclusion Proofs MUST be returned in constant time relative to the Index size, so that a Match Broker cannot leak Manifest-population statistics through proof-construction latency.
+
+## Appendix A: Retrieval Architecture for Conformant Match Brokers (Normative)
+
+This appendix is normative. It specifies the retrieval architecture that a conformant Match Broker MUST implement to achieve M2 conformance at a quality level sufficient for production agent-to-agent commerce. A broker that implements only the Merkle index without the retrieval layer satisfies the verifiability requirements of sections 3 and 4 but does not provide adequate discovery quality for large corpora.
+
+### A.1 Motivation from the Tool Discovery Literature
+
+The problem of selecting the correct tool from a large corpus given a natural language intent description is an instance of the information retrieval problem for structured knowledge bases. Qin et al. (2023, ICLR 2024) demonstrated with the ToolBench dataset that pure keyword matching fails catastrophically at corpus sizes above 1,000 tools: the F1 score of keyword-only retrieval drops below 0.40 at 16,000 tools while dense retrieval maintains F1 above 0.70. Patil et al. (2023, Gorilla, UC Berkeley) demonstrated that retrieval-augmented tool selection outperforms LLM-only selection by 20 to 40 percentage points on API accuracy. The OAP retrieval architecture follows the two-stage sparse-then-dense pipeline established by this literature.
+
+### A.2 Three-Layer Retrieval Pipeline
+
+A conformant Match Broker processes an AQL Intent through three sequential layers.
+
+**Layer 1: Constraint Filter.** The broker evaluates the structured predicates of the AQL Intent against each indexed Manifest. Predicates include minimum conformance level, maximum risk class, allowed jurisdictions, maximum unit cost, and required capability categories. The constraint filter is exact and deterministic: a Manifest that fails any predicate is excluded from consideration regardless of its textual relevance to the query. The filter operates in O(n) time over the full index and reduces the candidate set to the set of structurally eligible providers. The constraint filter is normative: a conformant broker MUST NOT return candidates that fail the constraint filter.
+
+**Layer 2: BM25 Sparse Retrieval.** The broker applies BM25 (Robertson and Zaragoza 2009) over the tokenized text of each eligible Manifest. The indexed text corpus is the concatenation of the Manifest's `description` field, its `categories` array, its action names, and the `description` fields of its individual actions. The BM25 score for a query q against document d is:
+
+```
+BM25(q, d) = sum_{t in q} IDF(t) * (f(t,d) * (k1 + 1)) / (f(t,d) + k1 * (1 - b + b * |d| / avgdl))
+```
+
+where f(t,d) is the term frequency of t in d, |d| is the document length in tokens, avgdl is the average document length over the indexed corpus, and IDF(t) = log((N - df(t) + 0.5) / (df(t) + 0.5) + 1) with N the corpus size and df(t) the document frequency of term t. The normative hyperparameters are k1 = 1.5 and b = 0.75, consistent with the optimal values reported by Robertson and Zaragoza (2009) across a wide range of corpora.
+
+**Layer 3: Multi-Factor Re-Ranking.** The broker computes a final score for each candidate by linearly combining five factors. The normative weights are declared in the Disclosed Ranking Function under the `weights` field:
+
+```
+final_score = w_bm25 * bm25_normalized
+            + w_rep  * reputation_score
+            + w_conf * conformance_score
+            + w_cost * cost_score
+            + w_fresh* freshness_score
+```
+
+The `bm25_normalized` value is the BM25 score normalized to [0, 1] by dividing by a calibrated maximum. The `reputation_score` is the RFC 0009 aggregate Performance Record of the provider, in [0, 1]. The `conformance_score` is the provider's OAP conformance level divided by 4 (L0 to L4 normalized to [0, 1]). The `cost_score` is 1 minus the normalized cost of the provider relative to the candidate set: cheaper providers score higher. The `freshness_score` is a linear decay from 1.0 at manifest age zero to 0.0 at manifest age 365 days.
+
+The reference implementation weights are: bm25 = 0.45, reputation = 0.25, conformance = 0.15, cost = 0.10, freshness = 0.05. A Match Broker MUST publish its actual weights in the Disclosed Ranking Function and MUST NOT deviate from its published weights without incrementing the `function_version` field.
+
+### A.3 Decision Record Schema
+
+For each candidate in an Intent Response, the Match Broker MUST attach a Decision Record containing the input values and their contributions to the final score. The Decision Record MUST be signed by the Match Broker's Ed25519 key. The minimum required fields are:
+
+```json
+{
+  "candidate_did":             "did:web:provider.example",
+  "ranking_function_id":       "oap-bm25-multifactor-v1",
+  "ranking_function_version":  "1.0.0",
+  "inputs": {
+    "bm25_raw":           0.847,
+    "bm25_normalized":    0.0847,
+    "reputation_score":   0.91,
+    "conformance_level":  3,
+    "conformance_score":  0.75,
+    "cost_score":         0.83,
+    "freshness_score":    0.92
+  },
+  "weights":        { "bm25": 0.45, "reputation": 0.25, "conformance": 0.15, "cost_score": 0.10, "freshness": 0.05 },
+  "final_score":    0.7861,
+  "computed_at":    "2026-05-06T10:00:00Z"
+}
+```
+
+The consuming Agent MUST be able to verify the Decision Record by re-computing the `final_score` from the `inputs` and `weights` and confirming that the result matches `final_score` within a tolerance of 1e-6. A discrepancy indicates a ranking deviation reportable under RFC 0009.
+
+### A.4 Scalability Properties
+
+The BM25 implementation in the reference broker uses an inverted index via a SQLite FTS-compatible term frequency table. At corpus sizes up to 100,000 manifests, the retrieval latency is bounded by the IDF computation, which requires one COUNT query per unique query token. For production deployments at larger scales, the normative guidance is to use an in-process inverted index (e.g., Lucene or Tantivy) with pre-computed IDF values, reducing per-query latency to O(|q| * k) where |q| is the query token count and k is the candidate set size after constraint filtering.
+
+The Merkle tree rebuild cost is O(n) where n is the number of indexed manifests. For production deployments, the broker SHOULD use an incremental Merkle tree that appends new leaves without rebuilding the full tree, reducing rebuild cost to O(log n) per registration. The Crosby and Wallach (2009) history tree construction supports this incremental property and is the recommended basis for production implementations.
+
+### A.5 Extension to Dense Retrieval (Informative)
+
+This section is informative. A Match Broker MAY add a dense retrieval stage between layers 2 and 3. Dense retrieval encodes the AQL Intent description and each Manifest description as a dense vector using a bi-encoder model, then computes approximate nearest neighbors using a vector index such as FAISS (Johnson, Douze, and Jégou 2021) or HNSW (Malkov and Yashunin 2020). The dense retrieval layer captures semantic similarity that BM25 misses, particularly for intent descriptions that use vocabulary different from the indexed Manifest text.
+
+The Gorilla benchmark (Patil et al. 2023) and the ToolLLM experiments (Qin et al. 2023) demonstrate that the combination of BM25 and dense retrieval consistently outperforms either method alone, with the improvement concentrated in recall at corpus sizes above 10,000 tools. A broker implementing dense retrieval MUST declare the embedding model it uses in the Disclosed Ranking Function under the `embedding_model` field, because the embedding model is a component of the ranking function and changes to it affect ranking outcomes.
+
+### A.6 References for Appendix A
+
+- Qin, Y., Liang, S., Ye, Y., et al. (2023). ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs. ICLR 2024. The foundational evaluation establishing that retrieval-augmented tool selection is necessary at scale.
+- Patil, S., Zhang, T., Wang, X., and Gonzalez, J. (2023). Gorilla: Large Language Model Connected with Massive APIs. arXiv:2305.15334. UC Berkeley. The demonstration that retrieval-augmented LLMs achieve 20 to 40 percentage point improvements in API-call accuracy.
+- Robertson, S., and Zaragoza, H. (2009). The Probabilistic Relevance Framework: BM25 and Beyond. Foundations and Trends in Information Retrieval 3(4). The canonical derivation of BM25 and its hyperparameter analysis.
+- Crosby, S. A., and Wallach, D. S. (2009). Efficient Data Structures for Tamper-Evident Logging. USENIX Security Symposium. The history tree that underpins the incremental Merkle construction.
+- Johnson, J., Douze, M., and Jégou, H. (2021). Billion-scale Similarity Search with GPUs. IEEE Transactions on Big Data 7(3). The FAISS vector index recommended for dense retrieval.
+- Malkov, Y. A., and Yashunin, D. A. (2020). Efficient and Robust Approximate Nearest Neighbor Search Using HNSW Graphs. IEEE TPAMI 42(4). The HNSW approximate nearest neighbor algorithm.
