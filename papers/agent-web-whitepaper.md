@@ -5,7 +5,8 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Web Integration Working Group
+**Authors:** T. Fengler (Editor)
+**Working Groups:** Web Integration WG
 
 ## Abstract
 

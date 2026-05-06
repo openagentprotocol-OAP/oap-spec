@@ -1,9 +1,9 @@
 # RFC NNNN: Title
 
 **Status:** Draft
-**Author(s):** Name <handle> (affiliation)
+**Author(s):** Your Name (Editor or Contributor), optional affiliation
+**Working Group:** Core Protocol | Confidentiality and Compliance | Commercial Layer | Trust and Reputation | Marketplace and Discovery | Data Plane | Web Integration | Privacy and Governance | Identity and Organizations | Implementation and Conformance
 **Created:** YYYY-MM-DD
-**Working Group:** Core Protocol | CCC | Wallet | Trust | Marketplace | Accessibility | Compliance | Reference Implementations
 **Targets:** 1.1
 **Supersedes:** none
 **Superseded-by:** none

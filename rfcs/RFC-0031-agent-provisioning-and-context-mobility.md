@@ -1,9 +1,9 @@
 # RFC 0031: Agent Provisioning, Context Mobility, and Organizational Handoff
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Identity and Organizations
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Identity and Organizations
 **Created:** 2026-05-05
-**Working Group:** Identity and Organizations, in coordination with Confidentiality and Compliance, Core Protocol
 **Targets:** 1.2
 **Affects:** RFC 0003 (Standing Permissions), RFC 0004 (Delegation), RFC 0006 (Personas), RFC 0007 (Projections), RFC 0010 (Memory Exchange), RFC 0027 (Ad Hoc Teamwork), RFC 0030 (Agent Organizations), Safety and Policy Stack paper, OAP-CORE-1.0 Section 14 (Personas), Section 17 (Organizational Policy).
 

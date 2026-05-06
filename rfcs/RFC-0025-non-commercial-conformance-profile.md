@@ -1,7 +1,8 @@
 # RFC 0025: Non-Commercial Conformance Profile
 
 **Status:** Accepted
-**Author(s):** OAP Community Working Group on Implementation and Conformance
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Implementation and Conformance
 **Created:** 2026-05-04
 **Working Group:** Implementation and Conformance
 **Targets:** 1.2

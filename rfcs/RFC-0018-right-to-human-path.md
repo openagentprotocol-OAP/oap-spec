@@ -1,7 +1,8 @@
 # RFC 0018: The Right to a Human Path
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Privacy and Governance
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Privacy and Governance
 **Created:** 2026-05-03
 **Working Group:** Privacy and Governance
 **Targets:** 1.2

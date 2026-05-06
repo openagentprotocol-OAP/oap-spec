@@ -5,7 +5,8 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Commercial Layer Working Group
+**Authors:** T. Fengler (Editor)
+**Working Groups:** Commercial Layer WG
 
 ## Abstract
 

@@ -1,9 +1,9 @@
 # RFC 0029: Axiomatic Foundations of OAP Reputation, Sybil Resistance, and Mediated Equilibria
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Trust and Reputation
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Trust and Reputation
 **Created:** 2026-05-05
-**Working Group:** Trust and Reputation, in coordination with Marketplace and Discovery
 **Targets:** 1.2
 **Affects:** RFC 0009 (Reputation), RFC 0011 (Sybil Resistance), RFC 0002 (Negotiation), RFC 0008 (Workflows), RFC 0019 (Conformance), OAP-CORE-1.0 Section 22 (Reputation), Section 28 (Sybil Resistance).
 

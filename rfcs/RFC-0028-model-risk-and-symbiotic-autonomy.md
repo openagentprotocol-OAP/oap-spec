@@ -1,9 +1,9 @@
 # RFC 0028: Agent Model Risk Management and Symbiotic Autonomy
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Implementation and Conformance
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Implementation and Conformance
 **Created:** 2026-05-05
-**Working Group:** Implementation and Conformance, in coordination with the Trust and Reputation and CCC working groups
 **Targets:** 1.2
 **Affects:** RFC 0014 (Commerce Primitives), RFC 0016 (User Sovereignty Charter), RFC 0017 (Irreversibility and Cooling Off), RFC 0018 (Right to Human Path), RFC 0019 (Conformance Testing), OAP-CORE-1.0 Section 6 (Manifest), Section 19 (Receipts), Section 20 (Decision Records), Section 30 (Regulatory Conformance Mapping), Section 31 (Conformance Levels).
 

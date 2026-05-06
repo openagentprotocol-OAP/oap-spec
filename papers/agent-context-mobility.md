@@ -5,7 +5,8 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Identity and Organizations Working Group
+**Authors:** T. Fengler (Editor)
+**Working Groups:** Identity and Organizations WG
 
 ## Abstract
 

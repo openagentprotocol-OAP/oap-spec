@@ -5,7 +5,8 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Core Protocol Working Group and OAP Trust and Reputation Working Group
+**Authors:** T. Fengler (Editor)
+**Working Groups:** Core Protocol WG and Trust and Reputation WG
 
 ## Abstract
 

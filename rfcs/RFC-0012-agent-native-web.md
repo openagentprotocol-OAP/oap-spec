@@ -1,7 +1,8 @@
 # RFC 0012: The Agent Native Web
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Web Integration
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Web Integration
 **Created:** 2026-05-03
 **Working Group:** Web Integration
 **Targets:** 1.2

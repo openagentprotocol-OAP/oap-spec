@@ -1,7 +1,8 @@
 # RFC 0017: Irreversibility and Cooling Off Periods
 
 **Status:** Draft
-**Author(s):** OAP Working Group on CCC
+**Author(s):** T. Fengler (Editor)
+**Working Group:** CCC
 **Created:** 2026-05-03
 **Working Group:** CCC
 **Targets:** 1.2

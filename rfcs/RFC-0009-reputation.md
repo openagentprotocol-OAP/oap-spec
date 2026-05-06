@@ -1,7 +1,8 @@
 # RFC 0009: Reputation and Performance Records
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Trust and Reputation
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Trust and Reputation
 **Created:** 2026-05-03
 **Working Group:** Trust and Reputation
 **Targets:** 1.2

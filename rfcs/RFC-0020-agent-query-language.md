@@ -1,7 +1,8 @@
 # RFC 0020: Agent Query Language
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Data Plane
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Data Plane
 **Created:** 2026-05-03
 **Updated:** 2026-05-04
 **Working Group:** Data Plane

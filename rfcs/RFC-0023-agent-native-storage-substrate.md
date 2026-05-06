@@ -1,7 +1,8 @@
 # RFC 0023: Agent Native Storage Substrate
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Data Plane
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Data Plane
 **Created:** 2026-05-03
 **Working Group:** Data Plane
 **Targets:** 1.2

@@ -4,7 +4,8 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Data Plane Working Group, OAP Core Protocol Working Group, and OAP Marketplace and Discovery Working Group
+**Authors:** T. Fengler (Editor)
+**Working Groups:** Data Plane WG, Core Protocol WG, and Marketplace and Discovery WG
 
 ## Abstract
 

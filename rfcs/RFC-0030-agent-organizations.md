@@ -1,9 +1,9 @@
 # RFC 0030: Agent Organizations, Roles, Scenes, and Norms
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Identity and Organizations
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Identity and Organizations
 **Created:** 2026-05-05
-**Working Group:** Identity and Organizations, in coordination with Policy and Conformance
 **Targets:** 1.2
 **Affects:** RFC 0006 (Personas), RFC 0007 (Projections), RFC 0008 (Workflows), RFC 0003 (Standing Permissions), RFC 0028 (Model Risk and Symbiotic Autonomy), Safety and Policy Stack paper, OAP-CORE-1.0 Section 14 (Personas), Section 17 (Organizational Policy), Section 30 (Regulatory Mapping).
 

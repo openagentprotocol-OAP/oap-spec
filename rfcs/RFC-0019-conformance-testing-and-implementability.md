@@ -1,7 +1,8 @@
 # RFC 0019: Conformance Testing and Implementability
 
 **Status:** Accepted
-**Author(s):** OAP Community Working Group on Implementation and Conformance
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Implementation and Conformance
 **Created:** 2026-05-03
 **Revised:** 2026-05-04
 **Working Group:** Implementation and Conformance

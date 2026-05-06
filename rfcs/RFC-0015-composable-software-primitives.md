@@ -1,7 +1,8 @@
 # RFC 0015: Composable Software Primitives
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Marketplace and Discovery
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Marketplace and Discovery
 **Created:** 2026-05-03
 **Working Group:** Marketplace and Discovery
 **Targets:** 1.2

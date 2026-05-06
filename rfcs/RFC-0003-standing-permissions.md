@@ -1,7 +1,8 @@
 # RFC 0003: Standing Permissions
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Confidentiality and Compliance
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Confidentiality and Compliance
 **Created:** 2026-05-03
 **Working Group:** CCC
 **Targets:** 1.1

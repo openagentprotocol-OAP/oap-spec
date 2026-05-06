@@ -5,7 +5,8 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Implementation and Conformance Working Group
+**Authors:** T. Fengler (Editor)
+**Working Groups:** Implementation and Conformance WG
 
 ## Abstract
 

@@ -5,7 +5,8 @@
 **Version:** 1.0
 **Status:** Public Working Draft
 **Date:** May 2026
-**Authors:** OAP Privacy and Governance Working Group and OAP Confidentiality and Compliance Context Working Group
+**Authors:** T. Fengler (Editor)
+**Working Groups:** Privacy and Governance WG and Confidentiality and Compliance Context WG
 
 ## Abstract
 

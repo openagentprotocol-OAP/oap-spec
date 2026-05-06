@@ -1,7 +1,8 @@
 # RFC 0010: Memory Exchange Protocol
 
 **Status:** Draft
-**Author(s):** OAP Working Group on Core Protocol
+**Author(s):** T. Fengler (Editor)
+**Working Group:** Core Protocol
 **Created:** 2026-05-03
 **Working Group:** Core Protocol
 **Targets:** 1.2
