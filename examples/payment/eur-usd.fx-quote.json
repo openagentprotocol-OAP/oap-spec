@@ -1,0 +1,24 @@
+{
+  "quote_id": "urn:oap:fx-quote:oracle.openagentprotocol.eu:2026-05-06T12:00:00Z:EUR:USD",
+  "oracle_did": "did:web:oracle.openagentprotocol.eu",
+  "base_currency": "EUR",
+  "quote_currency": "USD",
+  "mid_rate": "1.0823",
+  "bid_rate": "1.0820",
+  "ask_rate": "1.0826",
+  "spread_bps": "6",
+  "max_round_trip_cost_bps": "15",
+  "valid_from": "2026-05-06T12:00:00Z",
+  "valid_until": "2026-05-06T12:05:00Z",
+  "sources": [
+    { "provider": "ECB", "rate": "1.0822", "timestamp": "2026-05-06T11:59:50Z" },
+    { "provider": "WM_Reuters_4pm", "rate": "1.0824", "timestamp": "2026-05-06T11:59:00Z" }
+  ],
+  "rate_class": "firm",
+  "pair_type": "fiat_fiat",
+  "signature": {
+    "alg": "EdDSA",
+    "kid": "did:web:oracle.openagentprotocol.eu#key-1",
+    "value": "EXAMPLE_ORACLE_SIGNATURE_NOT_VERIFIED"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "mandate_id": "urn:oap:mandate:alice.example:2026-05-06-001",
+  "version": "1.0",
+  "principal_did": "did:web:alice.example",
+  "agent_did": "did:web:alice-agent.example",
+  "wallet_did": "did:web:wallet.openagentprotocol.eu",
+  "constraints": {
+    "max_single_payment": { "amount": "500.00", "currency": "EUR" },
+    "max_daily_spend": { "amount": "2000.00", "currency": "EUR" },
+    "max_monthly_spend": { "amount": "20000.00", "currency": "EUR" },
+    "allowed_counterparty_dids": null,
+    "blocked_counterparty_dids": [],
+    "allowed_commerce_primitives": ["per_invocation", "per_outcome", "retail_purchase", "subscription"],
+    "require_confirmation_above": { "amount": "200.00", "currency": "EUR" },
+    "allowed_instruments": ["sepa-ct", "sepa-instant", "usdc-base"],
+    "allowed_jurisdictions": ["EU", "CH", "NO", "IS", "LI"],
+    "blocked_categories": ["gambling", "adult_content", "weapons", "sanctioned_entities"]
+  },
+  "validity": {
+    "not_before": "2026-05-06T00:00:00Z",
+    "not_after": "2026-08-06T00:00:00Z"
+  },
+  "revocation_endpoint": "https://alice.example/oap/mandate/revoke",
+  "spending_report_webhook": "https://alice.example/oap/spending-report",
+  "cooling_off_class": "irreversible_financial",
+  "signatures": [
+    {
+      "by": "did:web:alice.example",
+      "alg": "EdDSA",
+      "value": "EXAMPLE_PRINCIPAL_SIGNATURE_NOT_VERIFIED"
+    }
+  ]
+}

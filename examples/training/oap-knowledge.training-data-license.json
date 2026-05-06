@@ -1,0 +1,54 @@
+{
+  "tdl_id": "urn:oap:tdl:knowledge.openagentprotocol.eu:2026-v1",
+  "version": "1.0",
+  "provider_did": "did:web:knowledge.openagentprotocol.eu",
+  "effective_from": "2026-05-06T00:00:00Z",
+  "effective_until": null,
+  "scope": {
+    "applies_to": "all_knowledge_nodes",
+    "excluded_node_ids": [],
+    "included_content_classes": ["text", "structured_data", "code"],
+    "excluded_content_classes": ["biometric", "health", "special_category_gdpr", "children_data"]
+  },
+  "permissions": {
+    "research_tdm": "allowed",
+    "commercial_tdm": "allowed_with_attribution",
+    "pretraining": "allowed_with_attribution_and_fee",
+    "finetuning": "allowed_with_attribution_and_fee",
+    "rlhf": "allowed_with_attribution",
+    "distillation": "prohibited",
+    "synthetic_data_generation": "allowed_with_fee"
+  },
+  "attribution_requirements": {
+    "required": true,
+    "form": "model_provenance_document",
+    "granularity": "dataset_version",
+    "anchor_in_registry": true
+  },
+  "fee": {
+    "pretraining_fee_per_token": "0.000001",
+    "finetuning_fee_per_token": "0.000005",
+    "synthetic_data_fee_per_output_token": "0.00001",
+    "currency": "EUR",
+    "payment_endpoint": "https://knowledge.openagentprotocol.eu/oap/training-fee"
+  },
+  "opt_out_signals": {
+    "robots_txt_compliant": true,
+    "tdm_reservation_header": "X-Robots-Tag: noai",
+    "oap_tdl_supersedes_robots_txt": true
+  },
+  "eu_dsm_directive": {
+    "article_4_opt_out_scope": "commercial_tdm",
+    "gdpr_data_subject_rights_preserved": true
+  },
+  "unlearning": {
+    "supports_approximate_unlearning": false,
+    "unlearning_request_endpoint": null
+  },
+  "dispute_endpoint": "https://knowledge.openagentprotocol.eu/oap/training-dispute",
+  "signature": {
+    "alg": "EdDSA",
+    "kid": "did:web:knowledge.openagentprotocol.eu#key-1",
+    "value": "EXAMPLE_PROVIDER_SIGNATURE_NOT_VERIFIED"
+  }
+}

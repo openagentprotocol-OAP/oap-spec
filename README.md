@@ -5,9 +5,9 @@
 **The vendor neutral standard for how autonomous agents discover, invoke, pay for, govern, and audit the tools and services they use.**
 
 [![Spec 1.0 PWD](https://img.shields.io/badge/spec-1.0%20Public%20Working%20Draft-1f6feb)](spec/v1.0/OAP-CORE-1.0.md)
-[![RFCs](https://img.shields.io/badge/RFCs-26-555)](rfcs/)
-[![Papers](https://img.shields.io/badge/papers-10-555)](papers/)
-[![Schemas](https://img.shields.io/badge/JSON%20Schemas-23-555)](schemas/v1.0/)
+[![RFCs](https://img.shields.io/badge/RFCs-33-555)](rfcs/)
+[![Papers](https://img.shields.io/badge/papers-13-555)](papers/)
+[![Schemas](https://img.shields.io/badge/JSON%20Schemas-27-555)](schemas/v1.0/)
 [![Adapters](https://img.shields.io/badge/adapters-MCP%20|%20A2A%20|%20OpenAI%20|%20LangGraph-555)](adapters/)
 [![Code License](https://img.shields.io/badge/code-Apache%202.0-2ea44f)](LICENSE-CODE)
 [![Spec License](https://img.shields.io/badge/spec-CC--BY%204.0-2ea44f)](LICENSE-SPEC)

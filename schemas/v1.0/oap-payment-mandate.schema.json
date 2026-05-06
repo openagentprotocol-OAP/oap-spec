@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-payment-mandate.schema.json",
+  "title": "OAP Payment Mandate",
+  "description": "Principal pre-authorization for an agent to initiate payments within defined constraints. Per RFC 0032 section 3.3.",
+  "type": "object",
+  "required": ["mandate_id", "version", "principal_did", "agent_did", "wallet_did", "constraints", "validity", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "mandate_id": { "type": "string", "pattern": "^urn:oap:mandate:.+$" },
+    "version": { "type": "string", "const": "1.0" },
+    "principal_did": { "type": "string", "pattern": "^did:.+$" },
+    "agent_did": { "type": "string", "pattern": "^did:.+$" },
+    "wallet_did": { "type": "string", "pattern": "^did:.+$" },
+    "constraints": {
+      "type": "object",
+      "required": ["max_single_payment", "max_daily_spend", "max_monthly_spend"],
+      "additionalProperties": false,
+      "properties": {
+        "max_single_payment": { "$ref": "#/$defs/money" },
+        "max_daily_spend": { "$ref": "#/$defs/money" },
+        "max_monthly_spend": { "$ref": "#/$defs/money" },
+        "allowed_counterparty_dids": {
+          "oneOf": [{ "type": "null" }, { "type": "array", "items": { "type": "string" } }]
+        },
+        "blocked_counterparty_dids": { "type": "array", "items": { "type": "string" } },
+        "allowed_commerce_primitives": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "per_invocation", "per_outcome", "per_token_knowledge", "per_capability", "per_delegation",
+              "retail_purchase", "subscription", "metered_utility", "marketplace_intermediation",
+              "advertising", "professional_service", "licensing", "lease", "lending", "insurance"
+            ]
+          }
+        },
+        "require_confirmation_above": { "$ref": "#/$defs/money" },
+        "allowed_instruments": { "type": "array", "items": { "type": "string" } },
+        "allowed_jurisdictions": { "type": "array", "items": { "type": "string" } },
+        "blocked_categories": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "required": ["not_before", "not_after"],
+      "additionalProperties": false,
+      "properties": {
+        "not_before": { "type": "string", "format": "date-time" },
+        "not_after": { "type": "string", "format": "date-time" }
+      }
+    },
+    "revocation_endpoint": { "type": "string", "format": "uri" },
+    "spending_report_webhook": { "type": "string", "format": "uri" },
+    "cooling_off_class": {
+      "enum": ["irreversible_financial", "irreversible_legal", "none"]
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["by", "alg", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "by": { "type": "string", "pattern": "^did:.+$" },
+          "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "money": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "additionalProperties": false,
+      "properties": {
+        "amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,8})?$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{2,8}$" }
+      }
+    }
+  }
+}

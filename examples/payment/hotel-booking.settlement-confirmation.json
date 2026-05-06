@@ -1,0 +1,29 @@
+{
+  "confirmation_id": "urn:oap:settlement:wlt-2026-05-06-hotel-adlon-confirmed",
+  "session_id": "urn:oap:session:wlt-2026-05-06-hotel-adlon-abc123",
+  "mandate_id": "urn:oap:mandate:alice.example:2026-05-06-001",
+  "status": "settled",
+  "instrument_id": "sepa-instant",
+  "rail": "sepa_instant",
+  "settlement_reference": "OAPWLT20260506HOTELADL001",
+  "settled_amount": { "value": "189.00", "currency": "EUR" },
+  "settlement_timestamp": "2026-05-06T12:00:05Z",
+  "finality": "irrevocable_on_confirmation",
+  "iso20022_uetr": "97ed4827-7b6f-4191-aa5d-e7e2ceaa31c4",
+  "instrument_details": {
+    "iban": "DE89370400440532013000",
+    "bic": "COBADEFFXXX"
+  },
+  "signatures": [
+    {
+      "by": "did:web:wallet.openagentprotocol.eu",
+      "alg": "EdDSA",
+      "value": "EXAMPLE_WALLET_SIGNATURE_NOT_VERIFIED"
+    },
+    {
+      "by": "did:web:alice-agent.example",
+      "alg": "EdDSA",
+      "value": "EXAMPLE_AGENT_SIGNATURE_NOT_VERIFIED"
+    }
+  ]
+}

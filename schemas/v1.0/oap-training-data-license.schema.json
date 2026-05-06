@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-training-data-license.schema.json",
+  "title": "OAP Training Data License",
+  "description": "Machine-readable training data license published by a Knowledge Node provider. Per RFC 0033 section 3.2.",
+  "type": "object",
+  "required": ["tdl_id", "version", "provider_did", "effective_from", "scope", "permissions", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "tdl_id": { "type": "string", "pattern": "^urn:oap:tdl:.+$" },
+    "version": { "type": "string" },
+    "provider_did": { "type": "string", "pattern": "^did:.+$" },
+    "effective_from": { "type": "string", "format": "date-time" },
+    "effective_until": { "oneOf": [{ "type": "null" }, { "type": "string", "format": "date-time" }] },
+    "scope": {
+      "type": "object",
+      "required": ["applies_to"],
+      "additionalProperties": false,
+      "properties": {
+        "applies_to": { "enum": ["all_knowledge_nodes", "specific_nodes"] },
+        "included_node_ids": { "type": "array", "items": { "type": "string" } },
+        "excluded_node_ids": { "type": "array", "items": { "type": "string" } },
+        "included_content_classes": { "type": "array", "items": { "type": "string" } },
+        "excluded_content_classes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "required": ["research_tdm", "commercial_tdm", "pretraining"],
+      "additionalProperties": false,
+      "properties": {
+        "research_tdm": { "$ref": "#/$defs/permission_value" },
+        "commercial_tdm": { "$ref": "#/$defs/permission_value" },
+        "pretraining": { "$ref": "#/$defs/permission_value" },
+        "finetuning": { "$ref": "#/$defs/permission_value" },
+        "rlhf": { "$ref": "#/$defs/permission_value" },
+        "distillation": { "$ref": "#/$defs/permission_value" },
+        "synthetic_data_generation": { "$ref": "#/$defs/permission_value" }
+      }
+    },
+    "attribution_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "form": { "enum": ["model_provenance_document", "readme", "model_card", "website_notice"] },
+        "granularity": { "enum": ["provider_level", "dataset_version", "node_level"] },
+        "anchor_in_registry": { "type": "boolean" }
+      }
+    },
+    "fee": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pretraining_fee_per_token": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,12})?$" },
+        "finetuning_fee_per_token": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,12})?$" },
+        "synthetic_data_fee_per_output_token": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,12})?$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "payment_endpoint": { "type": "string", "format": "uri" }
+      }
+    },
+    "opt_out_signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "robots_txt_compliant": { "type": "boolean" },
+        "tdm_reservation_header": { "type": "string" },
+        "oap_tdl_supersedes_robots_txt": { "type": "boolean" }
+      }
+    },
+    "eu_dsm_directive": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "article_4_opt_out_scope": {
+          "enum": ["none", "research_tdm", "commercial_tdm", "all_tdm"]
+        },
+        "gdpr_data_subject_rights_preserved": { "type": "boolean" }
+      }
+    },
+    "unlearning": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "supports_approximate_unlearning": { "type": "boolean" },
+        "unlearning_request_endpoint": { "oneOf": [{ "type": "null" }, { "type": "string", "format": "uri" }] }
+      }
+    },
+    "dispute_endpoint": { "type": "string", "format": "uri" },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "kid", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+        "kid": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "permission_value": {
+      "enum": [
+        "allowed",
+        "allowed_with_attribution",
+        "allowed_with_fee",
+        "allowed_with_attribution_and_fee",
+        "prohibited"
+      ]
+    }
+  }
+}

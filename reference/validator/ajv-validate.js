@@ -41,6 +41,13 @@ function pickSchema(filename, data) {
   if (filename.includes('context-switch')) return schemas['oap-context-switch.schema.json'] || null;
   if (filename.includes('byoa-attestation')) return schemas['oap-byoa-attestation.schema.json'] || null;
   if (filename.includes('offboarding-receipt')) return schemas['oap-offboarding-receipt.schema.json'] || null;
+  // RFC 0032: Payment Instrument Adapter Protocol
+  if (filename.includes('payment-mandate')) return schemas['oap-payment-mandate.schema.json'] || null;
+  if (filename.includes('settlement-confirmation')) return schemas['oap-settlement-confirmation.schema.json'] || null;
+  // RFC 0014 Appendix B: FX Quote
+  if (filename.includes('fx-quote')) return schemas['oap-fx-quote.schema.json'] || null;
+  // RFC 0033: Training Data License
+  if (filename.includes('training-data-license')) return schemas['oap-training-data-license.schema.json'] || null;
   if (filename.endsWith('manifest.json')) return schemas['oap-manifest.schema.json'];
   if (filename.endsWith('receipt.json')) return schemas['oap-receipt.schema.json'];
   if (filename.endsWith('decision-record.json')) return schemas['oap-decision-record.schema.json'];
@@ -53,6 +60,7 @@ function pickSchema(filename, data) {
   if (filename.includes('candidates')) return null;
   return null;
 }
+
 
 let total = 0, passed = 0;
 const failures = [];

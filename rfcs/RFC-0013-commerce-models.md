@@ -4,7 +4,6 @@
 **Author(s):** T. Fengler (Editor)
 **Working Group:** Commercial Layer
 **Created:** 2026-05-03
-**Working Group:** Commercial Layer
 **Targets:** 1.2
 
 ## 1. Summary

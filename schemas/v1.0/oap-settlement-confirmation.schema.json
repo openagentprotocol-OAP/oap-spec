@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-settlement-confirmation.schema.json",
+  "title": "OAP Settlement Confirmation",
+  "description": "Instrument-native settlement result wrapped in a signed OAP envelope. Per RFC 0032 section 3.5.",
+  "type": "object",
+  "required": ["confirmation_id", "session_id", "status", "instrument_id", "settlement_reference", "settled_amount", "settlement_timestamp", "finality", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "confirmation_id": { "type": "string", "pattern": "^urn:oap:settlement:.+$" },
+    "session_id": { "type": "string", "pattern": "^urn:oap:session:.+$" },
+    "mandate_id": { "type": "string", "pattern": "^urn:oap:mandate:.+$" },
+    "status": { "enum": ["settled", "failed", "pending_finality"] },
+    "instrument_id": { "type": "string" },
+    "rail": {
+      "enum": ["sepa_credit_transfer", "sepa_instant", "lightning_network", "evm_stablecoin", "card_network", "swift_mt", "swift_mx"]
+    },
+    "settlement_reference": { "type": "string" },
+    "settled_amount": {
+      "type": "object",
+      "required": ["value", "currency"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,8})?$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{2,8}$" }
+      }
+    },
+    "settlement_timestamp": { "type": "string", "format": "date-time" },
+    "finality": {
+      "enum": [
+        "irrevocable_on_confirmation",
+        "irrevocable_d1",
+        "irrevocable_on_preimage",
+        "irrevocable_on_finalized_block",
+        "pending"
+      ]
+    },
+    "iso20022_uetr": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "ISO 20022 Unique End-to-End Transaction Reference. Required for SEPA and SWIFT rails."
+    },
+    "fx": {
+      "type": "object",
+      "description": "FX conversion block per RFC 0014 Appendix B. Present when price_currency differs from settlement_currency.",
+      "required": ["price_currency", "settlement_currency", "price_amount", "settlement_amount", "rate_applied", "fx_quote_id", "fx_quote_hash", "oracle_did"],
+      "additionalProperties": false,
+      "properties": {
+        "price_currency": { "type": "string", "pattern": "^[A-Z]{2,8}$" },
+        "settlement_currency": { "type": "string", "pattern": "^[A-Z]{2,8}$" },
+        "price_amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,8})?$" },
+        "settlement_amount": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,8})?$" },
+        "rate_applied": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,10})?$" },
+        "fx_quote_id": { "type": "string", "pattern": "^urn:oap:fx-quote:.+$" },
+        "fx_quote_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "oracle_did": { "type": "string", "pattern": "^did:.+$" },
+        "fx_legs": {
+          "type": "array",
+          "description": "For multi-leg conversions per RFC 0014 Appendix B.7.",
+          "items": {
+            "type": "object",
+            "required": ["from_currency", "to_currency", "rate_applied", "fx_quote_id"],
+            "properties": {
+              "from_currency": { "type": "string" },
+              "to_currency": { "type": "string" },
+              "rate_applied": { "type": "string" },
+              "fx_quote_id": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "instrument_details": {
+      "type": "object",
+      "description": "Instrument-specific fields. Schema varies by rail.",
+      "properties": {
+        "iban": { "type": "string" },
+        "bic": { "type": "string" },
+        "payment_hash": { "type": "string" },
+        "preimage": { "type": "string" },
+        "tx_hash": { "type": "string" },
+        "block_number": { "type": "integer" },
+        "authorization_code": { "type": "string" },
+        "retrieval_reference_number": { "type": "string" }
+      }
+    },
+    "error": {
+      "type": "object",
+      "description": "Present when status is failed.",
+      "required": ["code", "detail"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "mandate_expired", "mandate_revoked", "session_expired", "insufficient_funds",
+            "mandate_limit_exceeded_daily", "mandate_limit_exceeded_single", "counterparty_blocked",
+            "instrument_unavailable", "principal_confirmation_required", "sybil_flag",
+            "kyc_required", "jurisdiction_blocked", "instrument_execution_failed"
+          ]
+        },
+        "detail": { "type": "string" },
+        "retry_after": { "type": "string", "format": "date-time" }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 2,
+      "description": "MUST include wallet operator and agent signatures.",
+      "items": {
+        "type": "object",
+        "required": ["by", "alg", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "by": { "type": "string", "pattern": "^did:.+$" },
+          "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  }
+}

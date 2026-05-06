@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-fx-quote.schema.json",
+  "title": "OAP FX Quote",
+  "description": "Signed foreign exchange quote from a DID-identified FX Oracle. Per RFC 0014 Appendix B.",
+  "type": "object",
+  "required": ["quote_id", "oracle_did", "base_currency", "quote_currency", "mid_rate", "bid_rate", "ask_rate", "spread_bps", "valid_from", "valid_until", "sources", "rate_class", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "quote_id": { "type": "string", "pattern": "^urn:oap:fx-quote:.+$" },
+    "oracle_did": { "type": "string", "pattern": "^did:.+$" },
+    "base_currency": { "type": "string", "pattern": "^[A-Z]{2,8}$" },
+    "quote_currency": { "type": "string", "pattern": "^[A-Z]{2,8}$" },
+    "mid_rate": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,10})?$" },
+    "bid_rate": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,10})?$" },
+    "ask_rate": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,10})?$" },
+    "spread_bps": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,4})?$" },
+    "max_round_trip_cost_bps": {
+      "type": "string",
+      "pattern": "^\\d+(?:\\.\\d{1,4})?$",
+      "description": "Maximum round-trip cost bound per RFC 0014 Appendix B.9."
+    },
+    "valid_from": { "type": "string", "format": "date-time" },
+    "valid_until": { "type": "string", "format": "date-time" },
+    "sources": {
+      "type": "array",
+      "minItems": 2,
+      "description": "At least two independent market data sources required.",
+      "items": {
+        "type": "object",
+        "required": ["provider", "rate", "timestamp"],
+        "additionalProperties": false,
+        "properties": {
+          "provider": { "type": "string" },
+          "rate": { "type": "string", "pattern": "^\\d+(?:\\.\\d{1,10})?$" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "rate_class": {
+      "enum": ["indicative", "firm", "executed"],
+      "description": "indicative: budgeting only. firm: binding for validity window. executed: historical record."
+    },
+    "pair_type": {
+      "enum": ["fiat_fiat", "fiat_crypto", "crypto_fiat", "stablecoin_fiat", "crypto_crypto"],
+      "description": "Determines validity window limits per RFC 0014 Appendix B.3."
+    },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "kid", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+        "kid": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}
