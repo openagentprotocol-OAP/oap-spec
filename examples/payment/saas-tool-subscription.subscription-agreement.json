@@ -1,0 +1,23 @@
+{
+  "subscription_id": "urn:oap:subscription:alice.example:saas-tool-2026-05-06",
+  "principal_did": "did:web:alice.example",
+  "agent_did": "did:web:alice-agent.example",
+  "provider_did": "did:web:saas-tool.example",
+  "mandate_id": "urn:oap:mandate:alice.example:2026-05-06-001",
+  "commerce_primitive": { "preset": "subscription" },
+  "billing_amount": { "value": "29.00", "currency": "EUR" },
+  "billing_instrument_id": "sepa-instant",
+  "billing_interval": "monthly",
+  "billing_anchor_day": 6,
+  "trial_end": null,
+  "started_at": "2026-05-06T00:00:00Z",
+  "next_billing_at": "2026-06-06T00:00:00Z",
+  "cancelled_at": null,
+  "price_change_consent_threshold": { "value": "5.00", "currency": "EUR" },
+  "dunning_state": "active",
+  "dunning_retry_count": 0,
+  "signatures": [
+    { "by": "did:web:alice-agent.example", "alg": "EdDSA", "value": "base64url_sig_agent" },
+    { "by": "did:web:saas-tool.example", "alg": "EdDSA", "value": "base64url_sig_provider" }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "instrument_id": "amex-4242",
+  "rail": "card_network",
+  "network": "amex",
+  "currency": "EUR",
+  "current_balance": null,
+  "credit_limit": "15000.00",
+  "available_credit": "12340.00",
+  "cashback_rate": "0.015",
+  "annual_fee": "150.00",
+  "preferred_categories": ["travel", "hotels", "airlines"],
+  "blocked_categories": ["gambling", "adult_content"],
+  "loyalty_program": {
+    "program_id": "amex-membership-rewards",
+    "points_per_unit": 1.5,
+    "redemption_value_per_point": "0.007",
+    "current_balance_points": 48200
+  },
+  "fx_surcharge_bps": 200,
+  "foreign_transaction_fee_bps": 0,
+  "last_updated": "2026-05-06T10:00:00Z",
+  "signature": {
+    "by": "did:web:wallet.alice.example",
+    "alg": "EdDSA",
+    "value": "base64url_signature_placeholder"
+  }
+}

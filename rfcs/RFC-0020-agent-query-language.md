@@ -250,3 +250,58 @@ The Projection block of section 3.3 is the protocol's data-release primitive. Wh
 - Vardi, M. Y. (1982). The Complexity of Relational Query Languages. *Proceedings of STOC '82.*
 - Abiteboul, S., Hull, R., and Vianu, V. (1995). *Foundations of Databases.* Addison-Wesley.
 - Shoham, Y., and Leyton-Brown, K. (2009). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press, chapter 13.
+
+## Appendix B: Payment Integration (Normative)
+
+This appendix is normative. It specifies the `payment_constraints` block for AQL Intents and the normative `intent_id` traceability requirement that binds AQL Intents to OAP Payment Sessions and Settlement Confirmations. These extensions close the loose coupling identified between AQL's `budget` block and RFC 0032's payment lifecycle.
+
+### B.1 The payment_constraints Block
+
+An AQL Intent whose `category` is `commercial` MAY carry an optional `payment_constraints` block. When present, this block overrides the Mandate's `allowed_instruments` list and `allowed_commerce_primitives` list for the specific Session created to fulfill this Intent. It does not modify the Mandate itself.
+
+```json
+{
+  "payment_constraints": {
+    "allowed_instruments": ["sepa-instant", "sepa-ct"],
+    "disallowed_instruments": ["lightning_network", "evm_stablecoin"],
+    "preferred_instrument": "sepa-instant",
+    "max_single_payment": { "amount": "500.00", "currency": "EUR" },
+    "require_bank_account_vc": true,
+    "allowed_commerce_primitives": ["retail_purchase", "subscription"],
+    "settlement_currency_preference": "EUR",
+    "auction_parametric_session": false
+  }
+}
+```
+
+The `payment_constraints.allowed_instruments` field, when present, replaces the Mandate's instrument list for this Intent's payment. The agent MUST propagate these constraints into the Payment Session creation request as `intent_payment_constraints`. The Wallet operator MUST enforce them and MUST reject a Session creation request where the intended instrument is excluded by the Intent-level constraints, even if the Mandate permits it.
+
+This design preserves the Mandate as the persistent authorization framework and AQL as the per-transaction specification layer. The Mandate establishes what the agent is generally permitted to do; the AQL Intent constrains what the agent does for this specific task. The two compose without conflict by intersection: the Session instrument must be in both the Mandate's `allowed_instruments` and the Intent's `payment_constraints.allowed_instruments`.
+
+The `require_bank_account_vc` field, when `true`, instructs the Wallet operator to enforce section 3.17 IBAN-DID binding verification for this Session regardless of the Wallet's default policy. This allows privacy-sensitive or high-value Intents to demand stronger counterparty verification.
+
+The `auction_parametric_session` field, when `true`, instructs the Wallet operator to create a Parametric Long-Validity Session (RFC 0032 Appendix B) rather than a standard Session.
+
+### B.2 intent_id Traceability
+
+The AQL Intent's `intent_id` field MUST be propagated through the payment lifecycle as a normative traceability link. The following propagation rules apply:
+
+1. **Intent to Session:** The Payment Session creation request MUST carry the `intent_id` of the AQL Intent that triggered it in a top-level `intent_id` field. The Wallet operator MUST record this field in the Session record.
+
+2. **Session to Settlement Confirmation:** The Settlement Confirmation MUST carry the `intent_id` inherited from the Session. This field is included in the `oap-settlement-confirmation.schema.json` as a non-required field that becomes required when the Session was created from an AQL Intent.
+
+3. **Settlement Confirmation to Receipt:** The OAP Receipt of type `settlement` that the agent creates from the Settlement Confirmation MUST carry the `intent_id` in its `action_id` field, establishing the cryptographic link between the original query intent and the completed payment.
+
+The resulting chain is: `intent_id` in AQL Intent → `intent_id` in Payment Session → `intent_id` in Settlement Confirmation → `action_id` in Receipt. A principal querying their spending report can trace any payment back to the AQL Intent that authorized it, satisfying the EU AI Act Article 13 economic decision transparency requirement with full auditability.
+
+### B.3 Budget Commitment and Exhaustion
+
+The AQL `budget` block declares a ceiling for the entire Intent resolution. When an Intent spawns multiple Payment Sessions (for example a `ranked_top_k` resolution that requires payments to three providers), the `budget` must be partitioned across Sessions. The agent MUST track the sum of Session amounts against the Intent budget and MUST NOT create a Session that would cause the sum to exceed the budget, even if the Mandate's `max_single_payment` and `max_daily_spend` permit it.
+
+The Wallet operator MUST NOT enforce the AQL budget (it is an agent-side constraint). The Wallet operator enforces only Mandate constraints. The agent is responsible for budget accounting at the Intent level.
+
+### B.4 References
+
+- RFC 0032, sections 3.3, 3.4, 3.17, and Appendix B.
+- RFC 0013, section 3.4 (Procurement Intent).
+- European Union (2024). EU AI Act, Article 13.

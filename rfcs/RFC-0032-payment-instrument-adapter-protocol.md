@@ -401,6 +401,377 @@ Payment data is among the most sensitive personal data under GDPR Recital 75. Wa
 - Stripe, Tempo (2025). Machine Payment Protocol (MPP). Technical specification.
 - OpenAI, Stripe (2025). Agentic Commerce Protocol (ACP). Technical specification.
 
+## 3.13 Multi-Instrument Selection Policy
+
+A Payment Mandate in section 3.3 carries a static `allowed_instruments` list. For principals with multiple instruments this is insufficient: the agent must select the optimal instrument per transaction based on merchant category, currency, fee structure, cashback rates, balance availability, and loyalty program compatibility.
+
+### 3.13.1 Instrument Profile
+
+The Wallet operator MUST expose an Instrument Profile for each registered instrument at the `instruments_endpoint` declared in `wallet.json`. An Instrument Profile is a signed document conforming to `oap-instrument-profile.schema.json`:
+
+```json
+{
+  "instrument_id": "amex-4242",
+  "rail": "card_network",
+  "network": "amex",
+  "currency": "EUR",
+  "current_balance": null,
+  "credit_limit": "15000.00",
+  "available_credit": "12340.00",
+  "cashback_rate": "0.015",
+  "annual_fee": "150.00",
+  "preferred_categories": ["travel", "hotels", "airlines"],
+  "blocked_categories": ["gambling", "adult_content"],
+  "loyalty_program": {
+    "program_id": "amex-membership-rewards",
+    "points_per_eur": 1.5,
+    "redemption_value_per_point_eur": "0.007"
+  },
+  "fx_surcharge_bps": 200,
+  "foreign_transaction_fee_bps": 0,
+  "last_updated": "2026-05-06T10:00:00Z"
+}
+```
+
+The `current_balance` field is `null` for credit instruments and a decimal string for debit and prepaid instruments. The Wallet operator MUST refresh Instrument Profiles from the underlying payment network before each Session creation request and MUST cache profiles for no longer than 60 seconds.
+
+### 3.13.2 Instrument Selection Policy Object
+
+The Mandate carries an optional `instrument_selection_policy` object that the agent uses to rank instruments at Session creation time. The policy is evaluated as an ordered rule list: the first matching rule determines the instrument. If no rule matches, the Mandate's `allowed_instruments` list order is used as a fallback.
+
+```json
+{
+  "instrument_selection_policy": {
+    "optimize_for": "lowest_total_cost",
+    "include_fx_spread_in_cost": true,
+    "include_loyalty_value_in_cost": true,
+    "rules": [
+      {
+        "rule_id": "travel-rule",
+        "condition": {
+          "merchant_categories": ["travel", "hotels", "airlines", "car_rental"],
+          "settlement_currency": ["EUR", "USD", "GBP"]
+        },
+        "use_instrument": "amex-4242",
+        "rationale": "Highest cashback rate and travel insurance for travel merchants"
+      },
+      {
+        "rule_id": "crypto-rule",
+        "condition": {
+          "rail": ["lightning_network", "evm_stablecoin"]
+        },
+        "use_instrument": "usdc-base",
+        "rationale": "Native stablecoin for all crypto rails"
+      },
+      {
+        "rule_id": "high-value-eu",
+        "condition": {
+          "amount_gte": "500.00",
+          "settlement_currency": ["EUR"],
+          "counterparty_jurisdiction": ["EU", "CH", "NO"]
+        },
+        "use_instrument": "sepa-instant",
+        "rationale": "Zero-fee SEPA Instant for high-value EU payments"
+      }
+    ],
+    "fallback_order": ["sepa-instant", "sepa-ct", "usdc-base", "amex-4242"]
+  }
+}
+```
+
+The `optimize_for` field takes one of `lowest_total_cost`, `highest_loyalty_return`, `fastest_settlement`, or `principal_preference`. When set to `lowest_total_cost`, the Wallet operator computes the effective cost for each eligible instrument as: `amount * (1 + fx_surcharge_bps/10000) + foreign_transaction_fee_bps/10000 - cashback_rate * amount - (loyalty_points_earned * redemption_value_per_point)`. The instrument with the lowest effective cost is selected, subject to balance availability.
+
+### 3.13.3 Balance-Aware Session Creation
+
+Before returning `status: authorized` for a Session, the Wallet operator MUST verify that the selected instrument has sufficient available balance or credit. If the instrument has insufficient funds, the Wallet operator MUST attempt the next instrument in the rule fallback order before returning `status: insufficient_funds`. The Session response MUST declare the `selected_instrument_id` field so the agent can record which instrument was used.
+
+---
+
+## 3.14 Wallet Operator Licensing Requirements
+
+### 3.14.1 Regulatory Classification
+
+A Wallet operator that holds principal funds between the time of Mandate registration and the time of Settlement Confirmation is conducting an electronic money issuance activity under the EU Electronic Money Directive 2 (EMD2, Directive 2009/110/EC) as amended by PSD2. Such an operator MUST hold an Electronic Money Institution (EMI) authorization from a competent authority in a jurisdiction where it operates. The minimum initial capital requirement is EUR 350,000 under EMD2 Article 4. The operator must maintain own funds proportional to the volume of e-money outstanding per EMD2 Article 5 Method D: maximum of 2 percent of the outstanding e-money.
+
+A Wallet operator that does not hold funds between sessions, but only routes payment instructions to licensed payment service providers, is a Payment Initiation Service Provider (PISP) under PSD2 Article 4(18). A PISP Wallet operator MUST hold a Payment Institution authorization but is not subject to the EMD2 capital requirements.
+
+The key distinction is safeguarding: an EMI Wallet operator MUST either segregate client funds in dedicated accounts at credit institutions, or obtain an insurance policy or comparable guarantee covering the outstanding e-money per EMD2 Article 7.
+
+### 3.14.2 Regulatory Declarations in wallet.json
+
+A conforming Wallet operator MUST include a `regulatory_license` block in `wallet.json`:
+
+```json
+{
+  "regulatory_license": {
+    "classification": "EMI",
+    "license_number": "DE-BaFin-EMI-123456",
+    "competent_authority": "BaFin",
+    "jurisdiction": "DE",
+    "passporting_jurisdictions": ["EU", "EEA"],
+    "supervisory_register_uri": "https://www.bafin.de/register/EMI-123456",
+    "safeguarding_method": "segregated_accounts",
+    "safeguarding_institution_did": "did:web:deutsche-bank.example",
+    "mica_compliance": true,
+    "psd3_ready": true
+  }
+}
+```
+
+The `classification` field takes one of `EMI`, `PISP`, `credit_institution`, or `sandbox`. The `sandbox` classification is permitted only for Wallet operators that hold no real funds and that include a `sandbox: true` flag in their `wallet.json`. A Wallet operator declared as `sandbox` MUST be rejected by agents operating under a non-sandbox Mandate.
+
+### 3.14.3 KYA Conformance Gate
+
+Before accepting a Mandate, the Wallet operator MUST verify that the agent's OAP Registry conformance receipt declares at least conformance level L2 Verified. This is the normative Know Your Agent (KYA) requirement. The Wallet operator MUST record the conformance receipt hash in the Mandate acceptance record. The Wallet operator MUST re-verify the conformance receipt once every 90 days and MUST suspend the Mandate if verification fails.
+
+---
+
+## 3.15 In-Flight Revocation Protocol
+
+This section resolves edge case EC-001 from the OAP Payment Readiness Audit. The revocation of a Mandate while a Payment Session is in an executing state creates a finality conflict: the agent has committed to a payment but the principal has withdrawn authority.
+
+### 3.15.1 Session Finality States
+
+Sessions pass through three finality states with distinct revocation handling:
+
+**State 1: authorized.** The Session has been created but `execute` has not been called. A Mandate revocation received in this state causes the Wallet to immediately mark the Session as `revoked` and return `mandate_revoked` to any subsequent execute request. No funds have moved.
+
+**State 2: executing.** The `execute` call has been received and the Wallet has dispatched the instruction to the payment instrument but has not yet received a Settlement Reference. Revocation behavior depends on the instrument rail:
+
+- SEPA Instant: The EPC SEPA Instant Credit Transfer Rulebook does not permit recall of a payment once the Creditor PSP has confirmed receipt. However, the Debtor PSP has a 10-second window after initiation to recall the transaction using the ISO 20022 `camt.056` recall message. The Wallet operator MUST attempt a `camt.056` recall immediately upon receiving a Mandate revocation during this window. If the recall is rejected or the window has passed, the Wallet operator MUST open an automatic dispute via section 3.9 and issue a Reputation Slash against itself for executing a payment after a revocation was pending.
+- Lightning Network: A Lightning HTLC that has not yet been claimed can be cancelled by expiring the HTLC. If the `payment_hash` has already been claimed (preimage released), the payment is irrevocable.
+- EVM Stablecoin: A transaction that has been broadcast to the mempool but not yet mined can be replaced using EIP-1559 replace-by-fee with a zero-value transaction to the same nonce. If the block has been finalized, the payment is irrevocable.
+- Card Network: The Wallet operator can issue a void (pre-settlement reversal) if the authorization has not yet been captured. After capture, a standard refund must be initiated.
+
+**State 3: settled.** The Settlement Confirmation has been issued. A Mandate revocation in this state has no effect on the settled transaction. The principal MUST pursue refund through the dispute mechanism of section 3.9 if they believe the settled transaction was unauthorized.
+
+### 3.15.2 Revocation Receipt
+
+When a Mandate revocation is processed, the Wallet operator MUST issue a signed Revocation Receipt conforming to `oap-receipt.schema.json` with `type: mandate_revoked`. The Revocation Receipt MUST list all Sessions that were affected by the revocation and their final states. The Revocation Receipt is chained to the principal's Receipt chain.
+
+---
+
+## 3.16 Recurring Payment and Subscription Lifecycle
+
+This section covers subscriptions, dunning management, price change events, and subscription termination.
+
+### 3.16.1 Subscription Agreement
+
+A Subscription Agreement is a separate signed document derived from an Offer and a Mandate. It governs the recurring billing relationship. The agent creates a Subscription Agreement after accepting a subscription Offer:
+
+```json
+{
+  "subscription_id": "urn:oap:subscription:alice.example:saas-tool-2026-05-06",
+  "principal_did": "did:web:alice.example",
+  "agent_did": "did:web:alice-agent.example",
+  "provider_did": "did:web:saas-tool.example",
+  "mandate_id": "urn:oap:mandate:alice.example:2026-05-06-001",
+  "commerce_primitive": { "preset": "subscription" },
+  "billing_amount": { "value": "29.00", "currency": "EUR" },
+  "billing_instrument_id": "sepa-instant",
+  "billing_interval": "monthly",
+  "billing_anchor_day": 6,
+  "trial_end": null,
+  "started_at": "2026-05-06T00:00:00Z",
+  "next_billing_at": "2026-06-06T00:00:00Z",
+  "price_change_consent_threshold": { "value": "5.00", "currency": "EUR" },
+  "signatures": [
+    { "by": "did:web:alice-agent.example", "alg": "EdDSA", "value": "..." },
+    { "by": "did:web:saas-tool.example", "alg": "EdDSA", "value": "..." }
+  ]
+}
+```
+
+The `price_change_consent_threshold` field declares the maximum price increase that the agent may accept autonomously. Price increases above the threshold require principal confirmation.
+
+### 3.16.2 Price Change Event
+
+When a provider changes their subscription price, they MUST send a signed `PriceChangeNotice` to the agent's notification endpoint declared in the Mandate. The notice must be received at least 30 days before the new price takes effect, consistent with EU Consumer Rights Directive Article 11.
+
+```json
+{
+  "notice_id": "urn:oap:notice:saas-tool.example:2026-05-06-price-change",
+  "subscription_id": "urn:oap:subscription:alice.example:saas-tool-2026-05-06",
+  "current_amount": { "value": "29.00", "currency": "EUR" },
+  "new_amount": { "value": "34.00", "currency": "EUR" },
+  "effective_from": "2026-07-06T00:00:00Z",
+  "reason": "Infrastructure cost increase",
+  "signature": { "by": "did:web:saas-tool.example", "alg": "EdDSA", "value": "..." }
+}
+```
+
+The agent evaluates the price change against the `price_change_consent_threshold`. An increase of EUR 5.00 exactly equals the threshold in the example above. The agent MUST inform the principal and request explicit consent before accepting any increase at or above the threshold. If the principal does not respond within 14 days, the agent MUST cancel the subscription.
+
+### 3.16.3 Dunning Protocol
+
+When a recurring payment fails, the Wallet operator MUST NOT automatically retry without agent instruction. The agent is responsible for the dunning schedule. The normative schedule is:
+
+1. Immediate retry once if the failure code is `instrument_unavailable`.
+2. Retry after 24 hours if the failure code is `insufficient_funds`.
+3. Retry after 72 hours for a second attempt.
+4. After two failed retries, the agent MUST notify the principal through the `spending_report_webhook`.
+5. After seven days of failed retries, the agent MUST suspend the subscription and notify the provider.
+
+The provider MUST NOT mark the subscription as cancelled before the seven-day window expires. A provider that cancels the subscription without waiting for the dunning window MUST accept a Reputation Slash under RFC 0009.
+
+---
+
+## 3.17 IBAN-DID Binding Verification
+
+This section resolves the IBAN-CEO-fraud vector identified in the OAP Payment Readiness Audit.
+
+### 3.17.1 The Problem
+
+An agent that verifies a counterparty's DID but does not verify that the IBAN in the payment instruction belongs to that DID is vulnerable to a class of attack analogous to CEO fraud: a malicious actor that compromises a provider's DID key, or that creates a DID with a similar domain, can substitute their own IBAN in a payment instruction.
+
+### 3.17.2 Bank Account Verifiable Credential
+
+Providers MUST publish a bank account Verifiable Credential (VC) in their DID Document under the `bankAccountCredential` service type. The VC is issued by the provider's bank, signed with the bank's DID key, and contains the IBAN in a selective-disclosure format using the W3C Verifiable Credentials Data Model v2.0 with BBS+ signatures. The credential binds the IBAN to the provider's DID cryptographically.
+
+The DID Document entry:
+```json
+{
+  "id": "did:web:saas-tool.example#bank-account",
+  "type": "bankAccountCredential",
+  "serviceEndpoint": "https://saas-tool.example/.well-known/oap/bank-account-vc.json"
+}
+```
+
+The VC at that endpoint:
+```json
+{
+  "@context": ["https://www.w3.org/2018/credentials/v1"],
+  "type": ["VerifiableCredential", "BankAccountCredential"],
+  "issuer": "did:web:deutsche-bank.example",
+  "credentialSubject": {
+    "id": "did:web:saas-tool.example",
+    "iban": "DE89370400440532013000",
+    "bic": "COBADEFFXXX",
+    "account_holder": "SaaS Tool GmbH",
+    "currency": "EUR",
+    "verified_at": "2026-01-15T00:00:00Z"
+  },
+  "proof": { "type": "BbsBlsSignature2020", "verificationMethod": "did:web:deutsche-bank.example#key-1", "proofValue": "..." }
+}
+```
+
+### 3.17.3 Wallet Operator Verification Obligation
+
+Before routing any SEPA payment to an IBAN, the Wallet operator MUST:
+
+1. Resolve the counterparty's DID Document.
+2. Retrieve the `bankAccountCredential` VC.
+3. Verify the VC signature against the issuing bank's DID key.
+4. Verify that the IBAN in the payment instruction matches the IBAN in the VC.
+5. Verify that the VC `verified_at` timestamp is within the last 365 days.
+
+If any verification step fails, the Wallet operator MUST reject the Session with error code `iban_did_mismatch`. The agent MUST NOT override this verification gate.
+
+For Lightning Network and EVM stablecoin rails, the analogous requirement applies: the counterparty's DID Document MUST contain a `lightningNodeCredential` or `blockchainAccountCredential` that binds the node public key or on-chain address to the DID, issued by a registered credential issuer.
+
+---
+
+## 3.18 Payment Tool Delegation Profile
+
+When a principal's agent invokes a third-party tool that internally initiates a payment (for example a booking platform tool that charges the principal at invocation time), the standard Mandate and Session flow does not apply because the tool is the payment initiator, not the Wallet operator. This creates an audit gap.
+
+A conforming Payment Tool that initiates payments on behalf of the invoking agent MUST:
+
+1. Declare `payment_tool: true` in its OAP Manifest.
+2. Declare the maximum amount it may charge per invocation under `payment_tool_max_per_invocation`.
+3. Obtain a Payment Tool Sub-Mandate from the invoking agent before the first payment. The Sub-Mandate is derived from the principal's Mandate: the invoking agent signs a scoped subset of its own Mandate constraints and presents it to the Payment Tool.
+4. Return a Settlement Confirmation conforming to `oap-settlement-confirmation.schema.json` as the action output, with `intent_id` referencing the AQL Intent that triggered the invocation.
+5. Chain the Settlement Confirmation into the invoking agent's Receipt chain by returning the agent's current `receipt_chain_tip` in the output body so the agent can extend the chain.
+
+A Payment Tool that charges the principal without presenting a Sub-Mandate to the agent MUST be flagged as non-conformant in the OAP Registry under RFC 0026. The agent MUST record a Reputation Slash against such a tool under RFC 0009.
+
+---
+
+## 3.19 Agent Commerce Identifier
+
+### 3.19.1 Motivation
+
+Card network fraud detection models are trained on human transaction behavior: geographic clustering, merchant category consistency, typical transaction size distributions, and inter-transaction timing. Autonomous agents exhibit radically different patterns: high-frequency micropayments, global merchant diversity, and highly regular timing intervals. These patterns trigger false-positive fraud flags at rates that make card-network settlement impractical without an identifier that signals to the network that the transaction is agent-initiated.
+
+Mastercard's Transaction Link Identifier (TLID) and Visa's Intelligent Authorization infrastructure are evolving to accommodate machine-initiated transactions, but require a machine-participant identifier to apply agent-appropriate risk models.
+
+### 3.19.2 The oap-aci Field
+
+A conforming Wallet operator that routes card-network payments MUST include the OAP Agent Commerce Identifier (ACI) in the card authorization message. The ACI is a structured field composed of:
+
+- `oap_version`: The OAP protocol version (e.g., `1.2`).
+- `agent_conformance_level`: The RFC 0026 conformance level of the agent (e.g., `L2`).
+- `mandate_hash`: The first 8 bytes of the SHA-256 hash of the Mandate ID, providing a pseudonymous linkage to the authorization chain without revealing the full Mandate.
+- `transaction_type`: One of `autonomous` (no human present), `supervised` (human notified in real time), or `confirmed` (human explicitly confirmed this transaction).
+
+The ACI is encoded in the card authorization's `private use` data field or, for ISO 20022 messages, in the `RemittanceInformation.Unstructured` field with the prefix `OAP-ACI:` followed by a compact JSON encoding.
+
+This identifier enables card networks to apply agent-appropriate fraud models, reducing false positive rates. It also provides regulatory traceability under the EBA Guidelines on AI in payment initiation (EBA/GL/2024).
+
+---
+
+## 3.20 Corporate Principal and Multi-Signatory Mandates
+
+### 3.20.1 Legal Entity Principals
+
+A principal may be a legal entity (company, trust, government body) rather than a natural person. Legal entity principals are identified by a DID that resolves to an organization DID Document, compatible with the W3C DID Specification for legal entities and with the eIDAS 2.0 European Digital Identity Wallet for organizations (implementing Regulation EU 2024/1183).
+
+The `principal_did` in a Mandate issued by a legal entity MUST resolve to a DID Document that contains a `legalEntityCredential` issued by an EU member state trust service or an equivalent accredited body, containing the legal entity's registered name, jurisdiction, and registration number.
+
+### 3.20.2 Multi-Signatory Mandates
+
+Corporate treasuries typically require multiple authorized signatories for payments above a threshold. OAP supports multi-signatory Mandates through a threshold signature scheme. The Mandate carries a `multi_sig` block:
+
+```json
+{
+  "multi_sig": {
+    "scheme": "FROST",
+    "threshold": 2,
+    "total_signatories": 3,
+    "signatory_dids": [
+      "did:web:alice.corp.example",
+      "did:web:bob.corp.example",
+      "did:web:carol.corp.example"
+    ],
+    "threshold_applies_above": { "amount": "10000.00", "currency": "EUR" }
+  }
+}
+```
+
+The `scheme` field declares the threshold signature protocol. The normative scheme is FROST (Flexible Round-Optimized Schnorr Threshold signatures, as specified in IETF draft-irtf-cfrg-frost) because it produces a single aggregated signature that is verification-compatible with standard Ed25519, requiring no changes to the signature verification logic of conformant Wallet operators. The Wallet operator verifies the aggregated signature against the combined public key derived from the signatory public keys under the FROST protocol.
+
+For Mandates with a `multi_sig` block, Payment Sessions above the `threshold_applies_above` amount MUST carry a threshold-signed authorization from the minimum required number of signatories. Sessions below the threshold MAY be authorized by any single signatory.
+
+### 3.20.3 Spending Categories for Corporate Mandates
+
+Corporate Mandates SHOULD include a `cost_center_id` field and a `gl_account_code` field in the Mandate's `constraints` block. These fields are propagated into the Settlement Confirmation and Wallet Statement, enabling direct import into accounting systems (SAP, Oracle Financials, Xero) without manual reconciliation.
+
+---
+
+## 3.21 Edge Case Resolution Register
+
+This section provides the normative resolution for edge cases EC-001 through EC-010 identified in the OAP Payment Readiness Audit.
+
+**EC-001 (Mandate revoked mid-Session).** Resolved by section 3.15. The resolution depends on finality state at the time of revocation.
+
+**EC-002 (Wallet operator insolvency).** Resolved by section 3.14.1. A conforming Wallet operator must hold an EMI license with EMD2-mandated fund safeguarding. Client funds held in segregated accounts at credit institutions are outside the insolvency estate of the Wallet operator under EMD2 Article 7(2). Sessions in `authorized` or `executing` state at time of insolvency are governed by the applicable insolvency law of the Wallet operator's jurisdiction.
+
+**EC-003 (FX Oracle DID deactivated post-Session).** A Session carries a `fx_quote_hash` that commits to the rate at creation time. The rate is valid for the duration of the Session regardless of the oracle's subsequent DID status, because the commitment was made against a valid DID at creation time. The Wallet operator stores the full signed FX Quote at Session creation, so verification does not require re-resolving the oracle's DID. The Settlement Confirmation includes the signed FX Quote body, not merely a reference, enabling offline verification.
+
+**EC-004 (Dual-Wallet duplicate Sessions).** An agent that uses two Wallet operators with the same `idempotency_key` will produce two authorized Sessions for the same payment. The Wallet operators cannot coordinate across boundaries. Resolution: Agents MUST use a globally unique idempotency key derived as SHA-256 of the concatenation of `intent_id`, `offer_ref`, and `agent_did`. This key is stable per payment intention regardless of which Wallet operator is used. When the agent detects a successful Settlement Confirmation from one Wallet, it MUST immediately send a cancellation request to any other Wallet operator holding an authorized Session for the same idempotency key.
+
+**EC-005 (IBAN in non-SEPA country).** IBAN validation under ISO 13616 is performed by the Wallet operator before Session creation. The Wallet operator MUST validate the IBAN checksum and country code against the SWIFT IBAN registry. If the IBAN country code is not in the SEPA zone and the selected instrument is SEPA, the Wallet operator MUST reject the Session with error code `instrument_rail_mismatch` before any funds are moved.
+
+**EC-006 (Lightning routing timeout with expired FX Quote).** Resolved by RFC 0014 Appendix B.8. The agent MUST set the BOLT11 invoice expiry to match the FX Quote `valid_until`. If routing takes longer than the quote validity, the HTLC expires, the agent requests a new FX Quote, and creates a new Session. The Wallet operator records the timeout in the Session audit log.
+
+**EC-007 (Stale Reputation in Mandate).** The Wallet operator MUST query the RFC 0009 Performance Record API for the counterparty DID at Session creation time, not at Mandate creation time. If the live Reputation Score has fallen below the `quality_floor.provider_reputation` declared in the AQL Intent that originated the payment, the Wallet operator MUST return `status: pending_principal_confirmation` rather than `status: authorized`, even if the counterparty is not in `blocked_counterparty_dids`. The agent propagates this status to the principal.
+
+**EC-008 (Corporate principal).** Resolved by section 3.20.
+
+**EC-009 (Minor principal).** Age verification is not currently delegatable to the OAP protocol layer because age is a claim about a natural person that requires a government-issued credential. A conforming Wallet operator that accepts Mandates from natural persons MUST require an eIDAS 2.0 verifiable credential or equivalent establishing the holder's age of majority before activating any Mandate that includes `gambling`, `adult_content`, `tobacco`, or `alcohol` in the `allowed_commerce_primitives` or that does not explicitly list those categories in `blocked_categories`. This requirement is normative under the EU Digital Services Act Article 28 obligations for platforms.
+
+**EC-010 (Non-ISO 4217 currency).** A community currency or custom token symbol may appear in an Offer. An agent MUST NOT initiate a Payment Session denominated in a currency symbol that is not either an ISO 4217 code or a symbol registered in the OAP Currency Registry, published at `https://registry.openagentprotocol.eu/currencies`. The OAP Currency Registry accepts registration of crypto-asset symbols that are either MiCA-authorized or are the native asset of a public blockchain with a market capitalization above EUR 100 million. A Wallet operator MUST reject Session creation for unregistered currency symbols.
+
 ## Appendix A: Payment Error Taxonomy
 
 | Error Code | Meaning | Retry Permissible |
@@ -418,3 +789,80 @@ Payment data is among the most sensitive personal data under GDPR Recital 75. Wa
 | `kyc_required` | Wallet operator requires KYA verification before accepting Mandate. | No without verification. |
 | `jurisdiction_blocked` | Counterparty's jurisdiction is not in `allowed_jurisdictions`. | No. |
 | `instrument_execution_failed` | Instrument returned a fatal error (e.g., invalid IBAN, rejected invoice). | Depends on instrument. |
+
+## Appendix B: Parametric Long-Validity Session (Auction and Tender Support)
+
+This appendix is normative. It defines the Parametric Long-Validity Session (PLVS), which extends the standard Payment Session of section 3.4 to support scenarios where the payment amount is not known at Session creation time and where the authorization window must extend beyond the standard 60-minute Session lifetime. The canonical use cases are auction participation (English, Dutch, Vickrey, and combinatorial), tender processes, and reverse-auction procurement.
+
+### B.1 Motivation
+
+The standard Payment Session of section 3.4 is amount-fixed: the agent declares a specific amount at creation time, and the Wallet authorizes exactly that amount. This design satisfies the vast majority of commerce scenarios but cannot express:
+
+1. An auction bid-up-to authorization: the agent is authorized to bid up to EUR 2,000 but the winning bid may be any amount from EUR 1 to EUR 2,000.
+2. A time-extended authorization: a 48-hour auction requires the authorization to remain valid for the auction duration, not 60 minutes.
+3. A conditional amount: a tender process requires the agent to commit to a price that depends on the outcome of other bidders.
+
+The PLVS resolves all three by introducing a `parametric_amount` object that replaces the fixed `amount` field, and by extending the `expires_at` field to a maximum of 168 hours (7 days) for PLVS sessions.
+
+### B.2 Parametric Amount Object
+
+The `parametric_amount` object in a PLVS Session creation request contains:
+
+```json
+{
+  "parametric_amount": {
+    "max_amount": { "value": "2000.00", "currency": "EUR" },
+    "min_amount": { "value": "1.00", "currency": "EUR" },
+    "increment": { "value": "10.00", "currency": "EUR" },
+    "strategy": "bid_up_to_max",
+    "sealed_bid_commitment": null
+  }
+}
+```
+
+The `strategy` field takes one of:
+
+- `bid_up_to_max`: The agent may submit bids up to `max_amount` at any increment. Each bid invocation consumes a portion of the authorization up to the bid amount. The Wallet holds a temporary fund reservation of `max_amount` for the duration of the Session.
+- `sealed_bid`: The agent commits to a single bid using a cryptographic commitment scheme per section B.4. The `sealed_bid_commitment` field carries the commitment.
+- `tender_response`: The agent submits a price in response to a reverse auction. The amount is constrained to be at least `min_amount`.
+
+### B.3 Fund Reservation
+
+For `bid_up_to_max` sessions, the Wallet operator MUST place a fund reservation of `max_amount` against the selected instrument at Session creation time. This reservation reduces the instrument's `available_credit` or `available_balance` by `max_amount` for the duration of the Session. If the auction ends without the agent winning, the Wallet operator MUST release the reservation and record a zero-value Settlement Confirmation with status `reservation_released`. If the agent wins with a bid of `winning_amount`, the Wallet operator settles exactly `winning_amount` and releases the difference.
+
+The fund reservation mechanism on card networks uses the standard `pre-authorization` (auth-only capture) flow. On SEPA, there is no native pre-authorization; the Wallet operator holds the funds in a segregated sub-account. On Lightning, the full `max_amount` HTLC is constructed but not sent; only the `winning_amount` HTLC is dispatched.
+
+### B.4 Sealed Bid Commitment Scheme
+
+For `sealed_bid` sessions, the agent commits to its bid using a standard hash commitment. The commitment is computed as:
+
+`commitment = SHA-256(bid_amount_string || nonce_32_bytes)`
+
+where `bid_amount_string` is the decimal string representation of the bid amount (e.g., `"1250.00"`) and `nonce_32_bytes` is a cryptographically random 32-byte value held by the agent. The `sealed_bid_commitment` field carries the hex-encoded commitment hash. At reveal time, the agent calls a `/reveal` endpoint with the plaintext amount and nonce, and the Wallet operator verifies the commitment before executing the payment.
+
+This scheme is an instance of the Pedersen commitment construction in its simplest hash-based form, as analyzed by Pedersen (1991) and applied to sealed-bid auctions by Naor, Pinkas, and Sumner (1999). It provides hiding (the auctioneer learns nothing about the bid from the commitment) and binding (the agent cannot change its bid after committing) under standard collision-resistance assumptions for SHA-256.
+
+The sealed bid protocol is DSIC for second-price (Vickrey) auctions as proven in RFC 0002 Appendix A, Theorem 3, case 3. It is not DSIC for first-price auctions.
+
+### B.5 Long-Validity Session Extension
+
+A PLVS Session carries a `session_type: parametric_long_validity` field. The Wallet operator MUST accept `expires_at` values up to 168 hours (7 days) from Session creation for PLVS Sessions. Standard Sessions remain capped at 60 minutes.
+
+The extended validity window creates an extended Mandate revocation risk. Section 3.15 in-flight revocation rules apply with the following addition: for PLVS Sessions in `authorized` state, the Wallet operator MUST check for Mandate revocations once every 60 minutes and MUST immediately release the fund reservation and mark the Session `revoked` if a revocation is received.
+
+### B.6 Auction Participation as a Negotiation Profile
+
+Section B.2 to B.5 define the payment authorization side of auction participation. The negotiation-side protocol (the sequence of bids, the auctioneer's state machine, the declaration of the winner) is governed by RFC 0002 (Negotiation Protocol), specifically using the `pricing_function: auction` Commerce Primitive of RFC 0014. The relationship is:
+
+- RFC 0002: governs the Proposal sequence (bids), the state machine (OPEN, PROPOSED, ACCEPTED, EXPIRED), and the Vickrey/VCG incentive analysis.
+- RFC 0014: provides the Commerce Primitive encoding (auction as `pricing_function` value).
+- RFC 0032 Appendix B: governs the payment authorization that backs each bid.
+
+An auctioneer's Manifest MUST declare `negotiation.supported: true` and `negotiation.categories: ["pricing"]` per RFC 0002 section 3.6. The auctioneer MUST additionally declare `auction_format` in its Manifest under `commerce.auction_format` as one of `english_ascending`, `dutch_descending`, `sealed_bid_second_price`, `sealed_bid_first_price`, or `combinatorial_vcg`. This declaration enables bidding agents to apply the correct incentive-compatible strategy from RFC 0002 Theorem 3.
+
+### B.7 References
+
+- Vickrey, W. (1961). Counterspeculation, Auctions, and Competitive Sealed Tenders. Journal of Finance 16(1).
+- Pedersen, T. (1991). Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing. Proceedings of CRYPTO 1991. The commitment scheme used in section B.4.
+- Naor, M., Pinkas, B., and Sumner, R. (1999). Privacy Preserving Auctions and Mechanism Design. Proceedings of ACM EC 1999. The application of hash commitments to sealed-bid auctions.
+- Milgrom, P. (2004). Putting Auction Theory to Work. Cambridge University Press. The definitive treatment of the auction formats declared in section B.6.

@@ -44,6 +44,8 @@ function pickSchema(filename, data) {
   // RFC 0032: Payment Instrument Adapter Protocol
   if (filename.includes('payment-mandate')) return schemas['oap-payment-mandate.schema.json'] || null;
   if (filename.includes('settlement-confirmation')) return schemas['oap-settlement-confirmation.schema.json'] || null;
+  if (filename.includes('instrument-profile')) return schemas['oap-instrument-profile.schema.json'] || null;
+  if (filename.includes('subscription-agreement')) return schemas['oap-subscription-agreement.schema.json'] || null;
   // RFC 0014 Appendix B: FX Quote
   if (filename.includes('fx-quote')) return schemas['oap-fx-quote.schema.json'] || null;
   // RFC 0033: Training Data License

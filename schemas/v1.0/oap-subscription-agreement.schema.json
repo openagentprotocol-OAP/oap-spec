@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spec.openagentprotocol.eu/schemas/v1.0/oap-subscription-agreement.schema.json",
+  "title": "OAP Subscription Agreement",
+  "description": "A signed Subscription Agreement governing a recurring billing relationship between a principal's agent and a provider. Defined in RFC 0032 section 3.16.1.",
+  "type": "object",
+  "required": [
+    "subscription_id", "principal_did", "agent_did", "provider_did",
+    "mandate_id", "billing_amount", "billing_interval",
+    "started_at", "next_billing_at", "signatures"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "subscription_id": {
+      "type": "string",
+      "description": "Globally unique subscription identifier (URN format recommended)."
+    },
+    "principal_did": { "type": "string", "format": "uri" },
+    "agent_did": { "type": "string", "format": "uri" },
+    "provider_did": { "type": "string", "format": "uri" },
+    "mandate_id": {
+      "type": "string",
+      "description": "The Payment Mandate from which this subscription is derived."
+    },
+    "commerce_primitive": {
+      "type": "object",
+      "properties": {
+        "preset": { "type": "string", "const": "subscription" }
+      },
+      "required": ["preset"],
+      "additionalProperties": true
+    },
+    "billing_amount": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "string", "pattern": "^\\d+\\.\\d{2}$" },
+        "currency": { "type": "string" }
+      },
+      "required": ["value", "currency"],
+      "additionalProperties": false
+    },
+    "billing_instrument_id": {
+      "type": "string",
+      "description": "The instrument_id from the Wallet operator's Instrument Profile used for recurring billing."
+    },
+    "billing_interval": {
+      "type": "string",
+      "enum": ["daily", "weekly", "monthly", "quarterly", "annual"]
+    },
+    "billing_anchor_day": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 31,
+      "description": "Day-of-month anchor for monthly/quarterly/annual billing. Day 29, 30, 31 are clamped to the last day of shorter months."
+    },
+    "trial_end": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "End of free trial period. Null if no trial."
+    },
+    "started_at": { "type": "string", "format": "date-time" },
+    "next_billing_at": { "type": "string", "format": "date-time" },
+    "cancelled_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Set when the subscription is cancelled. Null while active."
+    },
+    "price_change_consent_threshold": {
+      "type": "object",
+      "description": "Maximum price increase the agent may accept autonomously. Increases at or above this amount require principal confirmation.",
+      "properties": {
+        "value": { "type": "string", "pattern": "^\\d+\\.\\d{2}$" },
+        "currency": { "type": "string" }
+      },
+      "required": ["value", "currency"],
+      "additionalProperties": false
+    },
+    "dunning_state": {
+      "type": "string",
+      "enum": ["active", "retrying", "suspended", "cancelled"],
+      "default": "active",
+      "description": "Current dunning state per RFC 0032 section 3.16.3."
+    },
+    "dunning_retry_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of payment retries performed in the current dunning cycle."
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "properties": {
+          "by": { "type": "string", "format": "uri" },
+          "alg": { "type": "string" },
+          "value": { "type": "string" }
+        },
+        "required": ["by", "alg", "value"],
+        "additionalProperties": false
+      }
+    }
+  }
+}

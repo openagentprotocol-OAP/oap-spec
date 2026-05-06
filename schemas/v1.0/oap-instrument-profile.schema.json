@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spec.openagentprotocol.eu/schemas/v1.0/oap-instrument-profile.schema.json",
+  "title": "OAP Instrument Profile",
+  "description": "A signed Instrument Profile returned by the Wallet operator for each registered payment instrument. Defined in RFC 0032 section 3.13.1.",
+  "type": "object",
+  "required": ["instrument_id", "rail", "currency", "last_updated"],
+  "additionalProperties": false,
+  "properties": {
+    "instrument_id": {
+      "type": "string",
+      "description": "Stable, opaque identifier for this instrument within the Wallet operator's system. MUST NOT contain raw card numbers or IBANs."
+    },
+    "rail": {
+      "type": "string",
+      "enum": ["card_network", "sepa_instant", "sepa_credit_transfer", "lightning_network", "evm_stablecoin", "bank_wire"],
+      "description": "The payment rail this instrument uses."
+    },
+    "network": {
+      "type": "string",
+      "description": "Network identifier (e.g., 'visa', 'mastercard', 'amex', 'usdc', 'btc')."
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 code or registered OAP Currency Registry symbol for the instrument's primary currency."
+    },
+    "current_balance": {
+      "type": ["string", "null"],
+      "pattern": "^\\d+\\.\\d{2}$",
+      "description": "Available balance as a decimal string. Null for credit instruments."
+    },
+    "credit_limit": {
+      "type": ["string", "null"],
+      "pattern": "^\\d+\\.\\d{2}$",
+      "description": "Credit limit for credit instruments. Null for debit instruments."
+    },
+    "available_credit": {
+      "type": ["string", "null"],
+      "pattern": "^\\d+\\.\\d{2}$",
+      "description": "Current available credit. Null for debit instruments."
+    },
+    "cashback_rate": {
+      "type": "string",
+      "pattern": "^0\\.\\d+$",
+      "description": "Cashback rate as a decimal fraction (e.g., '0.015' for 1.5%).",
+      "default": "0.00"
+    },
+    "annual_fee": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d{2}$",
+      "description": "Annual fee in the instrument's primary currency."
+    },
+    "preferred_categories": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Merchant categories for which this instrument provides optimal terms (cashback, points, insurance)."
+    },
+    "blocked_categories": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Merchant categories this instrument cannot be used for."
+    },
+    "loyalty_program": {
+      "type": ["object", "null"],
+      "properties": {
+        "program_id": { "type": "string" },
+        "points_per_unit": { "type": "number" },
+        "redemption_value_per_point": { "type": "string", "pattern": "^0\\.\\d+$" },
+        "current_balance_points": { "type": "integer" }
+      },
+      "required": ["program_id", "points_per_unit", "redemption_value_per_point"],
+      "additionalProperties": false
+    },
+    "fx_surcharge_bps": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Foreign exchange surcharge in basis points applied to non-primary-currency transactions."
+    },
+    "foreign_transaction_fee_bps": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Additional foreign transaction fee in basis points."
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of the last refresh from the underlying payment network. MUST be within 60 seconds of the Session creation request."
+    },
+    "signature": {
+      "type": "object",
+      "description": "Ed25519 signature of the Wallet operator over the canonical JSON body of this profile.",
+      "properties": {
+        "by": { "type": "string", "format": "uri" },
+        "alg": { "type": "string", "const": "EdDSA" },
+        "value": { "type": "string" }
+      },
+      "required": ["by", "alg", "value"],
+      "additionalProperties": false
+    }
+  }
+}
