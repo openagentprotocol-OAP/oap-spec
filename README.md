@@ -186,7 +186,7 @@ oap-spec/
 | Axiomatic Foundations | [RFC-0029](rfcs/RFC-0029-axiomatic-foundations.md) | Axiomatic characterization of the Reputation aggregation function, formal sybil influence bound, Cheng-Friedman boundary, Manifest as program commitment, $k$-implementation cost analysis for sybil-resistant cooperation. |
 | Agent Organizations | [RFC-0030](rfcs/RFC-0030-agent-organizations.md) | First-class Organization, Role, Scene, and Norm entities (OperA-style); deontic consistency theorem; Responsibility principle of the ART triad; structural support for regulated, hierarchical institutions. |
 
-The 10 [whitepapers](papers/) cover accountability, the agent web, confidentiality, databases for the agent economy, economics, governance, interoperability, the policy stack, verifiable conformance, and the storefront to manifest transition.
+The 12 [whitepapers](papers/) cover accountability, the agent web, agent context mobility, confidentiality, databases for the agent economy, economics, governance, interoperability, the policy stack, the presentation layer (storefront to canvas), verifiable conformance, and the storefront to manifest transition.
 
 ## Conformance levels
 

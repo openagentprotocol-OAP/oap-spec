@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-presentation-intent.schema.json",
+  "title": "OAP Presentation Intent",
+  "description": "Normative schema for a Presentation Intent as described in the 'From Storefront to Canvas' whitepaper. A Presentation Intent is a structured declaration from an Agent to a Renderer describing what to show the Principal, in what arrangement, under what constraints, and with what interactive capabilities. The Renderer interprets the Intent according to its platform conventions.",
+  "type": "object",
+  "required": ["presentation_id", "issuer_did", "layout", "items", "personalization", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "presentation_id": {
+      "type": "string",
+      "pattern": "^urn:oap:presentation:.+$",
+      "description": "Unique identifier minted by the issuing Agent. URN namespace urn:oap:presentation: is reserved for Presentation Intents."
+    },
+    "issuer_did": {
+      "type": "string",
+      "pattern": "^did:[a-z0-9]+:.+$",
+      "description": "Decentralized identifier of the Agent that generated this Presentation Intent."
+    },
+    "principal_did": {
+      "type": "string",
+      "pattern": "^did:[a-z0-9]+:.+$",
+      "description": "Decentralized identifier of the Principal for whom the presentation is intended."
+    },
+    "items_source": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional URI referencing the AQL Intent whose resolution produced the items. When present, the items array contains the resolved candidates."
+    },
+    "layout": {
+      "$ref": "#/$defs/layoutBlock",
+      "description": "Semantic layout declaration. The Renderer interprets this according to its platform conventions."
+    },
+    "items": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "$ref": "#/$defs/presentationItem" },
+      "description": "Array of items to present. Each item references a Knowledge Node, Modality Asset, or inline data."
+    },
+    "personalization": {
+      "$ref": "#/$defs/personalizationBlock",
+      "description": "Principal context that the Renderer uses to adapt the presentation."
+    },
+    "interaction": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/interactionCapability" },
+      "description": "Interactive capabilities the Agent requests the Renderer to expose."
+    },
+    "policy": {
+      "$ref": "#/$defs/presentationPolicy",
+      "description": "Policy constraints governing the rendered presentation."
+    },
+    "validity": {
+      "type": "object",
+      "required": ["from", "to"],
+      "additionalProperties": false,
+      "properties": {
+        "from": { "type": "string", "format": "date-time" },
+        "to": { "type": "string", "format": "date-time" }
+      },
+      "description": "Time window during which this Presentation Intent is valid. Renderers SHOULD refresh after expiry."
+    },
+    "signature": {
+      "type": "object",
+      "required": ["alg", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "enum": ["EdDSA", "ES256", "ES384"] },
+        "value": { "type": "string" },
+        "kid": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "layoutBlock": {
+      "type": "object",
+      "required": ["layout_class"],
+      "additionalProperties": false,
+      "properties": {
+        "layout_class": {
+          "enum": [
+            "single_item",
+            "comparison_grid",
+            "ranked_list",
+            "detail_view",
+            "gallery",
+            "map_view",
+            "timeline",
+            "conversation_card",
+            "dashboard"
+          ],
+          "description": "Semantic layout class. The Renderer interprets this according to its platform."
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Suggested number of columns for grid layouts. The Renderer MAY override based on screen class."
+        },
+        "sort_by": {
+          "type": "string",
+          "description": "JSON Pointer to the field by which items should be initially sorted."
+        },
+        "sort_order": {
+          "enum": ["ascending", "descending"],
+          "default": "ascending"
+        },
+        "group_by": {
+          "type": "string",
+          "description": "JSON Pointer to the field by which items should be grouped."
+        },
+        "max_items_visible": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of items visible without scrolling or pagination. The Renderer uses this as a hint."
+        },
+        "emphasis": {
+          "enum": ["equal", "first_prominent", "hero_and_supporting"],
+          "default": "equal",
+          "description": "How visual weight should be distributed across items."
+        }
+      }
+    },
+    "presentationItem": {
+      "type": "object",
+      "required": ["item_id", "type"],
+      "additionalProperties": true,
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI of the Knowledge Node or a locally minted identifier for inline data."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type drawn from schema.org or an OAP entity vocabulary."
+        },
+        "projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "include": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "JSON Pointers to fields that should be shown."
+            },
+            "exclude": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "JSON Pointers to fields that should be hidden."
+            }
+          }
+        },
+        "modality_assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["asset_uri", "content_type"],
+            "additionalProperties": false,
+            "properties": {
+              "asset_uri": { "type": "string", "format": "uri" },
+              "descriptor_uri": { "type": "string", "format": "uri" },
+              "content_type": { "type": "string" },
+              "role": {
+                "enum": ["thumbnail", "hero", "detail", "audio_preview", "video_preview", "background"],
+                "description": "Semantic role of the asset in the presentation."
+              },
+              "alt_text": { "type": "string" }
+            }
+          },
+          "description": "Modality Assets associated with this item, as defined in RFC 0012 section 3.5."
+        },
+        "inline_data": {
+          "type": "object",
+          "description": "Inline structured data when the item is not a Knowledge Node reference."
+        },
+        "highlight": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this item should receive visual emphasis (e.g., best match, recommended)."
+        },
+        "highlight_reason": {
+          "type": "string",
+          "description": "Human readable explanation of why this item is highlighted."
+        }
+      }
+    },
+    "personalizationBlock": {
+      "type": "object",
+      "required": ["locale"],
+      "additionalProperties": false,
+      "properties": {
+        "locale": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+          "description": "BCP 47 language tag for the Principal's preferred locale."
+        },
+        "accessibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "wcag_level": {
+              "enum": ["A", "AA", "AAA"],
+              "description": "Minimum WCAG conformance level the Renderer MUST satisfy."
+            },
+            "prefers_reduced_motion": { "type": "boolean", "default": false },
+            "prefers_high_contrast": { "type": "boolean", "default": false },
+            "screen_reader_optimized": { "type": "boolean", "default": false },
+            "font_size_class": {
+              "enum": ["default", "large", "extra_large"],
+              "default": "default"
+            }
+          }
+        },
+        "expertise": {
+          "enum": ["consumer", "professional", "expert"],
+          "default": "consumer",
+          "description": "Principal's expertise level. Determines information density and terminology."
+        },
+        "screen_class": {
+          "enum": ["mobile", "tablet", "desktop", "wearable", "voice", "immersive"],
+          "description": "Target device class. The Renderer uses this to select platform appropriate rendering."
+        },
+        "modality_preferences": {
+          "type": "array",
+          "items": {
+            "enum": ["visual", "auditory", "haptic", "spatial"]
+          },
+          "description": "Ordered list of preferred sensory modalities."
+        },
+        "color_scheme": {
+          "enum": ["light", "dark", "auto"],
+          "default": "auto"
+        },
+        "density": {
+          "enum": ["compact", "comfortable", "spacious"],
+          "default": "comfortable",
+          "description": "Information density preference."
+        }
+      }
+    },
+    "interactionCapability": {
+      "type": "object",
+      "required": ["capability"],
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "enum": [
+            "sort_by_field",
+            "filter_by_field",
+            "expand_detail",
+            "collapse_detail",
+            "add_to_shortlist",
+            "remove_from_shortlist",
+            "trigger_action",
+            "navigate_to",
+            "play_media",
+            "pause_media",
+            "seek_media",
+            "annotate",
+            "compare_selected"
+          ],
+          "description": "Interactive capability from the closed vocabulary."
+        },
+        "target_field": {
+          "type": "string",
+          "description": "JSON Pointer to the field this capability acts on (for sort_by_field, filter_by_field)."
+        },
+        "callback_uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "OAP action endpoint invoked when the Principal exercises this capability."
+        },
+        "inline_action": {
+          "type": "object",
+          "description": "Inline action descriptor when no external callback is needed."
+        },
+        "label": {
+          "type": "string",
+          "description": "Human readable label for the interactive element in the Principal's locale."
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the capability is enabled. Disabled capabilities are rendered but not actionable."
+        },
+        "requires_confirmation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the Principal must confirm before the callback is invoked."
+        }
+      }
+    },
+    "presentationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tracking": {
+          "enum": ["none", "anonymous_analytics", "full"],
+          "default": "none",
+          "description": "Permitted tracking level in the rendered presentation."
+        },
+        "data_retention": {
+          "enum": ["none", "session_only", "declared_policy"],
+          "default": "session_only"
+        },
+        "auto_play_media": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether media assets may auto play. Default is false per user sovereignty."
+        },
+        "external_resources": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the Renderer may load resources from domains other than the item origins."
+        },
+        "sponsored_injection": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the Renderer may inject sponsored items not present in the items array. Default is false."
+        },
+        "branding": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "organization_logo_uri": { "type": "string", "format": "uri" },
+            "primary_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+            "font_family": { "type": "string" }
+          },
+          "description": "Organizational branding constraints from Policy Stack Layer 3."
+        }
+      }
+    }
+  }
+}

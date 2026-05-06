@@ -48,6 +48,7 @@ function pickSchema(filename, data) {
   if (filename.endsWith('subscription.json')) return schemas['oap-subscription.schema.json'];
   if (filename.endsWith('attestation.json')) return schemas['oap-attestation.schema.json'];
   if (filename.includes('intent-response')) return schemas['oap-intent-response.schema.json'];
+  if (filename.includes('presentation-intent')) return schemas['oap-presentation-intent.schema.json'] || null;
   if (filename.includes('intent') && data && data.category) return schemas['oap-intent.schema.json'];
   if (filename.includes('candidates')) return null;
   return null;

@@ -1,0 +1,141 @@
+{
+  "presentation_id": "urn:oap:presentation:hotel-comparison-2026-05-06",
+  "issuer_did": "did:web:assistant.example",
+  "principal_did": "did:web:alice.example",
+  "items_source": "urn:oap:intent:hotel-search-berlin-2026",
+  "layout": {
+    "layout_class": "comparison_grid",
+    "columns": 3,
+    "sort_by": "/price_per_night",
+    "sort_order": "ascending",
+    "max_items_visible": 6,
+    "emphasis": "first_prominent"
+  },
+  "items": [
+    {
+      "item_id": "https://hotels.example/nodes/hotel-adlon",
+      "type": "Hotel",
+      "projection": {
+        "include": ["/name", "/price_per_night", "/rating", "/location", "/amenities"],
+        "exclude": ["/internal_id", "/revenue_tier"]
+      },
+      "modality_assets": [
+        {
+          "asset_uri": "https://hotels.example/assets/adlon-exterior.webp",
+          "descriptor_uri": "https://hotels.example/assets/adlon-exterior.webp.descriptor.json",
+          "content_type": "image/webp",
+          "role": "hero",
+          "alt_text": "Hotel Adlon Kempinski exterior view, Pariser Platz, Berlin"
+        }
+      ],
+      "highlight": true,
+      "highlight_reason": "Best match for your preferences: central location, breakfast included, under budget."
+    },
+    {
+      "item_id": "https://hotels.example/nodes/hotel-zoo",
+      "type": "Hotel",
+      "projection": {
+        "include": ["/name", "/price_per_night", "/rating", "/location", "/amenities"]
+      },
+      "modality_assets": [
+        {
+          "asset_uri": "https://hotels.example/assets/zoo-lobby.webp",
+          "descriptor_uri": "https://hotels.example/assets/zoo-lobby.webp.descriptor.json",
+          "content_type": "image/webp",
+          "role": "hero",
+          "alt_text": "Hotel Zoo Berlin lobby with art deco interior"
+        }
+      ],
+      "highlight": false
+    },
+    {
+      "item_id": "https://hotels.example/nodes/hotel-michelberger",
+      "type": "Hotel",
+      "projection": {
+        "include": ["/name", "/price_per_night", "/rating", "/location", "/amenities"]
+      },
+      "modality_assets": [
+        {
+          "asset_uri": "https://hotels.example/assets/michelberger-room.webp",
+          "descriptor_uri": "https://hotels.example/assets/michelberger-room.webp.descriptor.json",
+          "content_type": "image/webp",
+          "role": "hero",
+          "alt_text": "Michelberger Hotel room with minimalist design"
+        }
+      ],
+      "highlight": false
+    }
+  ],
+  "personalization": {
+    "locale": "de-DE",
+    "accessibility": {
+      "wcag_level": "AA",
+      "prefers_reduced_motion": false,
+      "prefers_high_contrast": false,
+      "screen_reader_optimized": false,
+      "font_size_class": "default"
+    },
+    "expertise": "consumer",
+    "screen_class": "mobile",
+    "modality_preferences": ["visual", "auditory"],
+    "color_scheme": "dark",
+    "density": "comfortable"
+  },
+  "interaction": [
+    {
+      "capability": "sort_by_field",
+      "target_field": "/price_per_night",
+      "label": "Nach Preis sortieren",
+      "enabled": true,
+      "requires_confirmation": false
+    },
+    {
+      "capability": "sort_by_field",
+      "target_field": "/rating",
+      "label": "Nach Bewertung sortieren",
+      "enabled": true,
+      "requires_confirmation": false
+    },
+    {
+      "capability": "expand_detail",
+      "label": "Details anzeigen",
+      "enabled": true,
+      "requires_confirmation": false
+    },
+    {
+      "capability": "add_to_shortlist",
+      "label": "Merken",
+      "callback_uri": "https://assistant.example/actions/shortlist/add",
+      "enabled": true,
+      "requires_confirmation": false
+    },
+    {
+      "capability": "trigger_action",
+      "label": "Jetzt buchen",
+      "callback_uri": "https://assistant.example/actions/book",
+      "enabled": true,
+      "requires_confirmation": true
+    },
+    {
+      "capability": "compare_selected",
+      "label": "Auswahl vergleichen",
+      "enabled": true,
+      "requires_confirmation": false
+    }
+  ],
+  "policy": {
+    "tracking": "none",
+    "data_retention": "session_only",
+    "auto_play_media": false,
+    "external_resources": false,
+    "sponsored_injection": false
+  },
+  "validity": {
+    "from": "2026-05-06T00:00:00Z",
+    "to": "2026-05-06T23:59:59Z"
+  },
+  "signature": {
+    "alg": "EdDSA",
+    "value": "EXAMPLE_SIGNATURE_NOT_VERIFIED"
+  }
+}
