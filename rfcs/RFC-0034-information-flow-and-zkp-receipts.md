@@ -92,6 +92,45 @@ To prove implementability, the OAP specification includes a normative TypeScript
 3. The Pre-Action Gate successfully blocking (HTTP 451) an unauthorized request to a public API.
 4. The generation and successful validation of a Groth16 zk-SNARK Receipt, demonstrating PII omission.
 
+```typescript
+import { PolicyGate, ReceiptValidator, CCC, OutgoingPayload, Receipt } from '@oap/validator';
+
+// 1. Context Load
+const patientCCC: CCC = {
+  scope_id: 'dr_miller_patient_file',
+  regulatory_classification: 'medical_confidentiality',
+  security_clearance: ['medical_confidential', 'did:web:certified-neurologist.com'],
+};
+
+// 2. Field-level Taint Tracking
+const payloadToSend: OutgoingPayload = {
+  destination_did: 'did:web:public-summarizer.com',
+  fields: {
+    summary: {
+      value: "Patient shows symptoms of Parkinson's.",
+      taint: ['medical_confidential'], 
+    },
+  },
+};
+
+// 3. Pre-Action Gate (Blocks Public API)
+const blockedResult = PolicyGate.evaluateInformationFlow(payloadToSend, { security_clearance: [] });
+// -> [BLOCKED] HTTP 451: Information Flow Control block.
+
+// 4. Pre-Action Gate (Allows Certified API)
+payloadToSend.destination_did = 'did:web:certified-neurologist.com';
+const allowedResult = PolicyGate.evaluateInformationFlow(payloadToSend, patientCCC);
+// -> [ALLOWED] Payload securely transmitted.
+
+// 5. Privileged Mode ZKP Validation
+const receipt: Receipt = {
+  type: 'invocation',
+  zkp: { system: 'groth16', curve: 'bn254', public_inputs: ['...'], proof: { /*...*/ } }
+};
+const validation = await ReceiptValidator.validate(receipt, patientCCC);
+// -> [VALIDATED] Receipt verified. PII deleted. ZKP anchored.
+```
+
 ## 7. References
 
 1. OAP-CORE-1.0 Section 18.4 (Information Flow Control) and 19.1 (ZKP Receipts).
