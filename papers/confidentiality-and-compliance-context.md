@@ -72,6 +72,53 @@ The Provenance Cascade is the protocol level answer to the problem that confiden
 
 Confidentiality is not a feature that can be added to an Agent platform after the fact. It is a property that must be present at every layer of the stack, from the Manifest that the Tool publishes to the Decision Record that records each policy evaluation to the Cascade Report that demonstrates the closure of an obligation. The Confidentiality and Compliance Context is the protocol level mechanism by which that property is achieved. It encodes the obligations a Principal has assumed in the world outside software, it makes those obligations machine readable, it enforces them at the moment of every Invocation, and it produces evidence of enforcement that survives commercial dispute, regulatory inspection, and the lifetime of the obligations themselves. Without such a mechanism, the deployment of autonomous Agents into professional and organizational settings is incompatible with the obligations those settings impose. With it, the deployment becomes not merely tolerable but actively safer than the human only baseline, because the obligations are enforced consistently rather than depending on the memory of the practitioner under time pressure. The protocol's posture on privacy is consonant with Floridi's account of informational privacy as ontological rather than instrumental (Floridi 2013, 2014): a person is partly constituted by the information that pertains to them, so the boundaries on disclosure that the Confidentiality and Compliance Context enforces are not merely regulatory artefacts but conditions for the preservation of personal identity in the infosphere.
 
+## Appendix A: Differential Privacy Bounds and ZKP Verification in OAP
+
+This appendix provides the formal mathematical bounds for the privacy mechanisms described in section 3 and operationalizes the transition from hash-based tamper evidence to Zero-Knowledge Proofs (ZKPs) for Receipts.
+
+### A.1 Global Privacy Budget and Composition Bounds
+
+While [RFC 0007](/rfcs/0007) and [RFC 0020](/rfcs/0020) mandate the use of differential privacy noise to protect Principal data during Agent Query Language (AQL) evaluation, local noise injection is insufficient against an adversary performing repeated, overlapping queries (Membership Inference Attacks; Shokri et al., 2017). OAP formalizes privacy as a global property of the network using the $(\epsilon, \delta)$-differential privacy framework (Dwork and Roth, 2014).
+
+Let $\mathcal{M}_1, \dots, \mathcal{M}_k$ be a sequence of $k$ AQL intent evaluations executed against a Substrate for a given DID. If each mechanism $\mathcal{M}_i$ guarantees $(\epsilon_0, \delta_0)$-differential privacy, the Advanced Composition Theorem states that for any $\delta' > 0$, the composed mechanism $\mathcal{M}_{[k]}$ is $(\epsilon, k\delta_0 + \delta')$-differentially private, where:
+
+$$
+\epsilon = \sqrt{2k \ln(1/\delta')} \cdot \epsilon_0 + k \epsilon_0(e^{\epsilon_0} - 1)
+$$
+
+**Normative Requirement:** A Level 4 conformant Substrate MUST maintain a global state accumulator for the privacy loss budget $\epsilon$ per DID. When a querying Agent's request sequence would cause the cumulative $\epsilon$ to exceed the Principal's predefined privacy threshold $\epsilon_{\max}$, the Pre Action Confidentiality Gate MUST block the query, returning an HTTP 429 (Too Many Requests) with a `budget_exhausted` error code.
+
+### A.2 Zero-Knowledge Proofs (ZKPs) for Policy Compliance
+
+The Accountability paper defines Receipts as cryptographically linked hashes. However, if a Receipt includes the hash of Personally Identifiable Information (PII), deleting the PII breaks the validation chain. Furthermore, hashes of PII may still be considered pseudonymized data under the General Data Protection Regulation (GDPR) Article 17 (Right to be Forgotten).
+
+To resolve the tension between immutable tamper-evidence and data erasure, OAP introduces Zero-Knowledge State Proofs (zk-SNARKs) as an alternative to simple payload hashing. 
+
+Instead of publishing $H(\text{Payload})$, the Agent publishes a proof $\pi$ that validates the statement:
+*"I have evaluated the Policy Stack $P$ on inputs $X$ (the Context) and $Y$ (the data), and the result is TRUE, without revealing $X$ or $Y$."*
+
+Let $\mathcal{C}$ be the arithmetic circuit representing the OAP Policy Stack evaluation. The prover (the Agent or Substrate) generates a proof $\pi$:
+
+$$
+\pi \leftarrow \text{Prove}(pk, \mathcal{C}, x, w)
+$$
+
+Where $pk$ is the proving key, $x$ is the public input (e.g., the Manifest DID, the Timestamp, the Policy Version), and $w$ is the private witness (the Principal's private data and context). 
+
+The Transparency Log anchors the proof $\pi$. Any third-party auditor can verify the legitimacy of the interaction in constant time:
+
+$$
+\{0, 1\} \leftarrow \text{Verify}(vk, x, \pi)
+$$
+
+**Normative Implication:** A Receipt containing a valid zk-SNARK $\pi$ does not contain PII, nor the hash of PII. Consequently, the Principal can exercise their Right to be Forgotten by deleting the local plaintext $w$. The Transparency Log remains immutable, the chain of custody is preserved, and the GDPR requirement for total data erasure is fully satisfied. 
+
+### A.3 Information Flow Control (IFC) and LLM Taint Tracking
+
+In multi-agent environments, Context leakage occurs when a high-clearance Agent inadvertently summarizes protected data into the natural language prompt of a low-clearance Agent (the "Confused Deputy" problem). OAP requires runtime Information Flow Control (IFC). 
+
+Any string generated by an LLM based on Context $C$ inherits a security label $L(C)$. When an Agent invokes a downstream Tool or Agent $T$, the Policy Engine MUST verify that $L(C) \sqsubseteq L(T)$ (the clearance of the destination dominates or equals the sensitivity of the data) before the network request is initiated.
+
 ## References
 
 [OAP-CORE-1.0](/spec). The Open Agent Protocol Core Specification, including Section 18 on Privileged Mode.
@@ -94,6 +141,10 @@ US Health Insurance Portability and Accountability Act, 45 CFR Parts 160 and 164
 
 American Bar Association Model Rules of Professional Conduct, Rule 1.6.
 
+Dwork, C., & Roth, A. (2014). The Algorithmic Foundations of Differential Privacy. *Foundations and Trends in Theoretical Computer Science*. The mathematical framework for $\epsilon$-differential privacy and the Advanced Composition Theorem used in Appendix A.1.
+
 Floridi, L. (2013). *The Ethics of Information*. Oxford University Press. Establishes the ontological account of informational privacy on which this paper's posture rests: privacy boundaries are conditions for the preservation of personal identity, not merely instrumental constraints on data flow.
 
 Floridi, L. (2014). *The Fourth Revolution: How the Infosphere is Reshaping Human Reality*. Oxford University Press. The book-length statement of the infosphere as the environment in which Agents and Principals are co-constituted by their informational relations, providing the ontological context for the Confidentiality and Compliance Context.
+
+Shokri, R., Stronati, M., Song, C., & Shmatikov, V. (2017). Membership Inference Attacks Against Machine Learning Models. *IEEE Symposium on Security and Privacy*. The foundational work detailing inference vulnerabilities in ML models, necessitating the composition bounds of Appendix A.1.
