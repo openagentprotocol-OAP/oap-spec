@@ -105,6 +105,11 @@
     "export_control_classification": {
       "type": ["string", "null"],
       "description": "ECCN, ITAR Category, or EU Dual Use list reference."
+    },
+    "security_clearance": {
+      "type": "array",
+      "description": "Used by the Pre Action IFC Gate. A scope can only receive incoming data (or LLM generations) whose Taint labels are a subset of this clearance array.",
+      "items": { "type": "string" }
     }
   }
 }

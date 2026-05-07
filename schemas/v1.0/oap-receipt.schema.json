@@ -88,7 +88,19 @@
         "duration_seconds": { "type": "integer", "minimum": 0 },
         "transcript_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
       }
-    },    "previous_receipt_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$|^genesis$" },
+    },
+    "zkp": {
+      "type": "object",
+      "description": "Zero-Knowledge State Proof (e.g., zk-SNARK) replacing input/output hashes for GDPR Art. 17 compliance.",
+      "required": ["system", "public_inputs", "proof"],
+      "properties": {
+        "system": { "enum": ["groth16", "plonk", "stark"] },
+        "curve": { "type": "string" },
+        "public_inputs": { "type": "array", "items": { "type": "string" } },
+        "proof": { "type": "object", "additionalProperties": true }
+      }
+    },
+    "previous_receipt_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$|^genesis$" },
     "anchors": {
       "type": "array",
       "items": {
