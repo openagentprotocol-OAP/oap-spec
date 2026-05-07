@@ -12,7 +12,7 @@ async function runEndToEndScenario() {
     ccc_version: '1.0',
     scope_id: 'dr_miller_patient_file',
     regulatory_classification: 'medical_confidentiality',
-    security_clearance: ['medical_confidential'],
+    security_clearance: ['medical_confidential', 'did:web:certified-neurologist.com'],
   };
 
   console.log("[1] Agent Context Loaded.");

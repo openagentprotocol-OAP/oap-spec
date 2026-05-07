@@ -54,6 +54,7 @@ describe('OAP RFC 0034 Top Tier Mechanisms', () => {
       ccc_version: '1.0',
       scope_id: 'doctor_visit',
       regulatory_classification: 'medical_confidentiality',
+      security_clearance: ['did:web:tool1'],
     };
 
     it('MUST reject Receipts containing input_hash in Privileged Mode', async () => {

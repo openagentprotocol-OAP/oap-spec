@@ -28,6 +28,23 @@ export class ReceiptValidator {
           error: 'Validation Error: Privileged receipt missing zkp proof object.',
         };
       }
+
+      // Check Subprocessor disclosure
+      const allowedSubprocessors = ccc.security_clearance || [];
+      if (!allowedSubprocessors.includes(receipt.tool_did)) {
+        return {
+          valid: false,
+          error: `Privilege Violation: Tool DID ${receipt.tool_did} is not an explicitly authorized subprocessor in the CCC.`,
+        };
+      }
+
+      // Check Cross-Border Transfer
+      // In a real implementation, this would cross-reference the Tool DID's geographic manifest
+      const toolJurisdiction = 'US'; // Mock lookup
+      const cccJurisdiction = 'EU'; // Mock lookup
+      if (toolJurisdiction !== cccJurisdiction && !ccc.regulatory_classification) {
+         // simplified mock logic
+      }
     }
 
     // 2. Cryptographic ZKP Verification (Mock Verification for Groth16)

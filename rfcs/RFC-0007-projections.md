@@ -91,7 +91,10 @@ A requesting Agent MAY include a Trust Level claim in its Invocation:
 }
 ```
 
-The Tool MUST evaluate the evidence and determine the actual Trust Level using its own scoring. The Tool MUST NOT grant a Trust Level higher than the evidence supports. The Tool MAY grant a Trust Level lower than requested.
+The Tool MUST evaluate the evidence and determine the actual Trust Level using its own scoring. The Tool MUST NOT grant a Trust Level higher than the evidence supports. The Tool MAY grant a Trust Level lower than requested. 
+
+### 3.4.1 Evidence Standardization
+To prevent arbitrary interpretations, Evidence Objects MUST adhere to standard types defined by the Trust and Reputation WG (RFC 0009). For example, `OAPConnectionVouched` MUST include a cryptographic signature from a mutually trusted third party DID. `OAPMutualGroupMembership` MUST include a ZKP or signed token from the group authority. Tools MUST NOT accept unverified self-asserted Evidence.
 
 ### 3.5 Projection Response
 

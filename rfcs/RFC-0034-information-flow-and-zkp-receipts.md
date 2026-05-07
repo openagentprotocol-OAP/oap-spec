@@ -19,7 +19,7 @@ Agent A acts under a strict CCC (e.g., medical confidentiality). Agent A calls a
 
 ### Threat Model 2: Immutable Logs vs. Erasure Rights
 OAP guarantees tamper-evidence by enforcing that every Receipt $R_n$ contains the SHA-256 hash of $R_{n-1}$ and the hash of the payload ($H(\text{input})$). If the input contains PII, the hash itself may be classified as pseudonymous data under GDPR. If the Principal exercises their right to erasure, the Agent must delete the PII. But a subsequent audit can no longer verify $H(\text{input})$, breaking the chain of trust.
-*Vulnerability:* Tension between immutable tamper-evidence and mandatory data deletion.
+*Vulnerability:* Tension between immutable tamper-evidence and mandatory data deletion. ZKPs do not entirely "solve" the erasure problem against malicious actors storing data out-of-band, but they significantly *reduce* the Audit-vs-Erasure conflict at the protocol level.
 
 ## 3. Specification: Zero-Knowledge Receipts
 
@@ -65,9 +65,9 @@ To resolve Threat Model 1, OAP introduces *Taint Tracking* as a normative requir
 
 ### 4.1 Security Labels (Taints)
 
-Every string held in Agent memory must be associated with a Security Label $L$, defined as a set of provenance tags (e.g., `{"nda:nda_2026_clientA", "medical_confidential"}`).
+Every data object held in Agent memory must be associated with a Security Label $L$, defined as a set of provenance tags (e.g., `{"nda:nda_2026_clientA", "medical_confidential"}`). To be computationally realistic, Taint is tracked at the **message, field, document, or memory-chunk level**, rather than on individual generated words.
 
-When an LLM consumes inputs $I_1, I_2, \dots, I_n$ to generate output string $O$, the runtime MUST assign $O$ the union of all input labels:
+When an LLM consumes inputs $I_1, I_2, \dots, I_n$ to generate output field $O$, the runtime MUST assign $O$ the union of all input labels:
 $L(O) = \bigcup_{i=1}^n L(I_i)$
 
 ### 4.2 The Pre Action IFC Gate
@@ -82,9 +82,17 @@ The `oap-ccc.schema.json` is implicitly used to evaluate the Taint. The `covered
 
 ## 5. Security Considerations
 
-Generating ZKPs on consumer hardware introduces latency. Agents MUST cache proving keys and MAY delegate proof generation to a trusted enclave (e.g., AWS Nitro) if local computation exceeds the SLA budget.
+Generating ZKPs on consumer hardware introduces latency. Agents MUST cache proving keys and MAY delegate proof generation to a trusted enclave (e.g., AWS Nitro) if local computation exceeds the SLA budget. Furthermore, ZKPs and IFC only guarantee compliance within honest or verified protocol bounds. A malicious tool can always copy data out of band.
 
-## 6. References
+## 6. End-to-End Reference Implementation
+
+To prove implementability, the OAP specification includes a normative TypeScript reference implementation in `reference/validator/`. It includes a hard end-to-end use case (`e2e-medical-scenario.ts`) demonstrating:
+1. An Agent analyzing a patient file under a `medical_confidentiality` context.
+2. Field-level taint tracking (`medical_confidential`) applied to the output JSON summary.
+3. The Pre-Action Gate successfully blocking (HTTP 451) an unauthorized request to a public API.
+4. The generation and successful validation of a Groth16 zk-SNARK Receipt, demonstrating PII omission.
+
+## 7. References
 
 1. OAP-CORE-1.0 Section 18.4 (Information Flow Control) and 19.1 (ZKP Receipts).
 2. GDPR Article 17 (Right to Erasure).

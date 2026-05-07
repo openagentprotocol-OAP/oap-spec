@@ -64,7 +64,7 @@ Confidentiality obligations do not end when the engagement ends. A non disclosur
 
 The Open Agent Protocol responds to this problem with the Information Provenance Cascade. Every value emitted by a Tool may carry provenance tags that propagate through subsequent Invocations. The tags identify the source of the data, the obligation under which it was received, the classification of its sensitivity, the purpose for which it was disclosed, the date on which the obligation expires, and the event on whose occurrence the data must be deleted. Agents that forward data must preserve the tags. Agents that wish to share tagged data must evaluate the tags against the Confidentiality and Compliance Context of the destination Scope.
 
-When a Scope or non disclosure agreement is terminated, the Agent initiates a Provenance Cascade. Every Tool that has received data tagged with the terminating identifier is invoked at its data deletion endpoint. Each invocation produces a Deletion Receipt that becomes part of the Principal's chain. The aggregated set of Deletion Receipts is assembled into a Cascade Report that demonstrates the complete fulfilment of the deletion obligation. The Cascade Report is the artifact that satisfies the right to erasure under the General Data Protection Regulation, the contractual return or destruction obligation under typical non disclosure agreements, and the equivalent obligations under domain specific statutes.
+When a Scope or non disclosure agreement is terminated, the Agent initiates a Provenance Cascade. Every Tool that has received data tagged with the terminating identifier is invoked at its data deletion endpoint. Each invocation produces a Deletion Receipt that becomes part of the Principal's chain. The aggregated set of Deletion Receipts is assembled into a Cascade Report that demonstrates the fulfilment of the deletion obligation. While a protocol cannot physically *force* a malicious actor to delete out-of-band copies, it standardizes the erasure request and cryptographically records the compliance proof. The Cascade Report is the artifact that satisfies the right to erasure under the General Data Protection Regulation, the contractual return or destruction obligation under typical non disclosure agreements, and the equivalent obligations under domain specific statutes.
 
 The Provenance Cascade is the protocol level answer to the problem that confidentiality obligations have temporal lifetimes that the data itself does not respect. It restores the alignment between obligation and possession that paper records once provided and that contemporary software has lost.
 
@@ -78,13 +78,11 @@ This appendix provides the formal mathematical bounds for the privacy mechanisms
 
 ### A.1 Global Privacy Budget and Composition Bounds
 
-While [RFC 0007](/rfcs/0007) and [RFC 0020](/rfcs/0020) mandate the use of differential privacy noise to protect Principal data during Agent Query Language (AQL) evaluation, local noise injection is insufficient against an adversary performing repeated, overlapping queries (Membership Inference Attacks; Shokri et al., 2017). OAP formalizes privacy as a global property of the network using the $(\epsilon, \delta)$-differential privacy framework (Dwork and Roth, 2014).
+Differential Privacy operates on statistical databases. In an Agent context, the "database" is defined as the set of Canonical Entities (e.g., Contacts, Tasks, Calendar Events) exposed via the Agent Query Language (AQL). A "neighbouring dataset" differs by exactly one Entity. While tracking DP budgets for raw natural language summarization is an open research problem, OAP strictly bounds statistical AQL queries.
 
-Let $\mathcal{M}_1, \dots, \mathcal{M}_k$ be a sequence of $k$ AQL intent evaluations executed against a Substrate for a given DID. If each mechanism $\mathcal{M}_i$ guarantees $(\epsilon_0, \delta_0)$-differential privacy, the Advanced Composition Theorem states that for any $\delta' > 0$, the composed mechanism $\mathcal{M}_{[k]}$ is $(\epsilon, k\delta_0 + \delta')$-differentially private, where:
+Let $M_1, \dots, M_k$ be a sequence of $k$ statistical AQL intent evaluations executed against a Substrate for a given DID. If each mechanism $M_i$ guarantees $(\epsilon_0, \delta_0)$-differential privacy, the Advanced Composition Theorem states that for any $\delta' > 0$, the composed mechanism $M_{[k]}$ is $(\epsilon, k\delta_0 + \delta')$-differentially private, where:
 
-$$
-\epsilon = \sqrt{2k \ln(1/\delta')} \cdot \epsilon_0 + k \epsilon_0(e^{\epsilon_0} - 1)
-$$
+$$ \epsilon = \sqrt{2k\ln(1/\delta')} \cdot \epsilon_0 + k\epsilon_0(e^{\epsilon_0} - 1) $$
 
 **Normative Requirement:** A Level 4 conformant Substrate MUST maintain a global state accumulator for the privacy loss budget $\epsilon$ per DID. When a querying Agent's request sequence would cause the cumulative $\epsilon$ to exceed the Principal's predefined privacy threshold $\epsilon_{\max}$, the Pre Action Confidentiality Gate MUST block the query, returning an HTTP 429 (Too Many Requests) with a `budget_exhausted` error code.
 
