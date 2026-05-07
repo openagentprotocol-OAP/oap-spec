@@ -149,6 +149,12 @@ Tools that do not declare `projections.supported = true` continue to return full
 
 Projections operationalize the GDPR principle of data minimization. Tools that implement Projections SHOULD declare data minimization as their default lawful basis where applicable.
 
+### 6.1 Global Privacy Budget and Membership Inference
+
+While Projections reduce data exposure, an adversary may execute repeated, overlapping queries to infer protected fields (Membership Inference Attacks). To defend against this, OAP implements the $(\epsilon, \delta)$-differential privacy framework.
+
+**Normative Requirement:** A Level 4 conformant Substrate MUST maintain a global state accumulator for the privacy loss budget $\epsilon$ per Principal DID. When a querying Agent's request sequence would cause the cumulative $\epsilon$ to exceed the Principal's predefined privacy threshold $\epsilon_{\max}$, the Substrate MUST block the query, returning an HTTP 429 (Too Many Requests) with a `budget_exhausted` error code, ensuring that the composition of queries does not degrade the privacy guarantee.
+
 ## 7. Conformance Impact
 
 Projection support is RECOMMENDED at all Conformance Levels and REQUIRED at L4 (Collaborative). The OAP community will publish a Conformance Test Suite that verifies Projection Profile correctness against the published normative tables.
@@ -166,3 +172,5 @@ AssistNet operates Projections in production for contacts, calendar events, and 
 
 1. OAP-CORE-1.0, Sections 17 (Data Policy), 18 (CCC).
 2. EU GDPR Article 5(1)(c) (Data Minimization).
+3. Dwork, C., & Roth, A. (2014). The Algorithmic Foundations of Differential Privacy.
+4. Shokri, R., et al. (2017). Membership Inference Attacks Against Machine Learning Models.
