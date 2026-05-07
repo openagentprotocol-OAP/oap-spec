@@ -1,4 +1,5 @@
 import { Receipt, CCC } from './types';
+// @ts-ignore
 import * as snarkjs from 'snarkjs';
 
 export class ReceiptValidator {
