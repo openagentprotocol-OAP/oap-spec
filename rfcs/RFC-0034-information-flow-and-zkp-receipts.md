@@ -1,4 +1,4 @@
-# RFC 0033: Information Flow Control and Zero-Knowledge Receipts
+# RFC 0034: Information Flow Control and Zero-Knowledge Receipts
 
 **Status:** Draft
 **Author(s):** T. Fengler (Editor)
