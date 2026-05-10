@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-workflow-revocation-event.schema.json",
+  "title": "OAP Workflow Scoped Revocation Event",
+  "description": "Push event delivered on a Workflow Scoped Revocation Channel. See RFC 0022 section 11.bis.",
+  "type": "object",
+  "required": [
+    "event_id",
+    "subscription_id",
+    "cursor",
+    "event_type",
+    "workflow_id",
+    "manifest_id",
+    "manifest_hash_before",
+    "manifest_hash_after",
+    "issued_at",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": { "type": "string" },
+    "subscription_id": { "type": "string" },
+    "cursor": { "type": "integer", "minimum": 0 },
+    "event_type": { "enum": ["revoked", "superseded_in_workflow"] },
+    "workflow_id": { "type": "string", "pattern": "^wf_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "manifest_id": { "type": "string" },
+    "manifest_hash_before": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "manifest_hash_after": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "revocation_reason_code": {
+      "enum": [
+        "key_compromise", "superseded", "policy_violation",
+        "expired_attestation", "external_authority_order", "voluntary_withdrawal"
+      ]
+    },
+    "effective_at": { "type": "string", "format": "date-time" },
+    "consequence_class": {
+      "enum": ["workflow_invalidating", "workflow_warning", "workflow_informational"]
+    },
+    "replaces_receipt_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "replacement_receipt_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "signed_revocation_document": { "type": "string" },
+    "inclusion_proof": { "type": "string" },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "signature": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "event_type": { "const": "revoked" } } },
+      "then": { "required": ["revocation_reason_code", "effective_at", "consequence_class", "signed_revocation_document"] }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "superseded_in_workflow" } } },
+      "then": { "required": ["replaces_receipt_hash", "replacement_receipt_hash", "inclusion_proof"] }
+    }
+  ]
+}

@@ -145,6 +145,42 @@ The Reference Server has been extended with a Subscription endpoint supporting t
 
 The RSS and Atom feed model was considered and rejected because it lacks signatures, lacks Inclusion Proofs, lacks per event Receipts, and lacks structured backpressure. The Webhook only model was considered and rejected because it places the burden of delivery semantics on every Provider individually rather than on the protocol. The pull only polling model was considered and rejected on cost and latency grounds. The chosen design provides push semantics with verifiable integrity at the cost of one new endpoint per Publisher and one new schema per event type.
 
+## 11.bis Workflow Scoped Revocation Channels (Normative Extension)
+
+This subsection is normative and extends section 3 of this RFC with a second class of subscription, the Workflow Scoped Revocation Channel, used by Cross Broker Workflow Coordinators (RFC 0035) to receive timely notifications when a Match Receipt that contributes to a composite workflow is withdrawn, superseded, or invalidated by its issuing broker. The mechanism reuses the wire format, the cursor and replay semantics, and the backpressure semantics of section 3 and adds three category specific behaviors.
+
+### 11.bis.1 Channel Establishment
+
+A Workflow Coordinator establishes a Workflow Scoped Revocation Channel by issuing a Subscription Intent in the `workflow_revocation` category to each Match Broker whose Receipt is part of the workflow. The Intent carries the additional fields `workflow_id` set to the ULID of the composite workflow under RFC 0035 and `receipt_hashes` set to the SHA-256 hashes of every Match Receipt issued by the addressed broker for that workflow. The broker responds with a `WorkflowSubscriptionAck` that confirms its willingness to push revocation events filtered to the named receipts. A broker MUST refuse the Intent if the `receipt_hashes` do not all correspond to live entries in its Verifiable Index, and the refusal SHALL itself be a signed document logged in the broker's Audit Log.
+
+### 11.bis.2 Event Types
+
+In addition to the event types of section 3.2, the Workflow Scoped Revocation Channel emits the following two event types.
+
+The `revoked` event indicates that a previously valid Match Receipt has been withdrawn. The event MUST carry the `revocation_reason_code` drawn from the finite vocabulary `key_compromise`, `superseded`, `policy_violation`, `expired_attestation`, `external_authority_order`, `voluntary_withdrawal`, the `effective_at` timestamp at which the revocation takes effect, the `signed_revocation_document` containing the broker's signed justification, and the `consequence_class` drawn from `workflow_invalidating`, `workflow_warning`, `workflow_informational`. A `workflow_invalidating` event MUST be delivered to every subscribed Coordinator within sixty seconds of the broker's signing of the revocation, with the timestamp recorded in both the broker's Audit Log and the Coordinator's Workflow State.
+
+The `superseded_in_workflow` event indicates that the broker has accepted a replacement Listing or Match Receipt that supersedes one previously contributing to the workflow. The event MUST carry the `replaces_receipt_hash` and the `replacement_receipt_hash` and MUST be accompanied by an Inclusion Proof for the replacement. A Coordinator that accepts a `superseded_in_workflow` event without verifying the replacement's Inclusion Proof against the broker's most recent Tree Head is operating below conformance.
+
+### 11.bis.3 Delivery Latency Floor
+
+Workflow Scoped Revocation Channels are time critical. A Publisher MUST deliver `workflow_invalidating` revocation events with a transport that supports push semantics within sixty seconds. Webhook delivery with retry MAY satisfy the floor if the broker retries with exponential backoff capped at the floor and if the broker records the delivery latency in its Audit Log for each event. A broker that fails to meet the floor in more than one percent of revocation events per quarter has lapsed conformance under this subsection.
+
+### 11.bis.4 Coordinator Failover Acknowledgment
+
+A Workflow Coordinator's `WorkflowSubscriptionAck` carries the optional `failover_coordinator_did` field. If present, the broker MUST mirror every revocation event for the workflow to the failover Coordinator's documented push endpoint in addition to the primary. The dual delivery ensures that the failure of the primary Coordinator does not silently delay propagation of a revocation to the workflow participants, consistent with the failover protocol of RFC 0035 section 4.3.
+
+### 11.bis.5 Schema Integration
+
+This subsection introduces the schema `oap-workflow-revocation-event.schema.json` and extends `oap-manifest-event.schema.json` with the workflow correlation fields `workflow_id` and `receipt_hashes` as optional additive properties. The Subscription category vocabulary is extended with `workflow_revocation` as a recognized value.
+
+### 11.bis.6 Conformance Impact
+
+Support for Workflow Scoped Revocation Channels is REQUIRED for any Match Broker that participates in workflows under RFC 0035, which in practice means every broker that operates at conformance level M2 or above under RFC 0021 once RFC 0035 is finalized. Support is OPTIONAL for brokers that explicitly declare in their Broker Category Profile that they participate only in single broker interactions.
+
+### 11.bis.7 Implementation Experience
+
+The Reference Server has been extended with a workflow revocation event emitter that fires within forty milliseconds of the signing of a revocation document under controlled benchmark conditions on a dual-region deployment. The Reference Agent has been extended with a Coordinator library that subscribes to multiple brokers in parallel and merges their event streams into a single workflow state machine. The AssistNet platform's internal Cross Broker Coordinator has run end to end tests of the channel against a simulated `key_compromise` event with median delivery latency of 1.8 seconds across three geographic regions.
+
 ## 12. References
 
 * OAP-CORE-1.0, the normative Open Agent Protocol Core Specification.

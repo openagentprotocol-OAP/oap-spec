@@ -1,0 +1,69 @@
+{
+  "workflow_manifest_id": "wfm_01HZA1B2C3D4E5F6G7H8J9K021",
+  "workflow_type": "real_estate_purchase_de_v1",
+  "version": "1.0.0",
+  "publisher": "did:web:realestate-de.example",
+  "issued_at": "2026-05-11T10:00:00Z",
+  "expires_at": "2027-05-11T10:00:00Z",
+  "roles": [
+    {
+      "role_id": "identity",
+      "broker_category": "identity_issuer",
+      "required": true,
+      "required_attestations": [
+        "root_of_trust_attestation"
+      ],
+      "min_conformance": "M3"
+    },
+    {
+      "role_id": "real_estate",
+      "broker_category": "real_estate",
+      "required": true,
+      "required_attestations": [
+        "land_registry_extract",
+        "ownership_attestation"
+      ],
+      "min_conformance": "M2"
+    },
+    {
+      "role_id": "finance",
+      "broker_category": "finance",
+      "required": true,
+      "required_attestations": [
+        "regulator_registration"
+      ],
+      "min_conformance": "M2"
+    },
+    {
+      "role_id": "legal",
+      "broker_category": "legal",
+      "required": true,
+      "required_attestations": [
+        "bar_admission"
+      ],
+      "min_conformance": "M1"
+    }
+  ],
+  "consistency_constraints": [
+    {
+      "constraint_id": "jurisdiction_alignment",
+      "predicate": "equals(all_segments.lawful_jurisdiction, 'DE')"
+    },
+    {
+      "constraint_id": "financing_sufficiency",
+      "predicate": "at_least(segments.finance.approved_amount, segments.real_estate.purchase_price)"
+    },
+    {
+      "constraint_id": "identity_match_buyer",
+      "predicate": "equals(segments.identity.subject_did, workflow.initiator_did)"
+    }
+  ],
+  "max_total_duration_seconds": 7776000,
+  "revocation_propagation_floor_seconds": 60,
+  "coordinator_requirements": {
+    "min_independent_heartbeat_paths": 2,
+    "failover_required": true,
+    "audit_log_retention_seconds": 315360000
+  },
+  "signature": "ed25519:placeholder-signature-for-fixture-validation"
+}

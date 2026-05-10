@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../schemas/v1.0/oap-cross-match-receipt.schema.json",
+  "$comment": "Invalid: receipt has only one segment; minItems is 2 because a cross broker receipt by definition composes at least two brokers.",
+  "version": "1.0",
+  "workflow_id": "wf_01HZA1B2C3D4E5F6G7H8J9K0L2",
+  "workflow_manifest_id": "wfm_01HZA1B2C3D4E5F6G7H8J9K0L1",
+  "workflow_manifest_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "initiator_did": "did:web:buyer-agent.example",
+  "coordinator_did": "did:web:coordinator.example",
+  "opened_at": "2026-05-11T10:00:00Z",
+  "expires_at": "2026-08-09T10:00:00Z",
+  "segments": [
+    {
+      "role_id": "identity",
+      "broker_did": "did:web:identity-issuer.example",
+      "match_receipt_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "broker_tree_head": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "inclusion_proof": "merkle:00",
+      "segment_signature": "ed25519:sig1",
+      "issued_at": "2026-05-11T10:01:00Z",
+      "expires_at": "2026-08-09T10:00:00Z",
+      "prev_segment_hash": null
+    }
+  ],
+  "consistency_evaluations": [],
+  "effective_expires_at": "2026-08-09T10:00:00Z",
+  "signatures": [
+    { "signer": "did:web:coordinator.example", "sig": "ed25519:coordsig" }
+  ]
+}

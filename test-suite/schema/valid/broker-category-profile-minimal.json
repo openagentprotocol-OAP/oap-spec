@@ -1,0 +1,43 @@
+{
+  "broker_category": "tool_capability",
+  "category_version": "1.0.0",
+  "accepted_jurisdictions": [
+    "DE",
+    "AT",
+    "CH"
+  ],
+  "required_listing_attestations": [
+    {
+      "attestation_type": "reproducibility_attestation",
+      "issuer_class": "self_attestation",
+      "binding": "REQUIRED"
+    }
+  ],
+  "threshold_signing": {
+    "scheme": "FROST-Ed25519",
+    "m_of_n": [
+      3,
+      5
+    ],
+    "key_storage": "HSM",
+    "key_rotation_period_seconds": 7776000
+  },
+  "monitor_services": [
+    "did:web:monitor-a.example",
+    "did:web:monitor-b.example"
+  ],
+  "monitor_minimum_independent": 2,
+  "mirror_services": [
+    "did:web:mirror-eu.example",
+    "did:web:mirror-us.example"
+  ],
+  "mirror_minimum_regions": 2,
+  "publication_interval_seconds": 600,
+  "data_retention_policy": {
+    "listing_payload_ttl_seconds": 31536000,
+    "query_log_ttl_seconds": 2592000,
+    "audit_log_ttl_seconds": 94608000,
+    "tombstone_on_erasure": true
+  },
+  "dispute_resolution_endpoint": "https://broker.example/oap/disputes"
+}

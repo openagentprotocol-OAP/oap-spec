@@ -1,0 +1,8 @@
+{
+  "name": "@oap/reference-threshold-signing",
+  "version": "1.0.0",
+  "description": "OAP Reference Threshold Signing Wrapper — software stub plus production checklist for RFC 0021 Appendix B.6.",
+  "main": "threshold-signing.js",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=20" }
+}

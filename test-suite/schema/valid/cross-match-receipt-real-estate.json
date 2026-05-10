@@ -1,0 +1,104 @@
+{
+  "version": "1.0",
+  "workflow_id": "wf_01HZA1B2C3D4E5F6G7H8J9K022",
+  "workflow_manifest_id": "wfm_01HZA1B2C3D4E5F6G7H8J9K021",
+  "workflow_manifest_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "initiator_did": "did:web:buyer-agent.example",
+  "coordinator_did": "did:web:coordinator.example",
+  "failover_coordinator_did": "did:web:coordinator-failover.example",
+  "opened_at": "2026-05-11T10:00:00Z",
+  "expires_at": "2026-08-09T10:00:00Z",
+  "segments": [
+    {
+      "role_id": "identity",
+      "broker_did": "did:web:identity-issuer.example",
+      "match_receipt_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "broker_tree_head": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "inclusion_proof": "merkle:00",
+      "segment_signature": "ed25519:sig1",
+      "issued_at": "2026-05-11T10:01:00Z",
+      "expires_at": "2026-08-09T10:00:00Z",
+      "prev_segment_hash": null
+    },
+    {
+      "role_id": "real_estate",
+      "broker_did": "did:web:realestate-de.example",
+      "match_receipt_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "broker_tree_head": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "inclusion_proof": "merkle:01",
+      "segment_signature": "ed25519:sig2",
+      "issued_at": "2026-05-11T10:05:00Z",
+      "expires_at": "2026-08-09T10:00:00Z",
+      "prev_segment_hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+    },
+    {
+      "role_id": "finance",
+      "broker_did": "did:web:finance-de.example",
+      "match_receipt_hash": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "broker_tree_head": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "inclusion_proof": "merkle:02",
+      "segment_signature": "ed25519:sig3",
+      "issued_at": "2026-05-11T11:30:00Z",
+      "expires_at": "2026-07-11T11:30:00Z",
+      "prev_segment_hash": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    {
+      "role_id": "legal",
+      "broker_did": "did:web:legal-de.example",
+      "match_receipt_hash": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "broker_tree_head": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "inclusion_proof": "merkle:03",
+      "segment_signature": "ed25519:sig4",
+      "issued_at": "2026-05-11T14:00:00Z",
+      "expires_at": "2026-08-09T14:00:00Z",
+      "prev_segment_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "consistency_evaluations": [
+    {
+      "constraint_id": "jurisdiction_alignment",
+      "result": true,
+      "evidence": "all four segments DE"
+    },
+    {
+      "constraint_id": "financing_sufficiency",
+      "result": true,
+      "evidence": "850k >= 780k"
+    },
+    {
+      "constraint_id": "identity_match_buyer",
+      "result": true,
+      "evidence": "did matches"
+    }
+  ],
+  "effective_expires_at": "2026-07-11T11:30:00Z",
+  "coordinator_heartbeat_anchor": "https://coordinator.example/heartbeat/wf_01HZA1B2C3D4E5F6G7H8J9K022",
+  "registry_anchor": {
+    "registry_did": "did:web:oap-registry.org",
+    "anchored_at": "2026-05-11T14:01:00Z",
+    "merkle_root": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "consistency_proof_to_prev": "ct-proof-placeholder"
+  },
+  "signatures": [
+    {
+      "signer": "did:web:coordinator.example",
+      "sig": "ed25519:coordsig"
+    },
+    {
+      "signer": "did:web:identity-issuer.example",
+      "sig": "ed25519:idsig"
+    },
+    {
+      "signer": "did:web:realestate-de.example",
+      "sig": "ed25519:resig"
+    },
+    {
+      "signer": "did:web:finance-de.example",
+      "sig": "ed25519:finsig"
+    },
+    {
+      "signer": "did:web:legal-de.example",
+      "sig": "ed25519:legsig"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-workflow-manifest.schema.json",
+  "title": "OAP Workflow Manifest",
+  "description": "Signed declaration of a Cross Broker Workflow's category, broker roles, temporal envelope, and consistency constraints. See RFC 0035 section 4.1.",
+  "type": "object",
+  "required": [
+    "workflow_manifest_id",
+    "workflow_type",
+    "version",
+    "publisher",
+    "issued_at",
+    "expires_at",
+    "roles",
+    "consistency_constraints",
+    "max_total_duration_seconds",
+    "revocation_propagation_floor_seconds",
+    "coordinator_requirements",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "workflow_manifest_id": { "type": "string", "pattern": "^wfm_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "workflow_type": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "publisher": { "type": "string", "pattern": "^did:" },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "roles": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["role_id", "broker_category", "required", "min_conformance"],
+        "additionalProperties": false,
+        "properties": {
+          "role_id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+          "broker_category": {
+            "enum": [
+              "peer_agent", "commerce", "knowledge", "labor", "real_estate", "tool_capability",
+              "compute_model", "finance", "health", "legal", "government", "education",
+              "logistics", "asset", "subscription_saas", "dataset", "identity_issuer",
+              "reputation_aggregator", "event", "media"
+            ]
+          },
+          "required": { "type": "boolean" },
+          "required_attestations": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "min_conformance": { "enum": ["M1", "M2", "M3"] }
+        }
+      }
+    },
+    "consistency_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["constraint_id", "predicate"],
+        "additionalProperties": false,
+        "properties": {
+          "constraint_id": { "type": "string" },
+          "predicate": { "type": "string" }
+        }
+      }
+    },
+    "max_total_duration_seconds": { "type": "integer", "minimum": 60 },
+    "revocation_propagation_floor_seconds": { "type": "integer", "minimum": 1, "maximum": 300 },
+    "coordinator_requirements": {
+      "type": "object",
+      "required": ["min_independent_heartbeat_paths", "failover_required", "audit_log_retention_seconds"],
+      "additionalProperties": false,
+      "properties": {
+        "min_independent_heartbeat_paths": { "type": "integer", "minimum": 1 },
+        "failover_required": { "type": "boolean" },
+        "audit_log_retention_seconds": { "type": "integer", "minimum": 86400 }
+      }
+    },
+    "signature": { "type": "string" }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-broker-category-profile.schema.json",
+  "title": "OAP Broker Category Profile",
+  "description": "Normative extension of a Match Broker Manifest binding the broker to a domain category, jurisdictions, attestation, signing, monitor and mirror requirements. See RFC 0021 Appendix B.",
+  "type": "object",
+  "required": [
+    "broker_category",
+    "category_version",
+    "accepted_jurisdictions",
+    "required_listing_attestations",
+    "threshold_signing",
+    "monitor_services",
+    "monitor_minimum_independent",
+    "mirror_services",
+    "mirror_minimum_regions",
+    "publication_interval_seconds",
+    "data_retention_policy",
+    "dispute_resolution_endpoint"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "broker_category": {
+      "enum": [
+        "peer_agent", "commerce", "knowledge", "labor", "real_estate", "tool_capability",
+        "compute_model", "finance", "health", "legal", "government", "education",
+        "logistics", "asset", "subscription_saas", "dataset", "identity_issuer",
+        "reputation_aggregator", "event", "media"
+      ]
+    },
+    "category_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "accepted_jurisdictions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[A-Z]{2}$" }
+    },
+    "refused_jurisdictions": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z]{2}$" }
+    },
+    "required_listing_attestations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["attestation_type", "issuer_class", "binding"],
+        "additionalProperties": false,
+        "properties": {
+          "attestation_type": { "type": "string" },
+          "issuer_class": {
+            "enum": [
+              "identity_issuer", "tax_authority", "registered_chamber", "publisher",
+              "archivist", "labor_authority", "land_registry", "surveyor", "notary",
+              "self_attestation", "benchmark_authority", "third_party_evaluator",
+              "financial_regulator", "certified_auditor", "medical_board",
+              "data_protection_authority", "bar_association", "sovereign_root",
+              "education_ministry", "accreditation_council", "transport_authority",
+              "title_authority", "certified_appraiser", "data_steward",
+              "ethics_review_board", "peer_witness", "press_council", "c2pa_authority"
+            ]
+          },
+          "renewal_period_seconds": { "type": "integer", "minimum": 60 },
+          "binding": { "enum": ["REQUIRED", "RECOMMENDED"] }
+        }
+      }
+    },
+    "threshold_signing": {
+      "type": "object",
+      "required": ["scheme"],
+      "additionalProperties": false,
+      "properties": {
+        "scheme": { "enum": ["FROST-Ed25519", "Threshold-Ed25519", "none"] },
+        "m_of_n": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "key_storage": { "enum": ["HSM", "software", "none"] },
+        "key_rotation_period_seconds": { "type": "integer", "minimum": 86400 }
+      }
+    },
+    "monitor_services": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^did:" }
+    },
+    "monitor_minimum_independent": { "type": "integer", "minimum": 0 },
+    "mirror_services": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^did:" }
+    },
+    "mirror_minimum_regions": { "type": "integer", "minimum": 0 },
+    "publication_interval_seconds": { "type": "integer", "minimum": 60, "maximum": 3600 },
+    "data_retention_policy": {
+      "type": "object",
+      "required": ["listing_payload_ttl_seconds", "query_log_ttl_seconds", "audit_log_ttl_seconds", "tombstone_on_erasure"],
+      "additionalProperties": false,
+      "properties": {
+        "listing_payload_ttl_seconds": { "type": "integer", "minimum": 0 },
+        "query_log_ttl_seconds": { "type": "integer", "minimum": 0 },
+        "audit_log_ttl_seconds": { "type": "integer", "minimum": 0 },
+        "tombstone_on_erasure": { "type": "boolean" }
+      }
+    },
+    "dispute_resolution_endpoint": { "type": "string", "format": "uri" },
+    "regulatory_authority_contact": { "type": "string" },
+    "category_specific": { "type": "object" }
+  }
+}

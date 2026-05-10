@@ -5,7 +5,7 @@
 **The vendor neutral standard for how autonomous agents discover, invoke, pay for, govern, and audit the tools and services they use.**
 
 [![Spec 1.0 PWD](https://img.shields.io/badge/spec-1.0%20Public%20Working%20Draft-1f6feb)](spec/v1.0/OAP-CORE-1.0.md)
-[![RFCs](https://img.shields.io/badge/RFCs-33-555)](rfcs/)
+[![RFCs](https://img.shields.io/badge/RFCs-35-555)](rfcs/)
 [![Papers](https://img.shields.io/badge/papers-13-555)](papers/)
 [![Schemas](https://img.shields.io/badge/JSON%20Schemas-27-555)](schemas/v1.0/)
 [![Adapters](https://img.shields.io/badge/adapters-MCP%20|%20A2A%20|%20OpenAI%20|%20LangGraph-555)](adapters/)
@@ -185,6 +185,7 @@ oap-spec/
 | Model Risk and Symbiotic Autonomy | [RFC-0028](rfcs/RFC-0028-model-risk-and-symbiotic-autonomy.md) | SR 11-7 model inventory, drift detection, champion-challenger, proactive escalation, counterfactual explanations, adverse action notice, disparate impact audit, L5-FINANCE conformance tier. |
 | Axiomatic Foundations | [RFC-0029](rfcs/RFC-0029-axiomatic-foundations.md) | Axiomatic characterization of the Reputation aggregation function, formal sybil influence bound, Cheng-Friedman boundary, Manifest as program commitment, $k$-implementation cost analysis for sybil-resistant cooperation. |
 | Agent Organizations | [RFC-0030](rfcs/RFC-0030-agent-organizations.md) | First-class Organization, Role, Scene, and Norm entities (OperA-style); deontic consistency theorem; Responsibility principle of the ART triad; structural support for regulated, hierarchical institutions. |
+| Cross Broker Workflows | [RFC-0035](rfcs/RFC-0035-cross-broker-workflow-composition.md) | Workflow Manifest, Cross Match Receipt with hash chain, Coordinator state machine with Failover, soundness theorem for composites across multiple Match Brokers. Closes the temporal, causal, and revocational unmooring of naive multi-broker bundling. |
 
 The 12 [whitepapers](papers/) cover accountability, the agent web, agent context mobility, confidentiality, databases for the agent economy, economics, governance, interoperability, the policy stack, the presentation layer (storefront to canvas), verifiable conformance, and the storefront to manifest transition.
 

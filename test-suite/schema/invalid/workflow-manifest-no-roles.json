@@ -1,0 +1,22 @@
+{
+  "$schema": "../../../schemas/v1.0/oap-workflow-manifest.schema.json",
+  "$comment": "Invalid: roles array has fewer than 2 entries. A workflow with one role is by definition not a cross broker workflow.",
+  "workflow_manifest_id": "wfm_01HZA1B2C3D4E5F6G7H8J9K0L1",
+  "workflow_type": "single_role_invalid",
+  "version": "1.0.0",
+  "publisher": "did:web:publisher.example",
+  "issued_at": "2026-05-11T10:00:00Z",
+  "expires_at": "2027-05-11T10:00:00Z",
+  "roles": [
+    { "role_id": "only_one", "broker_category": "tool_capability", "required": true, "min_conformance": "M1" }
+  ],
+  "consistency_constraints": [],
+  "max_total_duration_seconds": 3600,
+  "revocation_propagation_floor_seconds": 60,
+  "coordinator_requirements": {
+    "min_independent_heartbeat_paths": 1,
+    "failover_required": false,
+    "audit_log_retention_seconds": 94608000
+  },
+  "signature": "ed25519:placeholder"
+}

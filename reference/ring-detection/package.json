@@ -1,0 +1,8 @@
+{
+  "name": "@oap/reference-ring-detection",
+  "version": "1.0.0",
+  "description": "OAP Reference Cross Category Ring Detection — Tarjan SCC over the mutual boosting bipartite subgraph per RFC 0009 Appendix C.",
+  "main": "ring-detection.js",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=20" }
+}

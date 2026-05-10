@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-cross-match-receipt.schema.json",
+  "title": "OAP Cross Match Receipt",
+  "description": "Hash chained composite receipt binding Match Receipts issued by multiple Match Brokers. See RFC 0035 section 4.2 and invariants CMR.1, CMR.2, CMR.3.",
+  "type": "object",
+  "required": [
+    "version",
+    "workflow_id",
+    "workflow_manifest_id",
+    "workflow_manifest_hash",
+    "initiator_did",
+    "coordinator_did",
+    "opened_at",
+    "expires_at",
+    "segments",
+    "consistency_evaluations",
+    "effective_expires_at",
+    "signatures"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": "1.0" },
+    "workflow_id": { "type": "string", "pattern": "^wf_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "workflow_manifest_id": { "type": "string", "pattern": "^wfm_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "workflow_manifest_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "initiator_did": { "type": "string", "pattern": "^did:" },
+    "coordinator_did": { "type": "string", "pattern": "^did:" },
+    "failover_coordinator_did": { "type": "string", "pattern": "^did:" },
+    "opened_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "segments": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "role_id", "broker_did", "match_receipt_hash", "broker_tree_head",
+          "inclusion_proof", "segment_signature", "issued_at", "expires_at", "prev_segment_hash"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "role_id": { "type": "string" },
+          "broker_did": { "type": "string", "pattern": "^did:" },
+          "match_receipt_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "broker_tree_head": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "inclusion_proof": { "type": "string" },
+          "segment_signature": { "type": "string" },
+          "issued_at": { "type": "string", "format": "date-time" },
+          "expires_at": { "type": "string", "format": "date-time" },
+          "prev_segment_hash": {
+            "oneOf": [
+              { "type": "null" },
+              { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+            ]
+          }
+        }
+      }
+    },
+    "consistency_evaluations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["constraint_id", "result"],
+        "additionalProperties": true,
+        "properties": {
+          "constraint_id": { "type": "string" },
+          "result": { "type": "boolean" },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "effective_expires_at": { "type": "string", "format": "date-time" },
+    "coordinator_heartbeat_anchor": { "type": "string", "format": "uri" },
+    "registry_anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "registry_did": { "type": "string", "pattern": "^did:" },
+        "anchored_at": { "type": "string", "format": "date-time" },
+        "merkle_root": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "consistency_proof_to_prev": { "type": "string" }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["signer", "sig"],
+        "additionalProperties": false,
+        "properties": {
+          "signer": { "type": "string", "pattern": "^did:" },
+          "sig": { "type": "string" }
+        }
+      }
+    }
+  }
+}

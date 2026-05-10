@@ -1,0 +1,16 @@
+{
+  "event_id": "evt_01HZA1B2C3D4E5F6G7H8J9K0L3",
+  "subscription_id": "sub_01HZA1B2C3D4E5F6G7H8J9K0L4",
+  "cursor": 42,
+  "event_type": "revoked",
+  "workflow_id": "wf_01HZA1B2C3D4E5F6G7H8J9K022",
+  "manifest_id": "manifest-finance-de-loan-78431",
+  "manifest_hash_before": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+  "manifest_hash_after": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "revocation_reason_code": "policy_violation",
+  "effective_at": "2026-06-12T09:00:00Z",
+  "consequence_class": "workflow_invalidating",
+  "signed_revocation_document": "ed25519:signed-revocation-doc-base64",
+  "issued_at": "2026-06-12T09:00:01Z",
+  "signature": "ed25519:event-signature-base64"
+}

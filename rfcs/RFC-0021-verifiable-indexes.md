@@ -194,3 +194,143 @@ The Gorilla benchmark (Patil et al. 2023) and the ToolLLM experiments (Qin et al
 - Crosby, S. A., and Wallach, D. S. (2009). Efficient Data Structures for Tamper-Evident Logging. USENIX Security Symposium. The history tree that underpins the incremental Merkle construction.
 - Johnson, J., Douze, M., and Jégou, H. (2021). Billion-scale Similarity Search with GPUs. IEEE Transactions on Big Data 7(3). The FAISS vector index recommended for dense retrieval.
 - Malkov, Y. A., and Yashunin, D. A. (2020). Efficient and Robust Approximate Nearest Neighbor Search Using HNSW Graphs. IEEE TPAMI 42(4). The HNSW approximate nearest neighbor algorithm.
+
+## Appendix B: Broker Category Profile (Normative)
+
+This appendix is normative. It defines the Broker Category Profile, an extension of the Match Broker Manifest that binds a broker to a domain category, to a set of accepted jurisdictions, and to the attestation, signing, monitoring, and replication requirements specific to that category. The Profile is the canonical mechanism by which a consuming Agent decides whether a particular Match Broker is admissible for a particular Intent.
+
+### B.1 Motivation
+
+Section 3 of this RFC defines the cryptographic and structural obligations that any conformant Match Broker MUST satisfy. Those obligations are domain neutral. A broker that indexes capability tools and a broker that indexes real estate listings can satisfy the same Merkle obligations while operating under entirely different schemata, regulatory regimes, and threat models. A category neutral profile is insufficient for two reasons. The first is that the attestation requirements for an indexed Manifest differ by domain: a real estate listing without a verifiable land registry attestation cannot be safely matched against an autonomous purchase Intent, whereas a tool listing without a land registry attestation is unremarkable. The second is that the regulatory boundary of a category constrains which jurisdictions a broker may serve and which it MUST refuse: a health broker that indexes German patient flows under United States retention rules is unlawful regardless of its cryptographic conformance. The Broker Category Profile binds the broker to its category, exposes the constraints, and allows the consuming Agent to verify admissibility before issuing any Intent.
+
+### B.2 Profile Schema
+
+A Broker Category Profile is a JSON document conforming to `oap-broker-category-profile.schema.json`. The Profile is embedded in the Match Broker's Manifest under the `broker_category_profile` field and is the unique authoritative source for the category bound parameters of the broker. The required fields are the following.
+
+```json
+{
+  "broker_category":             "peer_agent | commerce | knowledge | labor | real_estate | tool_capability | compute_model | finance | health | legal | government | education | logistics | asset | subscription_saas | dataset | identity_issuer | reputation_aggregator | event | media",
+  "category_version":            "semver, e.g. 1.0.0",
+  "accepted_jurisdictions":      ["ISO-3166-1 alpha-2 codes"],
+  "refused_jurisdictions":       ["ISO-3166-1 alpha-2 codes"],
+  "required_listing_attestations": [
+    {
+      "attestation_type":        "string drawn from the category attestation vocabulary",
+      "issuer_class":            "string drawn from the category issuer class vocabulary",
+      "renewal_period_seconds":  3600,
+      "binding":                 "REQUIRED | RECOMMENDED"
+    }
+  ],
+  "threshold_signing": {
+    "scheme":                    "FROST-Ed25519 | Threshold-Ed25519 | none",
+    "m_of_n":                    [3, 5],
+    "key_storage":               "HSM | software | none",
+    "key_rotation_period_seconds": 7776000
+  },
+  "monitor_services":            ["did:web:monitor.example", "..."],
+  "monitor_minimum_independent": 2,
+  "mirror_services":             ["did:web:mirror.example", "..."],
+  "mirror_minimum_regions":      2,
+  "publication_interval_seconds": 600,
+  "data_retention_policy": {
+    "listing_payload_ttl_seconds":  31536000,
+    "query_log_ttl_seconds":        2592000,
+    "audit_log_ttl_seconds":        315360000,
+    "tombstone_on_erasure":         true
+  },
+  "dispute_resolution_endpoint": "https://broker.example/oap/disputes",
+  "regulatory_authority_contact": "string",
+  "category_specific":           { "...": "category specific extension fields" }
+}
+```
+
+### B.3 Category Taxonomy
+
+The `broker_category` field MUST take a value drawn from the closed taxonomy of section B.3. Future categories MUST be added through a Working Group artifact that supplies a category specification document defining the attestation vocabulary, the issuer class vocabulary, and the recommended monitor and mirror configuration for that category. The closed taxonomy at version 1.0 is exhaustive: a broker that does not fit any defined category SHALL NOT claim conformance under this profile and SHALL submit a category specification document through the RFC process before listing under the meta registry.
+
+### B.4 Per Category Attestation Requirements
+
+The following per category requirements are normative at version 1.0 of this profile. A Match Broker that claims a category MUST require the listed attestations on every accepted Listing. A Match Broker MUST refuse Listings that omit a REQUIRED attestation, MUST flag Listings that omit a RECOMMENDED attestation in the response Decision Record, and MUST publish the attestation type vocabulary it accepts under the `category_specific.accepted_attestation_subtypes` field.
+
+| Category | Required Attestations | Recommended Attestations | Issuer Classes |
+|----------|----------------------|--------------------------|----------------|
+| peer_agent | `proof_of_personhood` | `interaction_history_summary` | identity_issuer |
+| commerce | `seller_kyb`, `tax_identifier` | `consumer_protection_bond` | tax_authority, registered_chamber |
+| knowledge | `content_provenance`, `license_declaration` | `peer_review_signature` | publisher, archivist |
+| labor | `employer_kyb`, `equal_treatment_attestation` | `salary_range_disclosure` | tax_authority, labor_authority |
+| real_estate | `land_registry_extract`, `ownership_attestation`, `energy_certificate` | `building_permit_summary` | land_registry, surveyor, notary |
+| tool_capability | `reproducibility_attestation` | `benchmark_result` | self_attestation, benchmark_authority |
+| compute_model | `model_card`, `availability_attestation` | `evaluation_report` | self_attestation, third_party_evaluator |
+| finance | `regulator_registration`, `psd2_or_equivalent_licence` | `audit_attestation` | financial_regulator, certified_auditor |
+| health | `professional_licence`, `data_processing_lawful_basis` | `accreditation_attestation` | medical_board, data_protection_authority |
+| legal | `bar_admission` | `professional_indemnity_insurance` | bar_association |
+| government | `agency_registration` | `service_charter` | sovereign_root |
+| education | `accreditation_attestation` | `outcome_disclosure` | education_ministry, accreditation_council |
+| logistics | `carrier_licence` | `tracking_endpoint_attestation` | transport_authority |
+| asset | `title_chain_extract` | `appraisal` | title_authority, certified_appraiser |
+| subscription_saas | `entity_kyb`, `terms_of_service_hash` | `availability_record` | tax_authority |
+| dataset | `provenance_chain`, `license_declaration`, `consent_attestation` | `bias_audit` | data_steward, ethics_review_board |
+| identity_issuer | `root_of_trust_attestation`, `audit_attestation` | `incident_history_summary` | sovereign_root, peer_witness |
+| reputation_aggregator | `algorithm_disclosure`, `independence_attestation` | `external_audit` | peer_witness, certified_auditor |
+| event | `entity_kyb` | `venue_attestation` | tax_authority |
+| media | `content_provenance`, `editorial_responsibility_attestation` | `c2pa_signed_origin` | press_council, c2pa_authority |
+
+The Issuer Class vocabulary at version 1.0 enumerates `identity_issuer`, `tax_authority`, `registered_chamber`, `publisher`, `archivist`, `labor_authority`, `land_registry`, `surveyor`, `notary`, `self_attestation`, `benchmark_authority`, `third_party_evaluator`, `financial_regulator`, `certified_auditor`, `medical_board`, `data_protection_authority`, `bar_association`, `sovereign_root`, `education_ministry`, `accreditation_council`, `transport_authority`, `title_authority`, `certified_appraiser`, `data_steward`, `ethics_review_board`, `peer_witness`, `press_council`, `c2pa_authority`. An attestation MUST carry the Issuer Class of its signer in its `issuer_class` field.
+
+### B.5 Jurisdictional Binding
+
+A Match Broker MUST list at least one jurisdiction in `accepted_jurisdictions` and MUST refuse Listings whose `lawful_jurisdiction` field is not a subset of `accepted_jurisdictions`. The Broker MAY enumerate `refused_jurisdictions` for transparency. A consuming Agent whose Intent declares an `intended_jurisdiction` outside the Broker's `accepted_jurisdictions` SHALL receive a `JurisdictionalMismatch` rejection rather than a candidate set. The rejection is itself a signed document and is auditable through the broker's Audit Log.
+
+For categories that are subject to cross border regulatory regimes, the broker MUST additionally declare the regime in `category_specific.regulatory_regimes`. The defined regimes at version 1.0 are `gdpr_general`, `gdpr_article_9`, `psd2`, `mifid_ii`, `dora`, `eidas_v2`, `agg`, `hipaa`, `ccpa`, `pipeda`, `appi`, and `pdpa_sg`. A broker that declares a regime MUST publish the mapping from regime articles to enforcement points in its broker manifest under `category_specific.regime_mapping`.
+
+### B.6 Threshold Signing and Key Management
+
+A broker that claims conformance level M3 or above under section 7 of this RFC MUST sign Tree Heads, Completeness Attestations, and Listing Receipts under a threshold scheme. The defined schemes are FROST-Ed25519 (Komlo and Goldberg 2020) at M of N with N greater than or equal to 5 and M of at least floor(2N/3) + 1, or any equivalent threshold scheme registered in the Working Group artifact `oap.threshold.schemes.v1`. The signing key shares MUST be stored in hardware security modules of FIPS 140-3 level 2 or above. Key rotation MUST occur at least once per `threshold_signing.key_rotation_period_seconds` and MUST produce a signed rotation event that is committed into the broker's Audit Log and into the meta registry.
+
+The motivation is that single key compromise is a realistic failure mode for production brokers and MUST NOT permit silent forgery of Tree Heads. Under a 3 of 5 scheme, an adversary that compromises two of five signers cannot produce a valid Tree Head; under a 4 of 7 scheme the bound rises to three; the broker MAY choose any parameterization that meets the floor. A broker that claims M3 conformance without threshold signing has lapsed conformance and SHOULD be discounted under the Performance Record of RFC 0009.
+
+### B.7 Monitor and Mirror Requirements
+
+A broker that claims conformance level M2 or above MUST publish its Tree Heads to at least `monitor_minimum_independent` independent Monitor Services. Independence is established by distinct controlling DIDs operated by distinct controllers, where the controller graph is checked against the meta registry for declared affiliation. A broker MUST publish its Listings and its Tree Heads to at least `mirror_minimum_regions` Mirror Services located in distinct geographic regions, where the region is declared by the Mirror's `iso_region` field in its own Manifest. The Monitor and Mirror DIDs MUST be enumerated in the broker's Profile and MUST themselves be conformant under either this RFC at M1 or above or under an equivalent Working Group artifact for Monitors and Mirrors.
+
+A Tree Head that is not visible at a given Monitor within the broker's declared `publication_interval_seconds` is a publication failure. The Monitor MUST emit a `MonitorAlert` event signed by the Monitor that names the broker, the missing publication window, and the last observed Tree Head. The MonitorAlert is itself a Performance Record under RFC 0009 and influences the broker's aggregated score.
+
+### B.8 Data Retention and Erasure
+
+A broker that processes personal data MUST publish a `data_retention_policy` with the fields specified in B.2. Listing payloads MUST be erasable on a verified data subject request under the lawful basis declared in the relevant regulatory regime. The broker MUST implement the cryptographic erasure mechanism described in OAP-CORE-1.0 section 19 such that the data subject's content is rendered unreadable while the audit log entry referring to its existence and erasure remains intact. The audit log entry MUST contain only the content hash, the erasure timestamp, the lawful basis, and the verified data subject DID, and SHALL NOT contain reconstructable personal data.
+
+The retention horizons MUST be at least the following minima per category: `query_log_ttl_seconds` no greater than 2592000 (30 days) for `health` and `peer_agent`, no greater than 7776000 (90 days) for `commerce` and `labor`, and no greater than 31536000 (365 days) for `knowledge`, `legal`, `government`, `media`. The `audit_log_ttl_seconds` MUST be at least 315360000 (10 years) for `finance`, `legal`, `health`, `real_estate`, and at least 94608000 (3 years) for all other categories.
+
+### B.9 Profile Versioning
+
+A change to any field of the Broker Category Profile is a substantive change. The `category_version` field MUST be incremented before the change takes effect. Subscribers under RFC 0022 SHALL receive the Profile change as a Manifest update event with `event_type = "recertified"` if the change affects attestation requirements, threshold parameters, monitor set, mirror set, or retention policy, and with `event_type = "updated"` for editorial changes. A broker that changes its Profile silently is non conformant under this RFC and forfeits its M conformance claim until the next signed Completeness Attestation incorporates the change.
+
+### B.10 Verification Algorithm
+
+A consuming Agent verifies a broker's Profile admissibility for a given Intent by the following deterministic procedure.
+
+1. Fetch the broker Manifest at the broker DID's well known location.
+2. Confirm the `broker_category_profile` field is present and validates against `oap-broker-category-profile.schema.json`.
+3. Confirm the Profile's `category_version` matches the version recorded in the most recent meta registry listing for the broker. A mismatch indicates either a silent change or a stale meta registry entry; the Agent SHOULD refuse the broker until the meta registry is reconciled.
+4. Confirm the Intent's `intended_jurisdiction` is a subset of `accepted_jurisdictions` and disjoint from `refused_jurisdictions`.
+5. Confirm the Intent's `required_attestation_subtypes` projection is satisfiable under the broker's `required_listing_attestations`.
+6. For each declared `monitor_services` entry, fetch the Monitor's most recent observation of the broker and confirm that the observation is no older than `publication_interval_seconds * 2`.
+7. For each declared `mirror_services` entry, fetch a witness of the broker's current Tree Head and confirm the Mirror has signed the same Head as the broker.
+8. If all checks pass, the broker is admissible for the Intent. If any check fails, the Agent MUST NOT issue the Intent to the broker and SHOULD record the failure as a Performance Record under RFC 0009.
+
+The procedure is constant time in the size of the broker's index because all checks consult only the Profile, the most recent Tree Head, and the Monitor and Mirror endpoints.
+
+### B.11 Implementation Experience
+
+The Reference Server has been extended with a Profile loader that validates incoming Listings against the per category attestation requirements of section B.4. The Reference Agent has been extended with the verification algorithm of section B.10. The AssistNet platform's internal peer_agent broker has been re profiled under section B.4 with `proof_of_personhood` as the REQUIRED attestation and with a 3 of 5 threshold signing scheme over its Tree Heads, with the share holders located in three geographic regions (Frankfurt, Dublin, Singapore) and the keys stored in YubiHSM2 devices under FIPS 140-3 level 3. The Monitor set is two independent Monitors operated by the AssistNet platform and by an external observer respectively. The Mirror set is two Mirrors in Frankfurt and Dublin with daily consistency reconciliation against the primary Tree.
+
+### B.12 References for Appendix B
+
+- Komlo, C., and Goldberg, I. (2020). FROST: Flexible Round-Optimized Schnorr Threshold Signatures. Selected Areas in Cryptography. The threshold signing scheme normatively required at M3 and above.
+- Gennaro, R., Goldfeder, S., and Narayanan, A. (2016). Threshold-Optimal DSA/ECDSA Signatures and an Application to Bitcoin Wallet Security. ACNS 2016. The underlying threshold theory.
+- Ben-Or, M., Goldwasser, S., and Wigderson, A. (1988). Completeness Theorems for Non-Cryptographic Fault-Tolerant Distributed Computation. STOC 1988. The classical bound on Byzantine fault tolerance that motivates the floor(2N/3) + 1 requirement.
+- ISO/IEC 19790:2012. Security Requirements for Cryptographic Modules. The hardware security module requirements.
+- NIST FIPS 140-3. Security Requirements for Cryptographic Modules. The level definitions referenced in B.6.
+- Council of Europe, Convention 108+ (2018). The data protection minima that underpin B.8.
+- Regulation (EU) 2016/679 (GDPR). The lawful basis and erasure mechanics referenced in B.8.
+- C2PA Specification 2.0 (2024). Content provenance referenced in the media category.

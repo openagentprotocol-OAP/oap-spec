@@ -1,0 +1,12 @@
+{
+  "name": "@oap/reference-coordinator",
+  "version": "1.0.0",
+  "description": "OAP Reference Workflow Coordinator — Cross Broker Workflow state machine, hash chained Cross Match Receipts, heartbeat publication, and failover protocol per RFC 0035.",
+  "main": "coordinator.js",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=20" },
+  "type": "commonjs",
+  "scripts": {
+    "test": "node test/coordinator.test.js"
+  }
+}

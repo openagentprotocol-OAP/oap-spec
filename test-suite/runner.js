@@ -89,6 +89,10 @@ function listFixtures(dir) {
 function inferSchemaIdFromFixture(fixturePath) {
   const base = path.basename(fixturePath);
   const map = {
+    'broker-category-profile': 'oap-broker-category-profile.schema.json',
+    'workflow-manifest': 'oap-workflow-manifest.schema.json',
+    'cross-match-receipt': 'oap-cross-match-receipt.schema.json',
+    'workflow-revocation-event': 'oap-workflow-revocation-event.schema.json',
     'provisioning-manifest': 'oap-provisioning-manifest.schema.json',
     'context-switch': 'oap-context-switch.schema.json',
     'byoa-attestation': 'oap-byoa-attestation.schema.json',
