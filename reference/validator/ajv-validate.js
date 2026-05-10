@@ -41,6 +41,15 @@ function pickSchema(filename, data) {
   if (filename.includes('context-switch')) return schemas['oap-context-switch.schema.json'] || null;
   if (filename.includes('byoa-attestation')) return schemas['oap-byoa-attestation.schema.json'] || null;
   if (filename.includes('offboarding-receipt')) return schemas['oap-offboarding-receipt.schema.json'] || null;
+  // RFC 0027 rev 2: Ad Hoc Teamwork artifacts
+  if (filename.includes('capability-announcement')) return schemas['oap-capability-announcement.schema.json'] || null;
+  if (filename.includes('convention-drift-receipt')) return schemas['oap-convention-drift-receipt.schema.json'] || null;
+  if (filename.includes('coordination-abort-receipt')) return schemas['oap-coordination-abort-receipt.schema.json'] || null;
+  if (filename.includes('late-join-receipt')) return schemas['oap-late-join-receipt.schema.json'] || null;
+  if (filename.includes('convention-receipt')) return schemas['oap-convention-receipt.schema.json'] || null;
+  // Bypass routing for AHT request fixtures (not standalone protocol artifacts)
+  if (filename.includes('late-join-request')) return null;
+  if (filename.includes('convention-propose-request')) return null;
   // RFC 0032: Payment Instrument Adapter Protocol
   if (filename.includes('payment-mandate')) return schemas['oap-payment-mandate.schema.json'] || null;
   if (filename.includes('settlement-confirmation')) return schemas['oap-settlement-confirmation.schema.json'] || null;
