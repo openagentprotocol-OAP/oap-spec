@@ -27,10 +27,6 @@ async function run({ target, ajv }) {
     rec('ad-hoc-late-join-not-applicable', true, 'Implementation does not declare capability_match late-join mode.');
     return RESULTS;
   }
-  if (!claimsAny(receipt, ['L4', 'L5'])) {
-    rec('ad-hoc-late-join-not-applicable', true, 'Implementation does not claim L4 or higher.');
-    return RESULTS;
-  }
 
   const ep = (manifest.endpoints && manifest.endpoints.late_join) || '/oap/aht/late-join';
   const url = ep.startsWith('http') ? ep : `${base}${ep}`;

@@ -27,10 +27,6 @@ async function run({ target, ajv }) {
     rec('ad-hoc-capability-announcement-not-applicable', true, 'Implementation does not declare capability_announcement_v1.');
     return RESULTS;
   }
-  if (!claimsAny(receipt, ['L4', 'L5'])) {
-    rec('ad-hoc-capability-announcement-not-applicable', true, 'Implementation does not claim L4 or higher.');
-    return RESULTS;
-  }
 
   const ep = (manifest.endpoints && manifest.endpoints.capability_announcement) || '/oap/aht/capability-announcement';
   const url = ep.startsWith('http') ? ep : `${base}${ep}`;

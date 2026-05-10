@@ -27,10 +27,6 @@ async function run({ target, ajv }) {
     rec('ad-hoc-tier1-not-applicable', true, 'Implementation does not declare convention_discovery_v1 or v2.');
     return RESULTS;
   }
-  if (!claimsAny(receipt, ['L4', 'L5'])) {
-    rec('ad-hoc-tier1-not-applicable', true, 'Implementation does not claim L4 or higher.');
-    return RESULTS;
-  }
 
   const ep = (manifest.endpoints && manifest.endpoints.convention_propose) || '/oap/aht/convention/propose';
   const url = ep.startsWith('http') ? ep : `${base}${ep}`;

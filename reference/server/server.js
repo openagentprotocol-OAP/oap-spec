@@ -800,10 +800,7 @@ app.post('/oap/aht/convention/drift', (req, res) => {
 });
 
 app.get('/oap/conformance-receipt', (_req, res) => {
-  // The reference server declares L4 to enable AHT (RFC 0027 rev 2) probes.
-  // External implementations claiming L4+ MUST pass the full conformance
-  // suite including the unilateral-adoption probe (RFC 0027 section 7).
-  const claimed = ['L0', 'L1', 'L4'];
+  const claimed = ['L0', 'L1'];
   const core = {
     receipt_id: `urn:oap:conformance:${crypto.randomBytes(12).toString('hex')}`,
     type: 'conformance',
