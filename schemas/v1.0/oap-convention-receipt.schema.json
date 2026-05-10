@@ -4,22 +4,56 @@
   "title": "OAP Convention Receipt",
   "description": "RFC 0027 section 3.4.1 step 4. Co-signed Receipt recording the agreed Convention from the Tier 1 Schelling reduction or the Tier 3 minimax-regret selection.",
   "type": "object",
-  "required": ["receipt_id", "type", "timestamp", "context", "tier_used", "convention", "inputs", "cosigners", "signatures"],
+  "required": [
+    "receipt_id",
+    "type",
+    "timestamp",
+    "context",
+    "tier_used",
+    "convention",
+    "inputs",
+    "cosigners",
+    "signatures"
+  ],
   "additionalProperties": false,
   "properties": {
-    "receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
-    "type": { "const": "convention" },
-    "timestamp": { "type": "string", "format": "date-time" },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^urn:oap:receipt:.+$"
+    },
+    "type": {
+      "const": "convention"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
     "context": {
       "type": "object",
-      "required": ["context_type", "context_id"],
+      "required": [
+        "context_type",
+        "context_id"
+      ],
       "properties": {
-        "context_type": { "enum": ["workflow", "session"] },
-        "context_id": { "type": "string", "minLength": 1 }
+        "context_type": {
+          "enum": [
+            "workflow",
+            "session"
+          ]
+        },
+        "context_id": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "tier_used": {
-      "enum": ["tier1", "tier1+3", "tier2+3", "fallback-only"],
+      "enum": [
+        "tier1",
+        "tier1+3",
+        "tier2+3",
+        "fallback-only"
+      ],
       "description": "Which tier of the Three-Tier Handshake produced the committed Convention. RFC 0027 section 3.4."
     },
     "convention": {
@@ -29,16 +63,28 @@
     },
     "inputs": {
       "type": "object",
-      "required": ["protocol_followers", "observable_non_followers"],
+      "required": [
+        "protocol_followers",
+        "observable_non_followers"
+      ],
       "properties": {
         "protocol_followers": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["did", "convention_space_hash"],
+            "required": [
+              "did",
+              "convention_space_hash"
+            ],
             "properties": {
-              "did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
-              "convention_space_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+              "did": {
+                "type": "string",
+                "pattern": "^did:[a-z0-9]+:.+$"
+              },
+              "convention_space_hash": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -46,34 +92,85 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["did", "posterior_summary_hash"],
+            "required": [
+              "did",
+              "posterior_summary_hash"
+            ],
             "properties": {
-              "did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
-              "posterior_summary_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
-              "observation_count": { "type": "integer", "minimum": 0 }
+              "did": {
+                "type": "string",
+                "pattern": "^did:[a-z0-9]+:.+$"
+              },
+              "posterior_summary_hash": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              },
+              "observation_count": {
+                "type": "integer",
+                "minimum": 0
+              }
             }
           }
         },
-        "byzantine_bound_t": { "type": "integer", "minimum": 0 },
-        "regret_at_commit": { "type": "number", "minimum": 0 }
+        "byzantine_bound_t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "regret_at_commit": {
+          "type": "number",
+          "minimum": 0
+        }
       }
     },
     "cosigners": {
       "type": "array",
       "minItems": 1,
-      "items": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" }
+      "items": {
+        "type": "string",
+        "pattern": "^did:[a-z0-9]+:.+$"
+      }
     },
-    "previous_receipt_hash": { "type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$" },
+    "previous_receipt_hash": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "const": "genesis"
+        },
+        {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      ],
+      "description": "sha256 of canonicalized previous Receipt; \"genesis\" for chain root; null when not in a chain."
+    },
     "signatures": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["signer_did", "signature"],
+        "required": [
+          "signer_did",
+          "signature"
+        ],
         "properties": {
-          "signer_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
-          "signature": { "type": "string", "minLength": 1 },
-          "alg": { "enum": ["Ed25519", "ES256K", "ES256"] }
+          "signer_did": {
+            "type": "string",
+            "pattern": "^did:[a-z0-9]+:.+$"
+          },
+          "signature": {
+            "type": "string",
+            "minLength": 1
+          },
+          "alg": {
+            "enum": [
+              "Ed25519",
+              "ES256K",
+              "ES256"
+            ]
+          }
         }
       }
     }

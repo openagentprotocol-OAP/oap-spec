@@ -4,40 +4,90 @@
   "title": "OAP Coordination Abort Receipt",
   "description": "RFC 0027 section 3.4b and section 5. Emitted when (a) drift detection triggers for more than floor(|N|/3) peers, or (b) Byzantine bound |N| < 3t+1 is violated. Composes with RFC 0017 cooling-off Reversal Receipts.",
   "type": "object",
-  "required": ["receipt_id", "type", "timestamp", "agent_did", "context", "abort_reason", "signatures"],
+  "required": [
+    "receipt_id",
+    "type",
+    "timestamp",
+    "agent_did",
+    "context",
+    "abort_reason",
+    "signatures"
+  ],
   "additionalProperties": false,
   "properties": {
-    "receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
-    "type": { "const": "coordination_abort" },
-    "timestamp": { "type": "string", "format": "date-time" },
-    "agent_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^urn:oap:receipt:.+$"
+    },
+    "type": {
+      "const": "coordination_abort"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "agent_did": {
+      "type": "string",
+      "pattern": "^did:[a-z0-9]+:.+$"
+    },
     "context": {
       "type": "object",
-      "required": ["context_type", "context_id"],
+      "required": [
+        "context_type",
+        "context_id"
+      ],
       "properties": {
-        "context_type": { "enum": ["workflow", "session"] },
-        "context_id": { "type": "string", "minLength": 1 }
+        "context_type": {
+          "enum": [
+            "workflow",
+            "session"
+          ]
+        },
+        "context_id": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "abort_reason": {
-      "enum": ["drift-majority", "byzantine-bound-violated", "convention-failed", "fallback-policy-error"]
+      "enum": [
+        "drift-majority",
+        "byzantine-bound-violated",
+        "convention-failed",
+        "fallback-policy-error"
+      ]
     },
     "drift_evidence": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["peer_did", "kl_divergence"],
+        "required": [
+          "peer_did",
+          "kl_divergence"
+        ],
         "properties": {
-          "peer_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
-          "kl_divergence": { "type": "number", "minimum": 0 }
+          "peer_did": {
+            "type": "string",
+            "pattern": "^did:[a-z0-9]+:.+$"
+          },
+          "kl_divergence": {
+            "type": "number",
+            "minimum": 0
+          }
         }
       }
     },
     "byzantine_evidence": {
       "type": "object",
       "properties": {
-        "n": { "type": "integer", "minimum": 0 },
-        "t": { "type": "integer", "minimum": 0 }
+        "n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "linked_reversal_receipt": {
@@ -45,17 +95,47 @@
       "description": "RFC 0017 Reversal Receipt that records the abort under the cooling-off semantics.",
       "pattern": "^urn:oap:receipt:.+$"
     },
-    "previous_receipt_hash": { "type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$" },
+    "previous_receipt_hash": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "const": "genesis"
+        },
+        {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      ],
+      "description": "sha256 of canonicalized previous Receipt; \"genesis\" for chain root; null when not in a chain."
+    },
     "signatures": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["signer_did", "signature"],
+        "required": [
+          "signer_did",
+          "signature"
+        ],
         "properties": {
-          "signer_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
-          "signature": { "type": "string", "minLength": 1 },
-          "alg": { "enum": ["Ed25519", "ES256K", "ES256"] }
+          "signer_did": {
+            "type": "string",
+            "pattern": "^did:[a-z0-9]+:.+$"
+          },
+          "signature": {
+            "type": "string",
+            "minLength": 1
+          },
+          "alg": {
+            "enum": [
+              "Ed25519",
+              "ES256K",
+              "ES256"
+            ]
+          }
         }
       }
     }
