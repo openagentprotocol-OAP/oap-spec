@@ -510,6 +510,50 @@
         "contact_email": { "type": "string", "format": "email" },
         "revocation_status_url": { "type": "string", "format": "uri" }
       }
+    },
+    "ad_hoc_teamwork": {
+      "type": "object",
+      "description": "RFC 0027 Ad Hoc Teamwork declaration. When convention_discovery_v2 is true, aht_fallback_policy is required (RFC 0027 section 3.5).",
+      "additionalProperties": false,
+      "required": ["supported"],
+      "properties": {
+        "supported": { "type": "boolean" },
+        "capability_announcement_v1": { "type": "boolean" },
+        "late_join_modes": {
+          "type": "array",
+          "items": { "enum": ["convener_gated", "capability_match", "open"] },
+          "uniqueItems": true
+        },
+        "convention_discovery_v1": { "type": "boolean" },
+        "convention_discovery_v2": { "type": "boolean" },
+        "max_capabilities_per_announcement": { "type": "integer", "minimum": 1, "maximum": 1024 },
+        "unilateral_timeout_ms": { "type": "integer", "minimum": 100, "maximum": 60000 },
+        "convention_inference_v1": { "type": "boolean" },
+        "regret_tolerance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "drift_threshold_kl": { "type": "number", "minimum": 0 },
+        "max_byzantine_fraction": { "type": "number", "minimum": 0, "maximum": 0.333333 },
+        "aht_fallback_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["policy_class", "assumptions"],
+          "properties": {
+            "policy_class": { "enum": ["POAM", "PLASTIC", "AATEAM", "ROTATE", "Custom"] },
+            "policy_ref": { "type": "string", "format": "uri" },
+            "assumptions": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "minItems": 1
+            },
+            "training_distribution_ref": { "type": "string", "format": "uri" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "convention_discovery_v2": { "const": true } }, "required": ["convention_discovery_v2"] },
+          "then": { "required": ["aht_fallback_policy", "unilateral_timeout_ms"] }
+        }
+      ]
     }
   }
 }

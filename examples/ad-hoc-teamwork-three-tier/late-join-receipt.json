@@ -1,0 +1,26 @@
+{
+  "receipt_id": "urn:oap:receipt:lj-01HX7K8RZJX0010LATEJOIN",
+  "type": "late_join",
+  "timestamp": "2026-05-10T09:00:01.250Z",
+  "host_tool_did": "did:web:openagentprotocol.eu",
+  "admitted_agent_did": "did:web:fulfillment-bravo.example",
+  "context": {
+    "context_type": "workflow",
+    "context_id": "wf_01HX7K8RZJX0001AHTDEMO",
+    "admitted_at_step": "stp_01HX7K8RZJX0002AHTSHIP"
+  },
+  "admission_mode": "capability_match",
+  "capabilities_matched": ["fulfillment.ship.parcel"],
+  "reputation_score": 0.92,
+  "reputation_threshold": 0.50,
+  "capability_announcement_hash": "sha256:7861f6cd7f4a7d6faeac347a5496ef1f1d853ba6c54f268a4a2868e6b360e553",
+  "monotonic_admission_index": 1,
+  "previous_receipt_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "signatures": [
+    {
+      "signer_did": "did:web:openagentprotocol.eu",
+      "signature": "z58u8Y6RkPXc4f2vH9QJ8Z6dKwM5sNgFqL3xRtT7nW2bC1jAeY4hBiV9pUaErZkM6oP3sX8QeT2vN1wD0fL5gK7c",
+      "alg": "Ed25519"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "receipt_id": "urn:oap:receipt:cv-01HX7K8RZJX0020CONVT1",
+  "type": "convention",
+  "timestamp": "2026-05-10T09:00:02.480Z",
+  "context": {
+    "context_type": "workflow",
+    "context_id": "wf_01HX7K8RZJX0001AHTDEMO"
+  },
+  "tier_used": "tier1",
+  "convention": {
+    "delivery_window": "PT24H",
+    "label_format": "PDF_A4",
+    "carrier_priority": ["regional", "national", "international"]
+  },
+  "inputs": {
+    "protocol_followers": [
+      {
+        "did": "did:web:fulfillment-alpha.example",
+        "convention_space_hash": "sha256:5b18432f0184c9180e2fbe24266a0b254bc825bce63ae78e4e4fb67e6f2c2486"
+      },
+      {
+        "did": "did:web:fulfillment-bravo.example",
+        "convention_space_hash": "sha256:8c3d1a92f5b7e4c8a6d1b9f3e2c5a7d4b8e1f9c3d6b2a8e4f7c1d5b9e3a6c2d8"
+      }
+    ],
+    "observable_non_followers": [],
+    "byzantine_bound_t": 0,
+    "regret_at_commit": 0
+  },
+  "cosigners": [
+    "did:web:fulfillment-alpha.example",
+    "did:web:fulfillment-bravo.example"
+  ],
+  "previous_receipt_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "signatures": [
+    {
+      "signer_did": "did:web:fulfillment-alpha.example",
+      "signature": "z2A9bYxKrM4tQ6vN8sL1wR5fH7jX3pZ9cD2eU4bV6kQ8mY1nT5sW9hP7gX2cR4dM6jK8aL3vF1qN5tH9wB0eY7sR",
+      "alg": "Ed25519"
+    },
+    {
+      "signer_did": "did:web:fulfillment-bravo.example",
+      "signature": "z3xCEoQEr3kKFQAtDcjT5HhM3VqfL3rxcU7B5oN8vXqM6sZJ4dCxAEYz2bLaRfM1Wn8iX4HtKpBeVdM7Lw9YqA3sR2",
+      "alg": "Ed25519"
+    }
+  ]
+}

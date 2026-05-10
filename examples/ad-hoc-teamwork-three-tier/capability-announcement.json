@@ -1,0 +1,29 @@
+{
+  "schema": "oap.capability.v1",
+  "agent_did": "did:web:fulfillment-bravo.example",
+  "context": {
+    "context_type": "workflow",
+    "context_id": "wf_01HX7K8RZJX0001AHTDEMO",
+    "step_id": "stp_01HX7K8RZJX0002AHTSHIP"
+  },
+  "capabilities": [
+    {
+      "action": "fulfillment.ship.parcel",
+      "schema_ref": "https://example.org/schemas/ship-parcel.v1.json",
+      "preconditions": ["address_valid", "weight_le_30kg"],
+      "cost_class": "billable",
+      "expected_latency_ms": 1200
+    }
+  ],
+  "evidence": {
+    "manifest_url": "https://fulfillment-bravo.example/oap/manifest",
+    "reputation_profile_ref": "rfc0009://profile/did:web:fulfillment-bravo.example",
+    "role_enactment": {
+      "organization_did": "did:web:bravo-logistics.example",
+      "role_id": "regional_carrier_eu_west"
+    }
+  },
+  "issued_at": "2026-05-10T09:00:00Z",
+  "expires_at": "2026-05-10T10:00:00Z",
+  "signature": "z3xCEoQEr3kKFQAtDcjT5HhM3VqfL3rxcU7B5oN8vXqM6sZJ4dCxAEYz2bLaRfM1Wn8iX4HtKpBeVdM7Lw9YqA3sR2"
+}

@@ -108,6 +108,25 @@ __all__ = [
     "DeonticDecision",
     "evaluate_deontic",
     "check_org_consistency",
+    "AhtFallbackPolicy",
+    "Peer",
+    "ThreeTierParams",
+    "ThreeTierResult",
+    "run_three_tier_handshake",
+    "detect_convention_drift",
+    "capability_announcement_hash",
+    "aht_canonicalize",
     "__version__",
     "OAP_SPEC_VERSION",
 ]
+
+from .aht import (
+    AhtFallbackPolicy,
+    Peer,
+    ThreeTierParams,
+    ThreeTierResult,
+    aht_canonicalize,
+    capability_announcement_hash,
+    detect_convention_drift,
+    run_three_tier_handshake,
+)

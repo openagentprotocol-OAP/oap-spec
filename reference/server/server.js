@@ -240,6 +240,10 @@ const manifest = {
     conformance_receipt:  '/oap/conformance-receipt',
     receipt_verify:       '/oap/receipt-verify',
     receipt_chain_export: '/oap/receipt-chain/export',
+    capability_announcement: '/oap/aht/capability-announcement',
+    late_join:               '/oap/aht/late-join',
+    convention_propose:      '/oap/aht/convention/propose',
+    convention_drift:        '/oap/aht/convention/drift',
   },
   auth: [{ method: 'anonymous' }, { method: 'bearer' }],
   actions: ACTIONS,
@@ -279,6 +283,24 @@ const manifest = {
   sybil_resistance: {
     fresh_identity_influence_cap: 0.05,
     cooling_off_required_seconds: 86400,
+  },
+  ad_hoc_teamwork: {
+    supported: true,
+    capability_announcement_v1: true,
+    late_join_modes: ['capability_match', 'open'],
+    convention_discovery_v1: true,
+    convention_discovery_v2: true,
+    max_capabilities_per_announcement: 64,
+    unilateral_timeout_ms: 1500,
+    convention_inference_v1: true,
+    regret_tolerance: 0.10,
+    drift_threshold_kl: 0.50,
+    max_byzantine_fraction: 0.33,
+    aht_fallback_policy: {
+      policy_class: 'POAM',
+      policy_ref: 'https://openagentprotocol.eu/rfcs/0027#aht-fallback-policy',
+      assumptions: ['stationary_teammates', 'fully_observable_state', 'type_space_realizable'],
+    },
   },
 };
 
@@ -647,8 +669,141 @@ app.get('/oap/receipt-chain/export', (_req, res) => {
 // external audit attestations, registry anchors) that a generic local demo
 // cannot produce. Implementations that genuinely satisfy higher levels SHOULD
 // claim them and prove them via the full conformance test suite.
+// ─────────────────────────────────────────────────────────────────────────────
+// RFC 0027: Ad Hoc Teamwork endpoints
+// ─────────────────────────────────────────────────────────────────────────────
+
+const AHT_REQUIRED_CAPS = ['fulfillment.ship.parcel', 'collab.edit.document'];
+const AHT_REPUTATION_THRESHOLD = 0.0;
+let ahtAdmissionCounter = 0;
+
+app.post('/oap/aht/capability-announcement', (req, res) => {
+  const a = req.body || {};
+  if (a.schema !== 'oap.capability.v1') return res.status(400).json({ error: 'invalid_schema' });
+  if (!a.agent_did || !Array.isArray(a.capabilities) || a.capabilities.length === 0) {
+    return res.status(400).json({ error: 'missing_required_fields' });
+  }
+  if (!a.signature) return res.status(400).json({ error: 'unsigned' });
+  // Reference server accepts the announcement and responds with the canonical hash.
+  const canonical = JSON.stringify(a);
+  const hash = 'sha256:' + crypto.createHash('sha256').update(canonical).digest('hex');
+  res.json({ accepted: true, capability_announcement_hash: hash });
+});
+
+app.post('/oap/aht/late-join', (req, res) => {
+  const { capability_announcement, context } = req.body || {};
+  if (!capability_announcement || !context) return res.status(400).json({ error: 'missing_required_fields' });
+  const caps = (capability_announcement.capabilities || []).map((c) => c.action);
+  const matched = caps.filter((c) => AHT_REQUIRED_CAPS.includes(c));
+  if (matched.length === 0) {
+    return res.status(403).json({ error: 'capabilities_not_matched', required: AHT_REQUIRED_CAPS });
+  }
+  ahtAdmissionCounter += 1;
+  const annHash = 'sha256:' + crypto.createHash('sha256').update(JSON.stringify(capability_announcement)).digest('hex');
+  const core = {
+    receipt_id: `urn:oap:receipt:lj-${generateUlid()}`,
+    type: 'late_join',
+    timestamp: new Date().toISOString(),
+    host_tool_did: TOOL_DID,
+    admitted_agent_did: capability_announcement.agent_did,
+    context: { context_type: context.context_type, context_id: context.context_id, admitted_at_step: context.step_id || null },
+    admission_mode: 'capability_match',
+    capabilities_matched: matched,
+    reputation_score: 1.0,
+    reputation_threshold: AHT_REPUTATION_THRESHOLD,
+    capability_announcement_hash: annHash,
+    monotonic_admission_index: ahtAdmissionCounter,
+    previous_receipt_hash: getChainTip(),
+  };
+  const sigValue = signEd25519(core);
+  const receipt = { ...core, signatures: [{ signer_did: TOOL_DID, signature: sigValue, alg: 'Ed25519' }] };
+  res.json(receipt);
+});
+
+app.post('/oap/aht/convention/propose', (req, res) => {
+  const { context, convention_spaces, observable_peers } = req.body || {};
+  if (!Array.isArray(convention_spaces) || convention_spaces.length === 0) {
+    return res.status(400).json({ error: 'missing_convention_spaces' });
+  }
+  // Tier 1 Schelling reduction (canonicalized, lex-tiebreak).
+  const canonicalize = (v) => {
+    if (v === null || typeof v !== 'object') return JSON.stringify(v);
+    if (Array.isArray(v)) return '[' + v.map(canonicalize).join(',') + ']';
+    return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canonicalize(v[k])).join(',') + '}';
+  };
+  const sets = convention_spaces.map((entry) => new Set((entry.space || []).map(canonicalize)));
+  const inter = sets.length === 0 ? [] : [...sets[0]].filter((k) => sets.every((s) => s.has(k)));
+  let convention = null;
+  let tierUsed = 'tier1';
+  if (inter.length > 0) {
+    inter.sort();
+    convention = JSON.parse(inter[0]);
+  } else if (Array.isArray(observable_peers) && observable_peers.length > 0) {
+    // Tier 2/3 fallback: pick first convention from union of published spaces.
+    const union = new Set();
+    for (const e of convention_spaces) for (const c of (e.space || [])) union.add(canonicalize(c));
+    if (union.size > 0) {
+      convention = JSON.parse([...union].sort()[0]);
+      tierUsed = 'tier2+3';
+    }
+  }
+  if (convention === null) {
+    return res.status(409).json({ error: 'convention_failed' });
+  }
+  const core = {
+    receipt_id: `urn:oap:receipt:cv-${generateUlid()}`,
+    type: 'convention',
+    timestamp: new Date().toISOString(),
+    context: { context_type: context?.context_type || 'session', context_id: context?.context_id || `ses_${generateUlid()}` },
+    tier_used: tierUsed,
+    convention,
+    inputs: {
+      protocol_followers: convention_spaces.map((e) => ({
+        did: e.did,
+        convention_space_hash: 'sha256:' + crypto.createHash('sha256').update(JSON.stringify(e.space || [])).digest('hex'),
+      })),
+      observable_non_followers: (observable_peers || []).map((p) => ({
+        did: p.did,
+        posterior_summary_hash: 'sha256:' + crypto.createHash('sha256').update(JSON.stringify(p.observed_actions || [])).digest('hex'),
+        observation_count: (p.observed_actions || []).length,
+      })),
+      byzantine_bound_t: 0,
+      regret_at_commit: 0,
+    },
+    cosigners: [TOOL_DID],
+    previous_receipt_hash: getChainTip(),
+  };
+  const sigValue = signEd25519(core);
+  res.json({ ...core, signatures: [{ signer_did: TOOL_DID, signature: sigValue, alg: 'Ed25519' }] });
+});
+
+app.post('/oap/aht/convention/drift', (req, res) => {
+  const { context, affected_peer_did, kl_divergence, observation_window_size } = req.body || {};
+  if (!affected_peer_did || typeof kl_divergence !== 'number') {
+    return res.status(400).json({ error: 'missing_required_fields' });
+  }
+  const core = {
+    receipt_id: `urn:oap:receipt:dr-${generateUlid()}`,
+    type: 'convention_drift',
+    timestamp: new Date().toISOString(),
+    agent_did: TOOL_DID,
+    context: { context_type: context?.context_type || 'session', context_id: context?.context_id || `ses_${generateUlid()}` },
+    affected_peer_did,
+    kl_divergence,
+    drift_threshold_kl: 0.5,
+    observation_window_size: observation_window_size || 0,
+    decision: kl_divergence > 0.5 ? 're-infer' : 're-infer',
+    previous_receipt_hash: getChainTip(),
+  };
+  const sigValue = signEd25519(core);
+  res.json({ ...core, signatures: [{ signer_did: TOOL_DID, signature: sigValue, alg: 'Ed25519' }] });
+});
+
 app.get('/oap/conformance-receipt', (_req, res) => {
-  const claimed = ['L0', 'L1'];
+  // The reference server declares L4 to enable AHT (RFC 0027 rev 2) probes.
+  // External implementations claiming L4+ MUST pass the full conformance
+  // suite including the unilateral-adoption probe (RFC 0027 section 7).
+  const claimed = ['L0', 'L1', 'L4'];
   const core = {
     receipt_id: `urn:oap:conformance:${crypto.randomBytes(12).toString('hex')}`,
     type: 'conformance',

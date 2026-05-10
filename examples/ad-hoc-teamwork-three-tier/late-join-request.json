@@ -1,0 +1,23 @@
+{
+  "context": {
+    "context_type": "workflow",
+    "context_id": "wf_01HX7K8RZJX0001AHTDEMO",
+    "step_id": "stp_01HX7K8RZJX0002AHTSHIP"
+  },
+  "capability_announcement": {
+    "schema": "oap.capability.v1",
+    "agent_did": "did:web:fulfillment-bravo.example",
+    "context": {
+      "context_type": "workflow",
+      "context_id": "wf_01HX7K8RZJX0001AHTDEMO"
+    },
+    "capabilities": [
+      {
+        "action": "fulfillment.ship.parcel",
+        "schema_ref": "https://example.org/schemas/ship-parcel.v1.json"
+      }
+    ],
+    "evidence": { "manifest_url": "https://fulfillment-bravo.example/oap/manifest" },
+    "signature": "z3xCEoQEr3kKFQAtDcjT5HhM3VqfL3rxcU7B5oN8vXqM6sZJ4dCxAEYz2bLaRfM1Wn8iX4HtKpBeVdM7Lw9YqA3sR2"
+  }
+}

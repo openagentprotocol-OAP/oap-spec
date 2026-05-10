@@ -184,7 +184,7 @@ AssistNet operates a Workflow Engine in production with named compositions for b
 
 1. OAP-CORE-1.0, Section 14 (Capabilities Discovery).
 2. RFC 0001 (Coordination Sessions), RFC 0002 (Negotiation Protocol).
-3. RFC 0027 (Ad Hoc Teamwork and Convention Discovery), for Workflows that admit Participants without prior coordination, including the Late Join Procedure, Capability Announcement, and the bounded convergence guarantees of Theorem A.1 and Theorem A.2 in that RFC. The closed world coordination model of section 3 of the present RFC is the default; ad hoc teamwork is the additive extension.
+3. RFC 0027 (Ad Hoc Teamwork and Convention Discovery, revision 2), for Workflows that admit Participants without prior coordination, including the Late Join Procedure, Capability Announcement, the Three-Tier Convention Discovery Handshake of RFC 0027 section 3.4, and the bounded convergence guarantee of Theorem A.1 (Unilateral Bounded Termination, valid for any |N_P| >= 0) and the soundness guarantee of Theorem A.2 (Late Join Preserves Workflow Soundness). The closed world coordination model of section 3 of the present RFC is the default; ad hoc teamwork is the additive extension. Workflows in `admission_mode = "capability_match"` whose hosting Tool declares `convention_discovery_v2 = true` MUST also declare an `aht_fallback_policy` (RFC 0027 section 3.5); the Workflow Receipt of section 3.4 of the present RFC composes with the AHT Fallback Policy outputs through the Step Receipt mechanism, with the Fallback Policy's signed actions binding to the Workflow Receipt chain identically to actions of pre-listed Participants.
 
 ## Appendix A: Joint Intention Semantics for OAP Workflows
 

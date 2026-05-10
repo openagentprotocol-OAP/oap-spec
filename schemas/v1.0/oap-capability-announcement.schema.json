@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-capability-announcement.schema.json",
+  "title": "OAP Capability Announcement",
+  "description": "RFC 0027 section 3.2. Signed declaration of the actions an Agent can perform, scoped to a specific coordination context (Workflow or Session).",
+  "type": "object",
+  "required": ["schema", "agent_did", "context", "capabilities", "evidence", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "oap.capability.v1" },
+    "agent_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "context": {
+      "type": "object",
+      "required": ["context_type", "context_id"],
+      "additionalProperties": false,
+      "properties": {
+        "context_type": { "enum": ["workflow", "session"] },
+        "context_id": { "type": "string", "minLength": 1 },
+        "step_id": { "type": ["string", "null"] }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "items": {
+        "type": "object",
+        "required": ["action", "schema_ref"],
+        "additionalProperties": false,
+        "properties": {
+          "action": { "type": "string", "minLength": 1 },
+          "schema_ref": { "type": "string", "format": "uri" },
+          "preconditions": { "type": "array", "items": { "type": "string" } },
+          "cost_class": { "enum": ["free", "billable", "stakeable"] },
+          "expected_latency_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["manifest_url"],
+      "additionalProperties": false,
+      "properties": {
+        "manifest_url": { "type": "string", "format": "uri" },
+        "reputation_profile_ref": { "type": "string" },
+        "role_enactment": {
+          "type": "object",
+          "description": "Optional Role enactment claim per RFC 0030 composition table.",
+          "required": ["organization_did", "role_id"],
+          "properties": {
+            "organization_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+            "role_id": { "type": "string", "minLength": 1 },
+            "role_credential": { "type": "string" }
+          }
+        },
+        "byoa_attestation_ref": {
+          "type": "string",
+          "description": "Optional BYOA Attestation reference per RFC 0031 composition table."
+        }
+      }
+    },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "signature": { "type": "string", "minLength": 1 }
+  }
+}

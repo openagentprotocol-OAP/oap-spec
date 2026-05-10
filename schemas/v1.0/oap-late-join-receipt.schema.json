@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openagentprotocol.eu/schemas/v1.0/oap-late-join-receipt.schema.json",
+  "title": "OAP Late Join Receipt",
+  "description": "RFC 0027 section 3.3. Receipt emitted by the hosting Tool for every successful Late Join admission under capability_match or open admission_mode.",
+  "type": "object",
+  "required": ["receipt_id", "type", "timestamp", "host_tool_did", "admitted_agent_did", "context", "admission_mode", "capabilities_matched", "signatures"],
+  "additionalProperties": false,
+  "properties": {
+    "receipt_id": { "type": "string", "pattern": "^urn:oap:receipt:.+$" },
+    "type": { "const": "late_join" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "host_tool_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "admitted_agent_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+    "context": {
+      "type": "object",
+      "required": ["context_type", "context_id"],
+      "properties": {
+        "context_type": { "enum": ["workflow", "session"] },
+        "context_id": { "type": "string", "minLength": 1 },
+        "admitted_at_step": { "type": ["string", "null"] }
+      }
+    },
+    "admission_mode": { "enum": ["capability_match", "open"] },
+    "capabilities_matched": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "reputation_score": { "type": "number" },
+    "reputation_threshold": { "type": "number" },
+    "capability_announcement_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "monotonic_admission_index": { "type": "integer", "minimum": 0 },
+    "previous_receipt_hash": { "type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$" },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["signer_did", "signature"],
+        "properties": {
+          "signer_did": { "type": "string", "pattern": "^did:[a-z0-9]+:.+$" },
+          "signature": { "type": "string", "minLength": 1 },
+          "alg": { "enum": ["Ed25519", "ES256K", "ES256"] }
+        }
+      }
+    }
+  }
+}

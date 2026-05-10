@@ -1,0 +1,24 @@
+{
+  "receipt_id": "urn:oap:receipt:dr-01HX7K8RZJX0030DRIFT",
+  "type": "convention_drift",
+  "timestamp": "2026-05-10T09:15:42.310Z",
+  "agent_did": "did:web:openagentprotocol.eu",
+  "context": {
+    "context_type": "workflow",
+    "context_id": "wf_01HX7K8RZJX0001AHTDEMO"
+  },
+  "affected_peer_did": "did:web:fulfillment-charlie.example",
+  "kl_divergence": 0.84,
+  "drift_threshold_kl": 0.50,
+  "observation_window_size": 24,
+  "prior_posterior_hash": "sha256:1f4e7a9c3b2d8e5f6a1c4b7e9d2f5c8a3e6b1d4f7a9c2e5b8d1f4a7c3e6b9d2f",
+  "decision": "re-infer",
+  "previous_receipt_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "signatures": [
+    {
+      "signer_did": "did:web:openagentprotocol.eu",
+      "signature": "z4kT8hM2rN9pX7vL3qC6bD1jY5sF8wA0eU2iZ4nO6gJ9hK1mP3rT5vC7bX2dN4fL6jM8aQ3sR5tG7wB9eY1uV3kI",
+      "alg": "Ed25519"
+    }
+  ]
+}

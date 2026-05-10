@@ -77,5 +77,20 @@ export {
   type OrganizationManifest,
 } from './organization.js';
 
+export {
+  runThreeTierHandshake,
+  detectConventionDrift,
+  capabilityAnnouncementHash,
+  ahtCanonicalize,
+  type AhtPolicyClass,
+  type AhtFallbackPolicy,
+  type CapabilityAnnouncement,
+  type Peer,
+  type PeerClass,
+  type ThreeTierInputs,
+  type ThreeTierParams,
+  type ThreeTierResult,
+} from './aht.js';
+
 export const SDK_VERSION = '1.0.0-rc.2';
 export const OAP_SPEC_VERSION = '1.0';

@@ -1,0 +1,23 @@
+{
+  "context": {
+    "context_type": "workflow",
+    "context_id": "wf_01HX7K8RZJX0001AHTDEMO"
+  },
+  "convention_spaces": [
+    {
+      "did": "did:web:fulfillment-alpha.example",
+      "space": [
+        { "delivery_window": "PT24H", "label_format": "PDF_A4", "carrier_priority": ["regional", "national", "international"] },
+        { "delivery_window": "PT48H", "label_format": "PDF_A4", "carrier_priority": ["national", "international"] }
+      ]
+    },
+    {
+      "did": "did:web:fulfillment-bravo.example",
+      "space": [
+        { "delivery_window": "PT24H", "label_format": "PDF_A4", "carrier_priority": ["regional", "national", "international"] },
+        { "delivery_window": "PT12H", "label_format": "ZPL_4x6", "carrier_priority": ["regional"] }
+      ]
+    }
+  ],
+  "observable_peers": []
+}
